@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Super Administration</title>
+    <link rel="stylesheet" href="index.css" />
+    <script type="module" src="index.js"></script>
+  </head>
+  <body>
+    <input id="school_year" type="hidden" value="end" />
+    <input id="currschool_year" type="hidden" value="end" />
+    <input id="semester_val" type="hidden" value="1" />
+    <input id="currsemester_val" type="hidden" value="1" />
+    <div id="maincontainer">
+      <div id="navcontainer">
+        <button id="btnmenu">
+          <img id="imgmenu" src="assets/images/icons/grid.svg" />Dashboard<img
+            id="imgcrown"
+            src="assets/images/icons/crown-solid.svg"
+            style="display: none"
+          />
+        </button>
+      </div>
+      <div id="homecontainer">
+        <div id="homeframe">
+          <div id="homelist">
+            <div id="yeardiv" class="modules">
+              <img
+                class="sadminicon sadminicon_book"
+                src="assets/images/icons/calendar.svg"
+              />School Year
+              <div id="yrbtncont">
+                <div id="yrbtnframe">
+                  <button id="startsemester" class="sembtn">Start</button>
+                  <button id="endsemester" class="sembtn">End</button>
+                </div>
+              </div>
+            </div>
+            <div id="yearoptions">
+              <div id="inputgmailadd" class="yearoptionsemail">
+                <label class="lblyear">Gmail Address: </label
+                ><input id="yearemail" class="yearoptionsinput" />
+              </div>
+              <button id="btnsendaccesskey" class="btnyear">
+                Send Access Key
+              </button>
+              <div id="inputaccesskey" class="yearoptionsemail">
+                <label class="lblyear">Access Key: </label
+                ><input id="yearaccess" class="yearoptionsinput" />
+              </div>
+              <button id="btnaccess" class="btnyear">Grant Access</button>
+            </div>
+            <div id="semesterdiv" class="modules">
+              <img
+                class="sadminicon sadminicon_book"
+                src="assets/images/icons/book.svg"
+              />Semester
+              <div id="sembtncont">
+                <div id="sembtnframe">
+                  <button id="sem1" class="sembtn">1st</button>
+                  <button id="sem2" class="sembtn">2nd</button>
+                </div>
+              </div>
+            </div>
+            <div id="semoptions">
+              <div id="inputgmailaddx" class="yearoptionsemail">
+                <label class="lblyear">Gmail Address: </label
+                ><input id="sememail" class="yearoptionsinput" />
+              </div>
+              <button id="btnsendaccesskeyx" class="btnyear">
+                Send Access Key
+              </button>
+              <div id="inputaccesskeyx" class="yearoptionsemail">
+                <label class="lblyear">Access Key: </label
+                ><input id="semaccess" class="yearoptionsinput" />
+              </div>
+              <button id="btnaccessx" class="btnyear">Grant Access</button>
+            </div>
+
+            <button id="enrollstudents" class="modules">
+              <img
+                class="sadminicon"
+                src="assets/images/icons/crown-solid.svg"
+              />Enroll Students
+            </button>
+            <button id="addstudent" class="modules">
+              <img
+                class="sadminicon"
+                src="assets/images/icons/crown-solid.svg"
+              />Manage Student
+            </button>
+            <button id="superadmin" class="modules" value="off">
+              <img
+                class="sadminicon"
+                src="assets/images/icons/crown-solid.svg"
+              />Manage Super Admin
+            </button>
+            <div id="sadminmenu" class="modulesmenu">
+              <button id="addsadmin" class="modulesbtn">Add</button>
+              <button id="deactivatesadmin" class="modulesbtn">
+                Deactivate
+              </button>
+              <button id="deletesadmin" class="modulesbtn">Delete</button>
+            </div>
+            <button id="admin" class="modules" value="off">
+              <img
+                class="sadminicon"
+                src="assets/images/icons/person.svg"
+              />Manage Admin
+            </button>
+            <div id="adminmenu" class="modulesmenu">
+              <button id="addadmin" class="modulesbtn">Add</button>
+              <button id="deactivateadmin" class="modulesbtn">
+                Deactivate
+              </button>
+              <button id="deleteadmin" class="modulesbtn">Delete</button>
+            </div>
+            <button id="changeemail" class="modules">
+              <img
+                class="sadminicon"
+                src="assets/images/icons/mail.svg"
+              />Change Gmail Address
+            </button>
+            <button id="changepassword" class="modules">
+              <img class="sadminicon" src="assets/images/icons/key.svg" />Change
+              Password
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="gridmenu">
+      <div id="gridoptions"></div>
+    </div>
+  </body>
+  <script src="index_events.js"></script>
+</html>
