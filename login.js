@@ -12,22 +12,21 @@ import {
     update
 } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 const firebaseConfig = {
-    apiKey: "AIzaSyCFqgbA_t3EBVO21nW70umJOHX3UdRr9MY",
-    authDomain: "parseit-8021e.firebaseapp.com",
-    databaseURL:
-        "https://parseit-8021e-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "parseit-8021e",
-    storageBucket: "parseit-8021e.appspot.com",
-    messagingSenderId: "15166597986",
-    appId: "1:15166597986:web:04b0219b1733780ae61a3b",
+    apiKey: "AIzaSyCoIfQLbAq5gPil3COSauqfHNlv5P5tYXc",
+    authDomain: "parseitadmin.firebaseapp.com",
+    databaseURL: "https://parseitadmin-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "parseitadmin",
+    storageBucket: "parseitadmin.firebasestorage.app",
+    messagingSenderId: "1009498274532",
+    appId: "1:1009498274532:web:69083f905357ae31b74af1"
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase(app);
 const dbRef = ref(database);
 
-//parser
-let parser = [{
+//admin
+let admin = [{
     activated: "",
     email: "",
     firstname: "",
@@ -64,29 +63,29 @@ document.getElementById("login_btn").addEventListener("click", function () {
     }
 
     getParser(id).then(() => {
-        if (parser[0].activated === "no") {
-            if (parser[0].temporarypass !== password) {
+        if (admin[0].activated === "no") {
+            if (admin[0].temporarypass !== password) {
                 applyErrorStyle(passwordBorder);
                 resetStyle(idBorder);
             }
             else {
-                let middleinitial = parser[0].middlename[0] + ".";
-                if (parser[0].suffix === "none") {
-                    parser[0].suffix = "";
+                let middleinitial = admin[0].middlename[0] + ".";
+                if (admin[0].suffix === "none") {
+                    admin[0].suffix = "";
                 }
-                localStorage.setItem("name-parser", parser[0].firstname + " " + middleinitial + " " + parser[0].lastname + " " + parser[0].suffix);
-                if (parser[0].middlename === "none") {
-                    localStorage.setItem("name-parser", parser[0].firstname + " " + parser[0].lastname + " " + parser[0].suffix);
+                localStorage.setItem("name-parser-admin", admin[0].firstname + " " + middleinitial + " " + admin[0].lastname + " " + admin[0].suffix);
+                if (admin[0].middlename === "none") {
+                    localStorage.setItem("name-parser-admin", admin[0].firstname + " " + admin[0].lastname + " " + admin[0].suffix);
                 }
-                localStorage.setItem("activate-parser", id);
-                localStorage.setItem("email-parser", parser[0].email);
+                localStorage.setItem("activate-parser-admin", id);
+                localStorage.setItem("email-parser-admin", admin[0].email);
                 window.location.href = "activate.html";
 
 
             }
         }
         else {
-            loginParser(parser[0].email, password, id);
+            loginParser(admin[0].email, password, id);
         }
     }).catch((error) => {
         applyErrorStyle(idBorder);
@@ -109,25 +108,15 @@ document.getElementById("forgotpass_a").addEventListener("click", function () {
         applyErrorStyle(document.getElementById("id_container"));
     }
     else {
-
-        get(child(dbRef, "PARSEIT/administration/students/" + forgot_id)).then((snapshot) => {
+        get(child(dbRef, "PARSEIT/administration/admins/" + forgot_id)).then((snapshot) => {
             if (snapshot.exists()) {
                 //const email = snapshot.val().email;
                 sendResetEmail(forgot_id);
                 resetStyle(idBorder);
                 showMessage("Please check your email, thank you!");
             } else {
-                get(child(dbRef, "PARSEIT/administration/teachers/" + forgot_id)).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        //const email = snapshot.val().email;
-                        sendResetEmail(forgot_id);
-                        resetStyle(idBorder);
-                        showMessage("Please check your email, thank you!");
-                    } else {
-                        applyErrorStyle(idBorder);
-                        resetStyle(passwordBorder);
-                    }
-                });
+                applyErrorStyle(idBorder);
+                resetStyle(passwordBorder);
             }
         }).catch((error) => {
 
@@ -166,35 +155,20 @@ function resetStyle(element) {
 function getParser(id) {
     return new Promise((resolve, reject) => {
         const dbRef = ref(database);
-        get(child(dbRef, "PARSEIT/administration/students/" + id)).then((snapshot) => {
+        get(child(dbRef, "PARSEIT/administration/admins/" + id)).then((snapshot) => {
             if (snapshot.exists()) {
-                parser[0].activated = snapshot.val().activated;
-                parser[0].email = snapshot.val().email;
-                parser[0].firstname = snapshot.val().firstname;
-                parser[0].lastname = snapshot.val().lastname;
-                parser[0].middlename = snapshot.val().middlename;
-                parser[0].suffix = snapshot.val().suffix;
-                parser[0].temporarypass = snapshot.val().temporarypass;
-                localStorage.setItem("type-parser", "student");
+                admin[0].activated = snapshot.val().activated;
+                admin[0].email = snapshot.val().email;
+                admin[0].firstname = snapshot.val().firstname;
+                admin[0].lastname = snapshot.val().lastname;
+                admin[0].middlename = snapshot.val().middlename;
+                admin[0].suffix = snapshot.val().suffix;
+                admin[0].temporarypass = snapshot.val().temporarypass;
                 resolve();
-            } else {
-                get(child(dbRef, "PARSEIT/administration/teachers/" + id)).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        parser[0].activated = snapshot.val().activated;
-                        parser[0].email = snapshot.val().email;
-                        parser[0].firstname = snapshot.val().firstname;
-                        parser[0].lastname = snapshot.val().lastname;
-                        parser[0].middlename = snapshot.val().middlename;
-                        parser[0].suffix = snapshot.val().suffix;
-                        parser[0].temporarypass = snapshot.val().temporarypass;
-                        localStorage.setItem("type-parser", "teacher");
-                        resolve();
-                    } else {
-                        applyErrorStyle(idBorder);
-                        resetStyle(passwordBorder);
-                        resolve();
-                    }
-                });
+            }
+            else {
+                applyErrorStyle(idBorder);
+                resetStyle(passwordBorder);
             }
         }).catch((error) => {
             alert('Error getting user info');
@@ -206,7 +180,7 @@ function getParser(id) {
 async function loginParser(email, password, id) {
     try {
         const userCredentials = await signInWithEmailAndPassword(auth, email, password);
-        localStorage.setItem("user-parser", id);
+        localStorage.setItem("user-parser-admin", id);
         window.location.href = "homepage.html";
     } catch (error) {
         const errorCode = error.code;
@@ -238,7 +212,7 @@ function hidepassword() {
 }
 
 function sendResetEmail(id) {
-    get(child(dbRef, "PARSEIT/administration/students/" + id)).then((snapshot) => {
+    get(child(dbRef, "PARSEIT/administration/admins/" + id)).then((snapshot) => {
         if (snapshot.exists()) {
             const email = snapshot.val().email;
             sendPasswordResetEmail(auth, email).then(() => {
@@ -247,18 +221,8 @@ function sendResetEmail(id) {
 
             });
         } else {
-            get(child(dbRef, "PARSEIT/administration/teachers/" + id)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const email = snapshot.val().email;
-                    sendPasswordResetEmail(auth, email).then(() => {
-                        document.getElementById("id_txt").value = "";
-                    }).catch((error) => {
-                    });
-                } else {
-                    applyErrorStyle(idBorder);
-                    resetStyle(passwordBorder);
-                }
-            });
+            applyErrorStyle(idBorder);
+            resetStyle(passwordBorder);
         }
     }).catch((error) => {
 

@@ -12,6 +12,7 @@ import {
     remove,
     set,
 } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+
 const firebaseConfig = {
     apiKey: "AIzaSyCFqgbA_t3EBVO21nW70umJOHX3UdRr9MY",
     authDomain: "parseit-8021e.firebaseapp.com",
@@ -27,11 +28,26 @@ const auth = getAuth();
 const database = getDatabase(app);
 const dbRef = ref(database);
 
+const firebaseConfigAdmin = {
+    apiKey: "AIzaSyCoIfQLbAq5gPil3COSauqfHNlv5P5tYXc",
+    authDomain: "parseitadmin.firebaseapp.com",
+    databaseURL: "https://parseitadmin-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "parseitadmin",
+    storageBucket: "parseitadmin.firebasestorage.app",
+    messagingSenderId: "1009498274532",
+    appId: "1:1009498274532:web:69083f905357ae31b74af1"
+};
+const appAdmin = initializeApp(firebaseConfigAdmin, "ParseITAdmin");
+const authAdmin = getAuth(appAdmin);
+const databaseAdmin = getDatabase(appAdmin);
+const dbRefAdmin = ref(databaseAdmin);
+
+
 //global variables
-const userparser = localStorage.getItem("name-parser");
-const emailparser = localStorage.getItem("email-parser");
-const id = localStorage.getItem("activate-parser");
-let type = localStorage.getItem("type-parser");;
+const userparser = localStorage.getItem("name-parser-admin");
+const emailparser = localStorage.getItem("email-parser-admin");
+const id = localStorage.getItem("activate-parser-admin");
+
 
 //pre-tasks
 window.addEventListener("load", function () {
@@ -58,7 +74,7 @@ document.getElementById("verify_btn").addEventListener("click", function () {
     submitVerificationCode(id, userinput_code);
 });
 document.getElementById("cancel_btn").addEventListener("click", function () {
-    removeDBVerification(id, type);
+    removeDBVerification(id);
 });
 
 //for activation
@@ -167,7 +183,7 @@ function sendVerificationCode(id, email, code) {
     //for testing purposes
     document.getElementById("verificationcode_txt").value = code;
 
-    updateDBVerification(id, code, type); //this supposed to go
+    updateDBVerification(id, code); //this supposed to go
 
     // emailjs.send('service_g8cli5d', 'template_b0rhzue', {
     //     to_name: email,
@@ -180,19 +196,10 @@ function sendVerificationCode(id, email, code) {
 
 }
 
-function updateDBVerification(id, code, type) {
-    if (type === "student") {
-        update(ref(database, "PARSEIT/administration/students/" + id), {
-            verificationcode: code,
-        });
-    }
-    else {
-        update(ref(database, "PARSEIT/administration/teachers/" + id), {
-            verificationcode: code,
-        });
-    }
-
-
+function updateDBVerification(id, code) {
+    update(ref(databaseAdmin, "PARSEIT/administration/admins/" + id), {
+        verificationcode: code,
+    });
 }
 
 function disableResend() {
@@ -211,8 +218,7 @@ function disableResend() {
 }
 
 function submitVerificationCode(id, code) {
-    const dbRef = ref(database);
-    get(child(dbRef, "PARSEIT/administration/students/" + id))
+    get(child(dbRefAdmin, "PARSEIT/administration/admins/" + id))
         .then((snapshot) => {
             if (snapshot.exists()) {
                 if (snapshot.val().verificationcode == code) {
@@ -223,44 +229,20 @@ function submitVerificationCode(id, code) {
                     document.getElementById("verificationcode_div").style.animation = "shake 0.3s ease-in-out";
                 }
             }
-            else {
-                get(child(dbRef, "PARSEIT/administration/teachers/" + id)).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        if (snapshot.val().verificationcode == code) {
-                            openSignup();
-                        }
-                        else {
-                            document.getElementById("verificationcode_div").style.border = "1px solid red";
-                            document.getElementById("verificationcode_div").style.animation = "shake 0.3s ease-in-out";
-                        }
-                    }
-                });
-            }
         })
         .catch((error) => {
 
         });
 }
 
-function removeDBVerification(id, type) {
-    if (type === "student") {
-        remove(ref(database, "PARSEIT/administration/students/" + id + "/verificationcode")).then(() => {
-            localStorage.removeItem("activate-parser");
-            localStorage.removeItem("email-parser");
-            localStorage.removeItem("name-parser");
-            localStorage.removeItem("type-parser");
-            window.location.href = "login.html";
-        });
-    } else {
-        remove(ref(database, "PARSEIT/administration/teachers/" + id + "/verificationcode")).then(() => {
-            localStorage.removeItem("activate-parser");
-            localStorage.removeItem("email-parser");
-            localStorage.removeItem("name-parser");
-            localStorage.removeItem("type-parser");
-            window.location.href = "login.html";
-        });
-    }
-
+function removeDBVerification(id) {
+    remove(ref(databaseAdmin, "PARSEIT/administration/admins/" + id + "/verificationcode")).then(() => {
+        localStorage.removeItem("activate-parser-admin");
+        localStorage.removeItem("email-parser-admin");
+        localStorage.removeItem("name-parser-admin");
+        localStorage.removeItem("type-parser-admin");
+        window.location.href = "login.html";
+    });
 }
 
 function openSignup() {
@@ -298,66 +280,29 @@ function checkUsername(username) {
         else {
             openSection(2);
             hideSection(1, 3);
-            populateParser(localStorage.getItem("activate-parser"), username);
+            populateParser(localStorage.getItem("activate-parser-admin"), username);
         }
     });
 }
 
 function populateParser(id, username) {
-    get(child(dbRef, "PARSEIT/administration/students/" + id)).then((snapshot) => {
+    document.getElementById("yearlvl_p").style.display = "none";
+    document.getElementById("section_p").style.display = "none";
+    get(child(dbRefAdmin, "PARSEIT/administration/admins/" + id)).then((snapshot) => {
         if (snapshot.exists()) {
             document.getElementById("confirm-id").innerText = snapshot.val().id;
-            document.getElementById("confirm-fullname").innerText = localStorage.getItem("name-parser");
+            document.getElementById("confirm-fullname").innerText = localStorage.getItem("name-parser-admin");
             document.getElementById("confirm-username").innerText = username;
             document.getElementById("confirm-birthday").innerText = snapshot.val().birthday;
-            document.getElementById("confirm-email").innerText = localStorage.getItem("email-parser");
-            document.getElementById("confirm-yrlvl").innerText = getYearType(snapshot.val().yearlvl);
-            document.getElementById("confirm-section").innerText = snapshot.val().section;
-            document.getElementById("confirm-regular").innerText = "(" + checkRegular(snapshot.val().regular) + ")";
-        } else {
-            document.getElementById("yearlvl_p").style.display = "none";
-            document.getElementById("section_p").style.display = "none";
-            get(child(dbRef, "PARSEIT/administration/teachers/" + id)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    document.getElementById("confirm-id").innerText = snapshot.val().id;
-                    document.getElementById("confirm-fullname").innerText = localStorage.getItem("name-parser");
-                    document.getElementById("confirm-username").innerText = username;
-                    document.getElementById("confirm-birthday").innerText = snapshot.val().birthday;
-                    document.getElementById("confirm-email").innerText = localStorage.getItem("email-parser");
-                }
-            });
+            document.getElementById("confirm-email").innerText = localStorage.getItem("email-parser-admin");
         }
-    })
-}
-
-function getYearType(year) {
-    if (year === "1") {
-        return "Freshman"
-    }
-    if (year === "2") {
-        return "Sophomore"
-    }
-    if (year === "3") {
-        return "Junior"
-    }
-    if (year === "4") {
-        return "Senior"
-    }
-}
-
-function checkRegular(reg) {
-    if (reg === "yes") {
-        return "Regular"
-    }
-    else {
-        return "Irregular"
-    }
+    });
 }
 
 function createParser(email, password, id, username) {
-    createUserWithEmailAndPassword(auth, email, password)
+    createUserWithEmailAndPassword(authAdmin, email, password)
         .then((userCredential) => {
-            updateParser(id, type, username);
+            updateParser(id, username);
         })
         .catch((error) => {
             // Handle errors
@@ -367,33 +312,16 @@ function createParser(email, password, id, username) {
 
 }
 
-function updateParser(id, type, username) {
-    if (type === "student") {
-        update(ref(database, "PARSEIT/administration/students/" + id), {
-            activated: "yes",
-        }).then(() => {
-            set(ref(database, "PARSEIT/username/" + username), id).then(() => {
-                localStorage.removeItem("email-parser");
-                localStorage.removeItem("name-parser");
-                localStorage.removeItem("activate-parser");
-                localStorage.removeItem("type-parser");
-                localStorage.setItem("user-parser", id);
-                window.location.href = "homepage.html";
-            });
+function updateParser(id, username) {
+    update(ref(databaseAdmin, "PARSEIT/administration/admins/" + id), {
+        activated: "yes",
+    }).then(() => {
+        set(ref(database, "PARSEIT/username/" + username), id).then(() => {
+            localStorage.removeItem("email-parser-admin");
+            localStorage.removeItem("name-parser-admin");
+            localStorage.removeItem("activate-parsera-admin");
+            localStorage.setItem("user-parser-admin", id);
+            window.location.href = "homepage.html";
         });
-    } else {
-        update(ref(database, "PARSEIT/administration/teachers/" + id), {
-            activated: "yes",
-        }).then(() => {
-            set(ref(database, "PARSEIT/username/" + username), id).then(() => {
-                localStorage.removeItem("email-parser");
-                localStorage.removeItem("name-parser");
-                localStorage.removeItem("activate-parser");
-                localStorage.removeItem("type-parser");
-                localStorage.setItem("user-parser", id);
-                window.location.href = "homepage.html";
-            });
-        });
-    }
-
+    });
 }
