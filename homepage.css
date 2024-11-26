@@ -122,6 +122,7 @@ body {
   border: none;
   color: #fefefe;
   font-family: "Inter-Regular";
+  border-radius: 3px;
 }
 
 .sadminicon {
