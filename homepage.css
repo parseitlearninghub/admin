@@ -246,6 +246,7 @@ body {
   border-radius: 5px;
   box-sizing: border-box;
   gap: 10px;
+  display: none;
 }
 
 .section {
