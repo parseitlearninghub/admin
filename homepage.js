@@ -14,3 +14,8 @@ function setScreenSize(width, height) {
     document.body.style.width = width + "px";
     document.body.style.height = height + "px";
 }
+
+//processess
+document.getElementById("addstudent_btn").addEventListener("click", function () {
+    document.getElementById("menu_div").style.display = "none";
+});
