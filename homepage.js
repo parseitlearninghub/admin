@@ -19,9 +19,11 @@ function setScreenSize(width, height) {
 document.getElementById("addstudent_btn").addEventListener("click", function () {
     document.getElementById("menu_div").style.display = "none";
     document.getElementById("navbar").style.display = "none";
+    document.getElementById("addstudent_div").style.display = "flex";
 });
 
 document.getElementById("canceladdstudent_btn").addEventListener("click", function () {
     document.getElementById("menu_div").style.display = "block";
     document.getElementById("navbar").style.display = "flex";
+    document.getElementById("addstudent_div").style.display = "none";
 });
