@@ -90,7 +90,7 @@ body {
 }
 
 #addstudent_div {
-  background-color: red;
+  background-color: rebeccapurple;
 }
 
 #managestudent_btn {
@@ -134,4 +134,29 @@ body {
   margin-right: 12px;
   filter: invert(99%) sepia(43%) saturate(276%) hue-rotate(51deg)
     brightness(116%) contrast(99%);
+}
+
+.canceladdstudent_nav {
+  width: 100%;
+  background-color: transparent;
+  height: 30px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 15px;
+  padding-bottom: 10px;
+}
+
+#canceladdstudent_btn {
+  background-color: transparent;
+  border: none;
+  font-family: "Inter-Regular";
+}
+
+.canceladdstudent_img {
+  width: 22px;
+  aspect-ratio: 1/1;
+  object-fit: contain;
+  filter: invert(0%) sepia(1%) saturate(5%) hue-rotate(168deg) brightness(106%)
+    contrast(101%);
 }
