@@ -5,7 +5,10 @@
 // document.getElementById("username").innerText = localStorage.getItem("user-parser-admin");
 
 window.addEventListener("load", function () {
+    document.getElementById("loading_animation_div").style.display = "none";
     setScreenSize(window.innerWidth, window.innerHeight);
+
+
 });
 
 
