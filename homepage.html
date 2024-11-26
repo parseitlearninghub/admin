@@ -3,11 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Homepage(Admin)</title>
+    <link rel="stylesheet" href="homepage.css" />
   </head>
   <body>
-    <button id="btn" onclick="signout()">Out</button>
-    <label id="username">Username</label>
-    <script src="homepage.js"></script>
+    <div id="home_div">
+      <nav id="navbar">
+        <button id="nav_btn">
+          <img src="assets/icons/menu-icon-reg.png" class="nav_icon" />
+          <a class="navset_lbl" id="navset_lbl">Dashboard</a>
+        </button>
+      </nav>
+      <div id="body_div">
+        <div class="section_div" id="menu_div">
+          <section class="option_sec" id="setsem_sec">
+            <button id="managestudent_btn">
+              <img
+                class="sadminicon"
+                src="assets/icons/crown-solid.svg"
+              />Manage Student
+            </button>
+            <section class="managestudentmenu_sec">
+              <button class="managestudentmenu_btn" id="addstudent_btn">
+                Add
+              </button>
+              <button class="managestudentmenu_btn" id="deactiavtestudent_btn">
+                Deactivate
+              </button>
+              <button class="managestudentmenu_btn" id="deletestudent_btn">
+                Delete
+              </button>
+            </section>
+          </section>
+        </div>
+        <div class="section_div" id="add_div"></div>
+      </div>
+    </div>
+    <script type="module" src="homepage.js"></script>
   </body>
 </html>
