@@ -174,6 +174,7 @@ function submitStudent(regularity, year, section, id, firstname, middlename, las
     set(ref(database, "PARSEIT/administration/students/" + id), {
         activated: "yes",
         birthday: birthday,
+        disabled: "no",
         email: email,
         firstname: firstname,
         id: id,
@@ -184,7 +185,6 @@ function submitStudent(regularity, year, section, id, firstname, middlename, las
         temporarypass: createTemporaryPass(firstname, middlename, lastname, suffix),
         type: "student",
         year: year,
-
     }).then(() => {
 
     });
