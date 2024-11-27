@@ -7,6 +7,24 @@
     <link rel="stylesheet" href="homepage.css" />
   </head>
   <body>
+    <!-- Set up Academic Year -->
+    <div id="setupacad_div">
+      <div id="setupacadbody_div">
+        <nav class="canceladdstudent_nav">
+          <button id="canceladdstudent_btn">
+            <img
+              class="canceladdstudent_img"
+              src="assets/icons/arrow-left-solid.svg"
+            />
+          </button>
+        </nav>
+        <nav class="canceladdstudent_header">
+          <label class="manage_lbl">Set Up Academic Year</label>
+        </nav>
+        <button id="addacademicyear_btn">Add</button>
+      </div>
+    </div>
+
     <div id="home_div">
       <nav id="navbar">
         <button id="nav_btn">
@@ -18,6 +36,19 @@
       <div id="body_div">
         <div class="section_div" id="menu_div">
           <section class="option_sec" id="setsem_sec">
+            <button id="managestudent_btn">
+              <img class="sadminicon" src="assets/icons/calendar.svg" />Set Up
+              Academic Year
+            </button>
+            <section class="setupacad_sec">
+              <label id="academicyr_lbl">School Year 2024-2025</label>
+              <button class="managestudentmenu_btn" id="addsetupacad_btn">
+                Add
+              </button>
+            </section>
+          </section>
+
+          <section class="option_sec" id="managestudent_sec">
             <button id="managestudent_btn">
               <img class="sadminicon" src="assets/icons/person.svg" />Manage
               Student
@@ -36,6 +67,7 @@
           </section>
         </div>
 
+        <!-- Add Student -->
         <div class="section_div" id="addstudent_div">
           <nav class="canceladdstudent_nav">
             <button id="canceladdstudent_btn">
@@ -154,6 +186,8 @@
             </div>
           </div>
         </div>
+
+        <!-- <div class="section_div" id="addadmin_div"></div> -->
       </div>
     </div>
     <script type="module" src="homepage.js"></script>

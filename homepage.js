@@ -76,6 +76,9 @@ document.getElementById("section-radio-2").addEventListener("click", function ()
     section = document.getElementById("section-2").getAttribute('data-value');
     //console.log(section);
 });
+document.getElementById("academicyr_lbl").addEventListener("click", function () {
+
+});
 
 document.getElementById("submitstudent_btn").addEventListener("click", function () {
     let regularity = getRegularity();
@@ -171,8 +174,8 @@ function createTemporaryPass(firstname, middlename, lastname, suffix) {
 }
 
 function submitStudent(regularity, year, section, id, firstname, middlename, lastname, suffix, birthday, email) {
-    set(ref(database, "PARSEIT/administration/students/" + id), {
-        activated: "yes",
+    update(ref(database, "PARSEIT/administration/students/" + id), {
+        activated: "no",
         birthday: birthday,
         disabled: "no",
         email: email,
