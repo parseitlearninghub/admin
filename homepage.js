@@ -162,7 +162,7 @@ function getRegularity() {
     }
 }
 
-function createTemporaryPass(firstname, middlename, lastname, suffix) {
+function createTemporaryPass(firstname, lastname, suffix) {
 
     let temporarypass = "";
     if (suffix === "none") {
@@ -189,9 +189,9 @@ function submitStudent(regularity, year, section, id, firstname, middlename, las
         regular: regularity,
         section: section,
         suffix: suffix,
-        temporarypass: createTemporaryPass(firstname, middlename, lastname, suffix),
+        temporarypass: createTemporaryPass(firstname, lastname, suffix),
         type: "student",
-        year: year,
+        yearlvl: year,
     }).then(() => {
 
     });
