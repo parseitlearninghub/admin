@@ -49,33 +49,40 @@
             <label class="manage_lbl">Add Student</label>
           </nav>
           <div id="formaddstudent_div">
-            <div class="input-wrap input-regular">
-              <div class="regularity">
-                <input type="radio" name="regularity" id="first_radio" /> 1st
-                Yr.
+            <div class="input-wrap-regular input-regular" id="input-regular">
+              <div class="regular">
+                <input type="radio" name="regular" id="regular-radio-1" />
+                <span id="regular-1" value="">Regular</span>
               </div>
-              <div class="regularity">
-                <input type="radio" name="regularity" id="second_radio" /> 2nd
-                Yr.
+              <div class="regular">
+                <input type="radio" name="regular" id="regular-radio-2" />
+                <span id="regular-2" value="">Irregular</span>
               </div>
-              <div class="regularity">
-                <input type="radio" name="regularity" id="third_radio" /> 3rd
-                Yr.
+            </div>
+
+            <div class="input-wrap input-year">
+              <div class="year">
+                <input type="radio" name="year" id="first_radio" /> 1st Yr.
               </div>
-              <div class="regularity">
-                <input type="radio" name="regularity" id="fourth_radio" /> 4th
-                Yr.
+              <div class="year">
+                <input type="radio" name="year" id="second_radio" /> 2nd Yr.
+              </div>
+              <div class="year">
+                <input type="radio" name="year" id="third_radio" /> 3rd Yr.
+              </div>
+              <div class="year">
+                <input type="radio" name="year" id="fourth_radio" /> 4th Yr.
               </div>
             </div>
 
             <div class="input-wrap-section input-regular" id="input-section">
               <div class="section">
-                <input type="radio" name="section" />
-                <span id="section-1">section</span>
+                <input type="radio" name="section" id="section-radio-1" />
+                <span id="section-1" value="">section</span>
               </div>
               <div class="section">
-                <input type="radio" name="section" />
-                <span id="section-2">section</span>
+                <input type="radio" name="section" id="section-radio-2" />
+                <span id="section-2" value="">section</span>
               </div>
             </div>
 
@@ -128,9 +135,22 @@
               <input
                 type="text"
                 class="input-txt"
+                id="birthday_txt"
+                placeholder="Enter Birthday"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
                 id="email_txt"
                 placeholder="Enter Email Address"
               />
+            </div>
+
+            <div class="input-wrap input-wrap-addstudent">
+              <button id="addstudent_btn">Add Student</button>
             </div>
           </div>
         </div>
