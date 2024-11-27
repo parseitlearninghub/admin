@@ -164,12 +164,15 @@ function getRegularity() {
 
 function createTemporaryPass(firstname, middlename, lastname, suffix) {
 
+    let temporarypass = "";
     if (suffix === "none") {
-        return firstname + middlename + lastname + ".parser"
+        temporarypass = firstname + lastname + ".parser"
     }
     else {
-        return firstname + middlename + lastname + suffix + ".parser"
+        temporarypass = firstname + lastname + suffix + ".parser"
     }
+
+    return temporarypass.toLowerCase().trim();
 
 }
 
@@ -185,6 +188,7 @@ function submitStudent(regularity, year, section, id, firstname, middlename, las
         middlename: middlename,
         regular: regularity,
         section: section,
+        suffix: suffix,
         temporarypass: createTemporaryPass(firstname, middlename, lastname, suffix),
         type: "student",
         year: year,
