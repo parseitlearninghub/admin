@@ -1,9 +1,36 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+import {
+    getDatabase,
+    ref,
+    get,
+    child,
+    update,
+    remove,
+    set,
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 
+const firebaseConfig = {
+    apiKey: "AIzaSyCFqgbA_t3EBVO21nW70umJOHX3UdRr9MY",
+    authDomain: "parseit-8021e.firebaseapp.com",
+    databaseURL:
+        "https://parseit-8021e-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "parseit-8021e",
+    storageBucket: "parseit-8021e.appspot.com",
+    messagingSenderId: "15166597986",
+    appId: "1:15166597986:web:04b0219b1733780ae61a3b",
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+const database = getDatabase(app);
+const dbRef = ref(database);
 
 //variables
 let year = "";
 let section = "";
-let regular = "";
 
 window.addEventListener("load", function () {
     setScreenSize(window.innerWidth, window.innerHeight);
@@ -43,12 +70,29 @@ document.getElementById("fourth_radio").addEventListener("click", function () {
 
 document.getElementById("section-radio-1").addEventListener("click", function () {
     section = document.getElementById("section-1").getAttribute('data-value');
-    console.log(section);
+    //console.log(section);
 });
 document.getElementById("section-radio-2").addEventListener("click", function () {
     section = document.getElementById("section-2").getAttribute('data-value');
-    console.log(section);
+    //console.log(section);
 });
+
+document.getElementById("submitstudent_btn").addEventListener("click", function () {
+    let regularity = getRegularity();
+    let id = document.getElementById("id_txt").value;
+    let firstname = document.getElementById("firstname_txt").value;
+    let middlename = document.getElementById("middlename_txt").value;
+    let lastname = document.getElementById("lastname_txt").value;
+    let suffix = document.getElementById("suffix_txt").value;
+    let birthday = document.getElementById("birthday_txt").value;
+    let email = document.getElementById("email_txt").value;
+    if (suffix === "") {
+        suffix = "none";
+    }
+
+    submitStudent(regularity, year, section, id, firstname, middlename, lastname, suffix, birthday, email);
+});
+
 
 
 //functions
@@ -101,4 +145,47 @@ function showSection(year) {
 
     //console.log(value_a, value_b, year);
 
+}
+
+function getRegularity() {
+    const regular = document.getElementById('regular-radio-1');
+    const irregular = document.getElementById('regular-radio-2');
+    if (regular.checked) {
+        return "yes"
+    }
+
+    if (irregular.checked) {
+        return "no"
+    }
+}
+
+function createTemporaryPass(firstname, middlename, lastname, suffix) {
+
+    if (suffix === "none") {
+        return firstname + middlename + lastname + ".parser"
+    }
+    else {
+        return firstname + middlename + lastname + suffix + ".parser"
+    }
+
+}
+
+function submitStudent(regularity, year, section, id, firstname, middlename, lastname, suffix, birthday, email) {
+    set(ref(database, "PARSEIT/administration/students/" + id), {
+        activated: "yes",
+        birthday: birthday,
+        email: email,
+        firstname: firstname,
+        id: id,
+        lastname: lastname,
+        middlename: middlename,
+        regular: regularity,
+        section: section,
+        temporarypass: createTemporaryPass(firstname, middlename, lastname, suffix),
+        type: "student",
+        year: year,
+
+    }).then(() => {
+
+    });
 }
