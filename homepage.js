@@ -171,8 +171,8 @@ function createTemporaryPass(firstname, lastname, suffix) {
     else {
         temporarypass = firstname + lastname + suffix + ".parser"
     }
-
-    return temporarypass.toLowerCase().trim();
+    temporarypass = temporarypass.toLowerCase();
+    return temporarypass.trim();
 
 }
 
