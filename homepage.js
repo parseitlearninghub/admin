@@ -227,7 +227,7 @@ function createTemporaryPass(firstname, lastname, suffix) {
         temporarypass = firstname + lastname + ".parser"
     }
     else {
-        temporarypass = firstname + lastname + suffix + ".parser"
+        temporarypass = firstname + lastname + suffix + ".parseradmin"
     }
     temporarypass = temporarypass.toLowerCase();
     return temporarypass.replace(/\s+/g, "");
