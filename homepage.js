@@ -227,6 +227,32 @@ function createTemporaryPass(firstname, lastname, suffix) {
         temporarypass = firstname + lastname + ".parser"
     }
     else {
+        temporarypass = firstname + lastname + suffix + ".parser"
+    }
+    temporarypass = temporarypass.toLowerCase();
+    return temporarypass.replace(/\s+/g, "");
+
+}
+function createTemporaryPassTeacher(firstname, lastname, suffix) {
+
+    let temporarypass = "";
+    if (suffix === "none") {
+        temporarypass = firstname + lastname + ".parserteacher"
+    }
+    else {
+        temporarypass = firstname + lastname + suffix + ".parserteacher"
+    }
+    temporarypass = temporarypass.toLowerCase();
+    return temporarypass.replace(/\s+/g, "");
+
+}
+function createTemporaryPassAdmin(firstname, lastname, suffix) {
+
+    let temporarypass = "";
+    if (suffix === "none") {
+        temporarypass = firstname + lastname + ".parseradmin"
+    }
+    else {
         temporarypass = firstname + lastname + suffix + ".parseradmin"
     }
     temporarypass = temporarypass.toLowerCase();
@@ -265,7 +291,7 @@ function submitTeacher(id, firstname, middlename, lastname, suffix, birthday, em
         lastname: lastname,
         middlename: middlename,
         suffix: suffix,
-        temporarypass: createTemporaryPass(firstname, lastname, suffix),
+        temporarypass: createTemporaryPassTeacher(firstname, lastname, suffix),
         type: "teacher",
     }).then(() => {
         document.getElementById("check_animation_div").style.display = "flex";
@@ -283,7 +309,7 @@ function submitAdmin(id, firstname, middlename, lastname, suffix, birthday, emai
         lastname: lastname,
         middlename: middlename,
         suffix: suffix,
-        temporarypass: createTemporaryPass(firstname, lastname, suffix),
+        temporarypass: createTemporaryPassAdmin(firstname, lastname, suffix),
         type: "admin",
     }).then(() => {
         document.getElementById("check_animation_div").style.display = "flex";

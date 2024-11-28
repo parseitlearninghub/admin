@@ -56,15 +56,12 @@ window.addEventListener("load", function () {
     setScreenSize(window.innerWidth, window.innerHeight);
     document.getElementById("verification_div").style.display = "block";
     document.body.style.backgroundImage = "url(assets/ctu_argao_banner_600px.jpg)";
-
-
 });
 
 //processes
 disableResend();
 document.getElementById("userparser_lbl").innerHTML = userparser;
 document.getElementById("email_lbl").innerHTML = censorEmail(emailparser);
-
 document.getElementById("resend_btn").addEventListener("click", function () {
     countdownVerification();
     sendVerificationCode(id, emailparser, generateUniqueID());
@@ -130,7 +127,6 @@ document.getElementById("step3_btn").addEventListener("click", (event) => {
         }
     }
 });
-
 editdetails_btn.addEventListener("click", (event) => {
     event.preventDefault();
     openSignup();
@@ -142,14 +138,12 @@ function setScreenSize(width, height) {
     document.body.style.width = width + "px";
     document.body.style.height = height + "px";
 }
-
 function censorEmail(email) {
     const [local, domain] = email.split('@');
     const visibleLocal = local.slice(0, 4);
     const censoredLocal = visibleLocal + '*'.repeat(local.length - 4);
     return censoredLocal + '@' + domain;
 }
-
 function countdownVerification() {
     document.getElementById("resend_btn").disabled = true;
     document.getElementById("resend_btn").style.opacity = "50%";
@@ -167,12 +161,9 @@ function countdownVerification() {
         }
     }, 1000);
 }
-
-
 function generateUniqueID() {
     return Math.random().toString(36).substr(2, 5);
 }
-
 function sendVerificationCode(id, email, code) {
     (function () {
         emailjs.init({
@@ -195,13 +186,11 @@ function sendVerificationCode(id, email, code) {
     // });
 
 }
-
 function updateDBVerification(id, code) {
     update(ref(databaseAdmin, "PARSEIT/administration/admins/" + id), {
         verificationcode: code,
     });
 }
-
 function disableResend() {
     let countdownNumber = 30;
     const countdownElement = document.getElementById("resend_btn");
@@ -216,7 +205,6 @@ function disableResend() {
         }
     }, 1000);
 }
-
 function submitVerificationCode(id, code) {
     get(child(dbRefAdmin, "PARSEIT/administration/admins/" + id))
         .then((snapshot) => {
@@ -234,15 +222,9 @@ function submitVerificationCode(id, code) {
 
         });
 }
-
-
 function removeDBVerification(id) {
     remove(ref(databaseAdmin, "PARSEIT/administration/admins/" + id + "/verificationcode"));
-
-
 }
-
-
 function cancelActivation(id) {
     remove(ref(databaseAdmin, "PARSEIT/administration/admins/" + id + "/verificationcode")).then(() => {
         localStorage.removeItem("activate-parser-admin");
@@ -262,13 +244,11 @@ function openSignup() {
     hideSection(2, 3);
 
 }
-
 function openSection(a) {
     document.getElementById(`step${a}_cont`).style.display = "block";
     document.getElementById(`step${a}_circle`).style.backgroundColor = "#007AFF";
     document.getElementById(`step${a}_circle`).style.color = "#fefefe";
 }
-
 function hideSection(b, c) {
     const steps = [b, c];
     steps.forEach(step => {
@@ -279,7 +259,6 @@ function hideSection(b, c) {
         stepCircle.style.color = "#007AFF";
     });
 }
-
 function checkUsername(username) {
     get(child(dbRef, "PARSEIT/username/" + username)).then((snapshot) => {
         if (snapshot.exists()) {
@@ -293,7 +272,6 @@ function checkUsername(username) {
         }
     });
 }
-
 function populateParser(id, username) {
     document.getElementById("yearlvl_p").style.display = "none";
     document.getElementById("section_p").style.display = "none";
@@ -307,7 +285,6 @@ function populateParser(id, username) {
         }
     });
 }
-
 function createParser(email, password, id, username) {
     createUserWithEmailAndPassword(authAdmin, email, password)
         .then((userCredential) => {
@@ -320,7 +297,6 @@ function createParser(email, password, id, username) {
 
 
 }
-
 function updateParser(id, username) {
     update(ref(databaseAdmin, "PARSEIT/administration/admins/" + id), {
         activated: "yes",
