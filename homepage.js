@@ -43,9 +43,6 @@ const databaseAdmin = getDatabase(appAdmin);
 const dbRefAdmin = ref(databaseAdmin);
 
 
-
-
-
 //variables
 let year = "";
 let section = "";
@@ -57,7 +54,6 @@ window.addEventListener("load", function () {
 
 
 //processess
-
 document.getElementById("first_radio").addEventListener("click", function () {
     year = "1";
     showSection(1)
@@ -155,7 +151,6 @@ document.getElementById("submitadmin_btn").addEventListener("click", function ()
     if (suffix === "") {
         suffix = "none";
     }
-
     submitAdmin(id, firstname, middlename, lastname, suffix, birthday, email);
 });
 document.getElementById("canceladdadmin_btn").addEventListener("click", function () {
@@ -164,15 +159,11 @@ document.getElementById("canceladdadmin_btn").addEventListener("click", function
     hideAddAdmin();
 });
 
-
-
-
 //functions
 function setScreenSize(width, height) {
     document.body.style.width = width + "px";
     document.body.style.height = height + "px";
 }
-
 function showSection(year) {
     let section_a = "";
     let section_b = "";
@@ -218,7 +209,6 @@ function showSection(year) {
     //console.log(value_a, value_b, year);
 
 }
-
 function getRegularity() {
     const regular = document.getElementById('regular-radio-1');
     const irregular = document.getElementById('regular-radio-2');
@@ -230,7 +220,6 @@ function getRegularity() {
         return "no"
     }
 }
-
 function createTemporaryPass(firstname, lastname, suffix) {
 
     let temporarypass = "";
@@ -244,7 +233,6 @@ function createTemporaryPass(firstname, lastname, suffix) {
     return temporarypass.replace(/\s+/g, "");
 
 }
-
 function submitStudent(regularity, year, section, id, firstname, middlename, lastname, suffix, birthday, email) {
     update(ref(database, "PARSEIT/administration/students/" + id), {
         activated: "no",
@@ -263,13 +251,9 @@ function submitStudent(regularity, year, section, id, firstname, middlename, las
         yearlvl: year,
     }).then(() => {
         document.getElementById("check_animation_div").style.display = "flex";
-        setTimeout(() => {
-            document.getElementById("check_animation_div").style.display = "none";
-        }, 2000);
         clearAddStudentForm();
     });
 }
-
 function submitTeacher(id, firstname, middlename, lastname, suffix, birthday, email) {
     update(ref(database, "PARSEIT/administration/teachers/" + id), {
         activated: "no",
@@ -285,13 +269,9 @@ function submitTeacher(id, firstname, middlename, lastname, suffix, birthday, em
         type: "teacher",
     }).then(() => {
         document.getElementById("check_animation_div").style.display = "flex";
-        setTimeout(() => {
-            document.getElementById("check_animation_div").style.display = "none";
-        }, 2000);
         clearAddTeacherForm();
     });
 }
-
 function submitAdmin(id, firstname, middlename, lastname, suffix, birthday, email) {
     update(ref(databaseAdmin, "PARSEIT/administration/admins/" + id), {
         activated: "no",
@@ -307,14 +287,13 @@ function submitAdmin(id, firstname, middlename, lastname, suffix, birthday, emai
         type: "admin",
     }).then(() => {
         document.getElementById("check_animation_div").style.display = "flex";
-        setTimeout(() => {
-            document.getElementById("check_animation_div").style.display = "none";
-        }, 2000);
         clearAddAdminForm();
     });
 }
-
 function clearAddStudentForm() {
+    setTimeout(() => {
+        document.getElementById("check_animation_div").style.display = "none";
+    }, 2000);
     document.getElementById("id_txt").value = "";
     document.getElementById("firstname_txt").value = "";
     document.getElementById("middlename_txt").value = "";
@@ -332,8 +311,10 @@ function clearAddStudentForm() {
     document.getElementById('section-radio-1').checked = false;
     document.getElementById('section-radio-2').checked = false;
 }
-
 function clearAddTeacherForm() {
+    setTimeout(() => {
+        document.getElementById("check_animation_div").style.display = "none";
+    }, 2000);
     document.getElementById("id_teacher_txt").value = "";
     document.getElementById("firstname_teacher_txt").value = "";
     document.getElementById("middlename_teacher_txt").value = "";
@@ -342,8 +323,10 @@ function clearAddTeacherForm() {
     document.getElementById("birthday_teacher_txt").value = "";
     document.getElementById("email_teacher_txt").value = "";
 }
-
 function clearAddAdminForm() {
+    setTimeout(() => {
+        document.getElementById("check_animation_div").style.display = "none";
+    }, 2000);
     document.getElementById("id_admin_txt").value = "";
     document.getElementById("firstname_admin_txt").value = "";
     document.getElementById("middlename_admin_txt").value = "";
@@ -352,7 +335,6 @@ function clearAddAdminForm() {
     document.getElementById("birthday_admin_txt").value = "";
     document.getElementById("email_admin_txt").value = "";
 }
-
 function showAddStudent() {
     document.getElementById("menu_div").style.display = "none";
     document.getElementById("navbar").style.display = "none";
