@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="homepage.css" />
   </head>
   <body>
+    <div class="check_animation_div" id="check_animation_div">
+      <img src="assets/check-animation.gif" class="check-animation" />
+    </div>
+
     <!-- Set up Academic Year -->
     <div id="setupacad_div">
       <div id="setupacadbody_div">
@@ -51,6 +55,7 @@
             </section>
           </section>
 
+          <!-- Manage Student -->
           <section class="option_sec" id="managestudent_sec">
             <button id="managestudent_btn">
               <img class="sadminicon" src="assets/icons/person.svg" />Manage
@@ -64,6 +69,25 @@
                 Deactivate
               </button>
               <button class="managestudentmenu_btn" id="deletestudent_btn">
+                Delete
+              </button>
+            </section>
+          </section>
+
+          <!-- Manage Teacher -->
+          <section class="option_sec" id="manageteacher_sec">
+            <button id="manageteacher_btn">
+              <img class="sadminicon" src="assets/icons/person.svg" />Manage
+              Teacher
+            </button>
+            <section class="managestudentmenu_sec">
+              <button class="managestudentmenu_btn" id="addteacher_btn">
+                Add
+              </button>
+              <button class="managestudentmenu_btn" id="deacticateteacher_btn">
+                Deactivate
+              </button>
+              <button class="managestudentmenu_btn" id="deleteteachert_btn">
                 Delete
               </button>
             </section>
@@ -186,6 +210,96 @@
 
             <div class="input-wrap input-wrap-submitstudent">
               <button id="submitstudent_btn">Submit</button>
+            </div>
+
+            <div class="input-wrap extra"></div>
+            <div class="input-wrap extra"></div>
+            <div class="input-wrap extra"></div>
+            <div class="input-wrap extra"></div>
+            <div class="input-wrap extra"></div>
+            <div class="input-wrap extra"></div>
+          </div>
+        </div>
+
+        <!-- Add Teacher -->
+        <div class="section_div" id="addteacher_div">
+          <nav class="canceladdstudent_nav">
+            <button id="canceladdteacher_btn">
+              <img
+                class="canceladdstudent_img"
+                src="assets/icons/arrow-left-solid.svg"
+              />
+            </button>
+          </nav>
+          <nav class="canceladdstudent_header">
+            <label class="manage_lbl">Add Teacher</label>
+          </nav>
+          <div id="formaddteacher_div">
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="id_teacher_txt"
+                placeholder="Enter Teacher ID"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="firstname_teacher_txt"
+                placeholder="Enter First Name"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="middlename_teacher_txt"
+                placeholder="Enter Middle Name"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="lastname_teacher_txt"
+                placeholder="Enter Last Name"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="suffix_teacher_txt"
+                placeholder="Enter Suffix Name"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="birthday_teacher_txt"
+                placeholder="Enter Birthday"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="email_teacher_txt"
+                placeholder="Enter Email Address"
+              />
+            </div>
+
+            <div class="input-wrap input-wrap-submitstudent">
+              <button id="submitteacher_btn">Submit</button>
             </div>
 
             <div class="input-wrap extra"></div>

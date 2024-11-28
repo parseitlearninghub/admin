@@ -40,15 +40,11 @@ window.addEventListener("load", function () {
 
 //processess
 document.getElementById("addstudent_btn").addEventListener("click", function () {
-    document.getElementById("menu_div").style.display = "none";
-    document.getElementById("navbar").style.display = "none";
-    document.getElementById("addstudent_div").style.display = "flex";
+    showAddStudent();
 });
 
 document.getElementById("canceladdstudent_btn").addEventListener("click", function () {
-    document.getElementById("menu_div").style.display = "block";
-    document.getElementById("navbar").style.display = "flex";
-    document.getElementById("addstudent_div").style.display = "none";
+    hideAddStudent();
 });
 
 document.getElementById("first_radio").addEventListener("click", function () {
@@ -101,6 +97,14 @@ document.getElementById("submitstudent_btn").addEventListener("click", function 
 });
 
 
+document.getElementById("addteacher_btn").addEventListener("click", function () {
+    hideAddStudent();
+    showAddTeacher();
+});
+document.getElementById("canceladdteacher_btn").addEventListener("click", function () {
+    hideAddStudent();
+    hideAddTeacher();
+});
 
 //functions
 function setScreenSize(width, height) {
@@ -197,6 +201,56 @@ function submitStudent(regularity, year, section, id, firstname, middlename, las
         type: "student",
         yearlvl: year,
     }).then(() => {
-
+        document.getElementById("check_animation_div").style.display = "flex";
+        setTimeout(() => {
+            document.getElementById("check_animation_div").style.display = "none";
+        }, 2000);
+        clearAddStudentForm();
     });
+}
+
+function clearAddStudentForm() {
+    document.getElementById("id_txt").value = "";
+    document.getElementById("firstname_txt").value = "";
+    document.getElementById("middlename_txt").value = "";
+    document.getElementById("lastname_txt").value = "";
+    document.getElementById("suffix_txt").value = "";
+    document.getElementById("birthday_txt").value = "";
+    document.getElementById("email_txt").value = "";
+    document.getElementById('regular-radio-1').checked = false;
+    document.getElementById('regular-radio-2').checked = false;
+    document.getElementById("first_radio").checked = false;
+    document.getElementById("second_radio").checked = false;
+    document.getElementById("third_radio").checked = false;
+    document.getElementById("fourth_radio").checked = false;
+    document.getElementById("input-section").style.display = "none";
+    document.getElementById('section-radio-1').checked = false;
+    document.getElementById('section-radio-2').checked = false;
+}
+
+
+
+
+function showAddStudent() {
+    document.getElementById("menu_div").style.display = "none";
+    document.getElementById("navbar").style.display = "none";
+    document.getElementById("addstudent_div").style.display = "flex";
+}
+
+function hideAddStudent() {
+    document.getElementById("menu_div").style.display = "block";
+    document.getElementById("navbar").style.display = "flex";
+    document.getElementById("addstudent_div").style.display = "none";
+}
+
+function showAddTeacher() {
+    document.getElementById("menu_div").style.display = "none";
+    document.getElementById("navbar").style.display = "none";
+    document.getElementById("addteacher_div").style.display = "flex";
+}
+
+function hideAddTeacher() {
+    document.getElementById("menu_div").style.display = "block";
+    document.getElementById("navbar").style.display = "flex";
+    document.getElementById("addteacher_div").style.display = "none";
 }
