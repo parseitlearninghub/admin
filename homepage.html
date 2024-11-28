@@ -55,21 +55,23 @@
             </section>
           </section>
 
-          <!-- Manage Student -->
-          <section class="option_sec" id="managestudent_sec">
+          <!-- Manage Admin -->
+          <section class="option_sec" id="manageadmin_sec">
             <button id="managestudent_btn">
-              <img class="sadminicon" src="assets/icons/person.svg" />Manage
-              Student
+              <img
+                class="sadminicon"
+                src="assets/icons/user-gear-solid.svg"
+              />Manage Admin
             </button>
             <section class="managestudentmenu_sec">
-              <button class="managestudentmenu_btn" id="addstudent_btn">
+              <button class="managestudentmenu_btn" id="addadmin_btn">
                 Add
               </button>
-              <button class="managestudentmenu_btn" id="deactiavtestudent_btn">
-                Deactivate
+              <button class="managestudentmenu_btn" id="viewadmin_btn">
+                View
               </button>
-              <button class="managestudentmenu_btn" id="deletestudent_btn">
-                Delete
+              <button class="managestudentmenu_btn" id="deactivateadmin_btn">
+                Deactivate
               </button>
             </section>
           </section>
@@ -77,18 +79,42 @@
           <!-- Manage Teacher -->
           <section class="option_sec" id="manageteacher_sec">
             <button id="manageteacher_btn">
-              <img class="sadminicon" src="assets/icons/person.svg" />Manage
-              Teacher
+              <img
+                class="sadminicon"
+                src="assets/icons/user-tie-solid.svg"
+              />Manage Teacher
             </button>
             <section class="managestudentmenu_sec">
               <button class="managestudentmenu_btn" id="addteacher_btn">
                 Add
               </button>
+
+              <button class="managestudentmenu_btn" id="viewteachers_btn">
+                View
+              </button>
               <button class="managestudentmenu_btn" id="deacticateteacher_btn">
                 Deactivate
               </button>
-              <button class="managestudentmenu_btn" id="deleteteachert_btn">
-                Delete
+            </section>
+          </section>
+
+          <!-- Manage Student -->
+          <section class="option_sec" id="managestudent_sec">
+            <button id="managestudent_btn">
+              <img
+                class="sadminicon"
+                src="assets/icons/user-graduate-solid.svg"
+              />Manage Student
+            </button>
+            <section class="managestudentmenu_sec">
+              <button class="managestudentmenu_btn" id="addstudent_btn">
+                Add
+              </button>
+              <button class="managestudentmenu_btn" id="viewstudent_btn">
+                View
+              </button>
+              <button class="managestudentmenu_btn" id="deactiavtestudent_btn">
+                Deactivate
               </button>
             </section>
           </section>
@@ -300,6 +326,96 @@
 
             <div class="input-wrap input-wrap-submitstudent">
               <button id="submitteacher_btn">Submit</button>
+            </div>
+
+            <div class="input-wrap extra"></div>
+            <div class="input-wrap extra"></div>
+            <div class="input-wrap extra"></div>
+            <div class="input-wrap extra"></div>
+            <div class="input-wrap extra"></div>
+            <div class="input-wrap extra"></div>
+          </div>
+        </div>
+
+        <!-- Add Admin -->
+        <div class="section_div" id="addadmin_div">
+          <nav class="canceladdstudent_nav">
+            <button id="canceladdadmin_btn">
+              <img
+                class="canceladdstudent_img"
+                src="assets/icons/arrow-left-solid.svg"
+              />
+            </button>
+          </nav>
+          <nav class="canceladdstudent_header">
+            <label class="manage_lbl">Add Admin</label>
+          </nav>
+          <div id="formaddadmin_div">
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="id_admin_txt"
+                placeholder="Enter Admin ID"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="firstname_admin_txt"
+                placeholder="Enter First Name"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="middlename_admin_txt"
+                placeholder="Enter Middle Name"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="lastname_admin_txt"
+                placeholder="Enter Last Name"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="suffix_admin_txt"
+                placeholder="Enter Suffix Name"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="birthday_admin_txt"
+                placeholder="Enter Birthday"
+              />
+            </div>
+
+            <div class="input-wrap">
+              <input
+                type="text"
+                class="input-txt"
+                id="email_admin_txt"
+                placeholder="Enter Email Address"
+              />
+            </div>
+
+            <div class="input-wrap input-wrap-submitstudent">
+              <button id="submitadmin_btn">Submit</button>
             </div>
 
             <div class="input-wrap extra"></div>
