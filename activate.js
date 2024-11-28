@@ -74,7 +74,7 @@ document.getElementById("verify_btn").addEventListener("click", function () {
     submitVerificationCode(id, userinput_code);
 });
 document.getElementById("cancel_btn").addEventListener("click", function () {
-    removeDBVerification(id);
+    cancelActivation(id);
 });
 
 //for activation
@@ -235,7 +235,15 @@ function submitVerificationCode(id, code) {
         });
 }
 
+
 function removeDBVerification(id) {
+    remove(ref(databaseAdmin, "PARSEIT/administration/admins/" + id + "/verificationcode"));
+
+
+}
+
+
+function cancelActivation(id) {
     remove(ref(databaseAdmin, "PARSEIT/administration/admins/" + id + "/verificationcode")).then(() => {
         localStorage.removeItem("activate-parser-admin");
         localStorage.removeItem("email-parser-admin");
@@ -243,8 +251,9 @@ function removeDBVerification(id) {
         localStorage.removeItem("type-parser-admin");
         window.location.href = "login.html";
     });
-}
 
+
+}
 function openSignup() {
     document.getElementById("verification_div").style.display = "none";
     document.getElementById("div_fillout_container").style.display = "flex";
@@ -272,7 +281,7 @@ function hideSection(b, c) {
 }
 
 function checkUsername(username) {
-    get(child(dbRef, "PARSEIT/username/" + id)).then((snapshot) => {
+    get(child(dbRef, "PARSEIT/username/" + username)).then((snapshot) => {
         if (snapshot.exists()) {
             document.getElementById("txtusername").style.border = "1px solid red";
             document.getElementById("txtusername").style.animation = "shake 0.3s ease-in-out";
@@ -302,7 +311,6 @@ function populateParser(id, username) {
 function createParser(email, password, id, username) {
     createUserWithEmailAndPassword(authAdmin, email, password)
         .then((userCredential) => {
-            removeDBVerification(id);
             updateParser(id, username);
         })
         .catch((error) => {
@@ -316,13 +324,23 @@ function createParser(email, password, id, username) {
 function updateParser(id, username) {
     update(ref(databaseAdmin, "PARSEIT/administration/admins/" + id), {
         activated: "yes",
-    }).then(() => {
-        set(ref(database, "PARSEIT/username/" + id), username).then(() => {
+    })
+        .then(() => {
+            return removeDBVerification(id);
+        })
+        .then(() => {
+            return set(ref(database, "PARSEIT/username/" + username), id);
+        })
+        .then(() => {
             localStorage.removeItem("email-parser-admin");
             localStorage.removeItem("name-parser-admin");
-            localStorage.removeItem("activate-parsera-admin");
+            localStorage.removeItem("activate-parser-admin");
+            localStorage.removeItem("type-parser-admin");
             localStorage.setItem("user-parser-admin", id);
             window.location.href = "homepage.html";
+        })
+        .catch((error) => {
+            console.error("Error during activation process:", error);
+            alert("An error occurred. Please try again later.");
         });
-    });
 }

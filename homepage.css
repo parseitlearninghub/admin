@@ -206,6 +206,10 @@ body {
   overflow-x: scroll;
 }
 
+#formaddstudent_div::-webkit-scrollbar {
+  display: none;
+}
+
 .canceladdstudent_header {
   width: 100%;
   background-color: transparent;
@@ -349,4 +353,8 @@ body {
   border-radius: 5px;
   border: none;
   font-family: "Inter-Regular";
+}
+
+.extra {
+  visibility: hidden;
 }
