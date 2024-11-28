@@ -312,6 +312,11 @@ body {
 
 #startacad_btn {
   margin-right: 15px;
+  display: none;
+}
+
+#endacad_btn {
+  margin-right: 15px;
 }
 
 #setupacad_div {
