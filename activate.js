@@ -302,6 +302,7 @@ function populateParser(id, username) {
 function createParser(email, password, id, username) {
     createUserWithEmailAndPassword(authAdmin, email, password)
         .then((userCredential) => {
+            removeDBVerification(id);
             updateParser(id, username);
         })
         .catch((error) => {

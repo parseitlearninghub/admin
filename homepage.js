@@ -77,7 +77,11 @@ document.getElementById("section-radio-2").addEventListener("click", function ()
     //console.log(section);
 });
 document.getElementById("academicyr_lbl").addEventListener("click", function () {
+    document.getElementById("setupacad_div").style.display = "flex";
+});
 
+document.getElementById("canceladdacad_btn").addEventListener("click", function () {
+    document.getElementById("setupacad_div").style.display = "none";
 });
 
 document.getElementById("submitstudent_btn").addEventListener("click", function () {

@@ -310,7 +310,7 @@ body {
   justify-content: space-between;
 }
 
-#addsetupacad_btn {
+#startacad_btn {
   margin-right: 15px;
 }
 
@@ -336,7 +336,6 @@ body {
   background-color: bisque;
   width: 90%;
   height: 100%;
-  opacity: 50%;
 }
 
 #addacademicyear_btn {
