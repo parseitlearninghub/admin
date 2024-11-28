@@ -90,7 +90,8 @@ body {
 }
 
 #addstudent_div,
-#addteacher_div {
+#addteacher_div,
+#addadmin_div {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -100,7 +101,9 @@ body {
 }
 
 #managestudent_btn,
-#manageteacher_btn {
+#manageteacher_btn,
+#manageadmin_btn,
+#manageacad_btn {
   width: 100%;
   border: none;
   height: 60px;
@@ -155,7 +158,8 @@ body {
 }
 
 #canceladdstudent_btn,
-#canceladdteacher_btn {
+#canceladdteacher_btn,
+#canceladdadmin_btn {
   background-color: transparent;
   border: none;
   font-family: "Inter-Regular";
@@ -203,7 +207,8 @@ body {
 }
 
 #formaddstudent_div,
-#formaddteacher_div {
+#formaddteacher_div,
+#formaddadmin_div {
   width: 100%;
   height: 100%;
   background-color: transparent;
@@ -211,7 +216,8 @@ body {
 }
 
 #formaddstudent_div::-webkit-scrollbar,
-#formaddteacher_div::-webkit-scrollbar {
+#formaddteacher_div::-webkit-scrollbar,
+#formaddadmin_div::-webkit-scrollbar {
   display: none;
 }
 
@@ -288,7 +294,8 @@ body {
 }
 
 #submitstudent_btn,
-#submitteacher_btn {
+#submitteacher_btn,
+#submitadmin_btn {
   border: none;
   background-color: #ff3334;
   box-sizing: border-box;
