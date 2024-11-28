@@ -80,6 +80,7 @@ document.getElementById("section-radio-2").addEventListener("click", function ()
 });
 document.getElementById("academicyr_lbl").addEventListener("click", function () {
     document.getElementById("setupacad_div").style.display = "flex";
+    viewAcademicYear();
 });
 document.getElementById("canceladdacad_btn").addEventListener("click", function () {
     document.getElementById("setupacad_div").style.display = "none";
@@ -390,4 +391,47 @@ function hideAddAdmin() {
     document.getElementById("menu_div").style.display = "block";
     document.getElementById("navbar").style.display = "flex";
     document.getElementById("addadmin_div").style.display = "none";
+}
+function viewAcademicYear() {
+    get(child(dbRef, "PARSEIT/administration/academicyear/BSIT/"))
+        .then((snapshot) => {
+            const academicyear_cont = document.getElementById('allacademicyear_div');
+            academicyear_cont.innerHTML = "";
+            const data = snapshot.val();
+
+            if (data) {
+                Object.keys(data).forEach((key) => {
+                    const title = data[key]?.title || key;
+                    const container = document.createElement("div");
+                    container.className = "radio-item";
+
+                    const radioButton = document.createElement("input");
+                    radioButton.type = "radio";
+                    radioButton.id = `academic-year-${key}`;
+                    radioButton.name = "academic-year";
+                    radioButton.value = key;
+                    radioButton.className = "radio-academicyear";
+
+                    radioButton.addEventListener("click", () => {
+                        alert(`Selected Academic Year ID: ${key}`);
+                    });
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `academic-year-${key}`;
+                    label.textContent = title;
+                    label.className = "lbl-academicyear";
+
+                    container.appendChild(radioButton);
+                    container.appendChild(label);
+                    academicyear_cont.appendChild(container);
+                });
+            } else {
+                academicyear_cont.innerHTML = "<div class='nodatafound'>No data found.</div>";
+            }
+        })
+        .catch((error) => {
+            alert(error);
+        });
+
+
 }

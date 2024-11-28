@@ -368,6 +368,8 @@ body {
   border-radius: 5px;
   border: none;
   font-family: "Inter-Regular";
+  background-color: #ff3334;
+  color: #fefefe;
 }
 
 .extra {
@@ -452,4 +454,38 @@ body {
   border: none;
   border-radius: 100px;
   height: 30px;
+}
+
+.allacademicyear_sec {
+  width: 100%;
+  background-color: #dcdcdc;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.allacademicyear_div {
+  width: 95%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  border-radius: 5px;
+}
+
+.radio-academicyear {
+  accent-color: #ff3334;
+}
+
+.lbl-academicyear {
+  font-family: "Inter-Regular";
+  color: #fefefe;
 }
