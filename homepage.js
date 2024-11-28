@@ -96,6 +96,22 @@ document.getElementById("submitstudent_btn").addEventListener("click", function 
     submitStudent(regularity, year, section, id, firstname, middlename, lastname, suffix, birthday, email);
 });
 
+document.getElementById("submitteacher_btn").addEventListener("click", function () {
+    let id = document.getElementById("id_teacher_txt").value;
+    let firstname = document.getElementById("firstname_teacher_txt").value;
+    let middlename = document.getElementById("middlename_teacher_txt").value;
+    let lastname = document.getElementById("lastname_teacher_txt").value;
+    let suffix = document.getElementById("suffix_teacher_txt").value;
+    let birthday = document.getElementById("birthday_teacher_txt").value;
+    let email = document.getElementById("email_teacher_txt").value;
+    if (suffix === "") {
+        suffix = "none";
+    }
+
+    submitTeacher(id, firstname, middlename, lastname, suffix, birthday, email);
+});
+
+
 
 document.getElementById("addteacher_btn").addEventListener("click", function () {
     hideAddStudent();
@@ -209,6 +225,28 @@ function submitStudent(regularity, year, section, id, firstname, middlename, las
     });
 }
 
+function submitTeacher(id, firstname, middlename, lastname, suffix, birthday, email) {
+    update(ref(database, "PARSEIT/administration/teachers/" + id), {
+        activated: "no",
+        birthday: birthday,
+        disabled: "no",
+        email: email,
+        firstname: firstname,
+        id: id,
+        lastname: lastname,
+        middlename: middlename,
+        suffix: suffix,
+        temporarypass: createTemporaryPass(firstname, lastname, suffix),
+        type: "teacher",
+    }).then(() => {
+        document.getElementById("check_animation_div").style.display = "flex";
+        setTimeout(() => {
+            document.getElementById("check_animation_div").style.display = "none";
+        }, 2000);
+        clearAddTeacherForm();
+    });
+}
+
 function clearAddStudentForm() {
     document.getElementById("id_txt").value = "";
     document.getElementById("firstname_txt").value = "";
@@ -226,6 +264,16 @@ function clearAddStudentForm() {
     document.getElementById("input-section").style.display = "none";
     document.getElementById('section-radio-1').checked = false;
     document.getElementById('section-radio-2').checked = false;
+}
+
+function clearAddTeacherForm() {
+    document.getElementById("id_teacher_txt").value = "";
+    document.getElementById("firstname_teacher_txt").value = "";
+    document.getElementById("middlename_teacher_txt").value = "";
+    document.getElementById("lastname_teacher_txt").value = "";
+    document.getElementById("suffix_teacher_txt").value = "";
+    document.getElementById("birthday_teacher_txt").value = "";
+    document.getElementById("email_teacher_txt").value = "";
 }
 
 
