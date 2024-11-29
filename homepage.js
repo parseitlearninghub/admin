@@ -54,9 +54,6 @@ window.addEventListener("load", function () {
     setLabelSemester();
     viewAcademicYear();
     setButtonStart();
-
-    //createParseclassTest("year-lvl-2", "second-sem", "10");
-    //createParseclassTest("year-lvl-2", "second-sem", "11");
 });
 
 
@@ -216,7 +213,7 @@ document.getElementById("submitacademicyear").addEventListener("click", function
         title: title,
     }).then(() => {
         viewAcademicYear();
-        createAllParseClass(acadRef);
+        createAllParseClass(academic_ref);
         document.getElementById('allacademicyear_sec').style.display = "flex";
         document.getElementById('addacademicyear_div').style.display = "none";
     });
