@@ -564,7 +564,6 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  z-index: 11;
 }
 
 @keyframes showsidebar {
