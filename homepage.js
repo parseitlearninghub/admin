@@ -185,6 +185,22 @@ document.getElementById("endacad_btn").addEventListener("click", function () {
     });
 });
 
+document.getElementById("sem1").addEventListener("click", function () {
+    update(ref(database, "PARSEIT/administration/academicyear/status"), {
+        current_sem: "1",
+    }).then(() => {
+        setLabelSemester();
+    });
+});
+
+document.getElementById("sem2").addEventListener("click", function () {
+    update(ref(database, "PARSEIT/administration/academicyear/status"), {
+        current_sem: "2",
+    }).then(() => {
+        setLabelSemester();
+    });
+});
+
 //functions
 function setScreenSize(width, height) {
     document.body.style.width = width + "px";
