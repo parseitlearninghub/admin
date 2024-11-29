@@ -55,8 +55,8 @@ window.addEventListener("load", function () {
     viewAcademicYear();
     setButtonStart();
 
-    createParseclassTest("year-lvl-2", "second-sem", "10");
-    createParseclassTest("year-lvl-2", "second-sem", "11");
+    //createParseclassTest("year-lvl-2", "second-sem", "10");
+    //createParseclassTest("year-lvl-2", "second-sem", "11");
 });
 
 
@@ -216,9 +216,14 @@ document.getElementById("submitacademicyear").addEventListener("click", function
         title: title,
     }).then(() => {
         viewAcademicYear();
+        createAllParseClass(acadRef);
         document.getElementById('allacademicyear_sec').style.display = "flex";
         document.getElementById('addacademicyear_div').style.display = "none";
     });
+});
+
+document.getElementById("nav_btn").addEventListener("click", function () {
+    localStorage.removeItem("user-parser-admin");
 });
 
 //functions
@@ -562,7 +567,7 @@ function generateAcadRef() {
     return currentTime.toString() + "P" + random;
 }
 
-async function createParseclassTest(yearlvl, sem, academicRef) {
+async function createParseclass(yearlvl, sem, academicRef) {
     try {
         const sourceRef = `PARSEIT/administration/programs/${yearlvl}/${sem}/`;
         const snapshot = await get(child(dbRef, sourceRef));
@@ -588,4 +593,19 @@ async function createParseclassTest(yearlvl, sem, academicRef) {
     } catch (error) {
         console.error("Error during data transfer:", error);
     }
+}
+
+
+function createAllParseClass(acadRef) {
+    createParseclass("year-lvl-1", "first-sem", acadRef);
+    createParseclass("year-lvl-1", "second-sem", acadRef);
+
+    createParseclass("year-lvl-2", "first-sem", acadRef);
+    createParseclass("year-lvl-2", "second-sem", acadRef);
+
+    createParseclass("year-lvl-3", "first-sem", acadRef);
+    createParseclass("year-lvl-3", "second-sem", acadRef);
+
+    createParseclass("year-lvl-4", "first-sem", acadRef);
+    createParseclass("year-lvl-4", "second-sem", acadRef);
 }
