@@ -46,6 +46,7 @@ const dbRefAdmin = ref(databaseAdmin);
 //variables
 let year = "";
 let section = "";
+let admin_id = localStorage.getItem("user-parser-admin");
 
 window.addEventListener("load", function () {
     setScreenSize(window.innerWidth, window.innerHeight);
@@ -54,6 +55,7 @@ window.addEventListener("load", function () {
     setLabelSemester();
     viewAcademicYear();
     setButtonStart();
+    getUsernameById(admin_id);
 });
 
 
@@ -98,7 +100,6 @@ document.getElementById("canceladdacad_btn").addEventListener("click", function 
     document.getElementById('addacademicyear_div').style.display = "none";
 
 });
-
 document.getElementById("addstudent_btn").addEventListener("click", function () {
     showAddStudent();
 
@@ -123,7 +124,6 @@ document.getElementById("submitstudent_btn").addEventListener("click", function 
 
     submitStudent(regularity, year, section, id, firstname, middlename, lastname, suffix, birthday, email);
 });
-
 document.getElementById("addteacher_btn").addEventListener("click", function () {
     hideAddStudent();
     showAddTeacher();
@@ -148,7 +148,6 @@ document.getElementById("submitteacher_btn").addEventListener("click", function 
 
     submitTeacher(id, firstname, middlename, lastname, suffix, birthday, email);
 });
-
 document.getElementById("addadmin_btn").addEventListener("click", function () {
     hideAddStudent();
     hideAddTeacher();
@@ -172,7 +171,6 @@ document.getElementById("canceladdadmin_btn").addEventListener("click", function
     hideAddTeacher();
     hideAddAdmin();
 });
-
 document.getElementById("startacad_btn").addEventListener("click", function () {
     update(ref(database, "PARSEIT/administration/academicyear/status"), {
         ongoing: "true",
@@ -180,7 +178,6 @@ document.getElementById("startacad_btn").addEventListener("click", function () {
         setButtonStart();
     });
 });
-
 document.getElementById("endacad_btn").addEventListener("click", function () {
     update(ref(database, "PARSEIT/administration/academicyear/status"), {
         ongoing: "false",
@@ -218,9 +215,16 @@ document.getElementById("submitacademicyear").addEventListener("click", function
         document.getElementById('addacademicyear_div').style.display = "none";
     });
 });
-
 document.getElementById("nav_btn").addEventListener("click", function () {
-    localStorage.removeItem("user-parser-admin");
+
+    showSidebar();
+
+});
+document.getElementById("sidebar_frame").addEventListener("click", function () {
+    hideSidebar();
+});
+document.getElementById("logout_btn").addEventListener("click", function () {
+    logout();
 });
 
 //functions
@@ -603,9 +607,44 @@ function createAllParseClass(acadRef) {
     createParseclass("year-lvl-4", "second-sem", acadRef);
 }
 
+function showSidebar() {
+    document.getElementById("sidebar_frame").style.animation = "showsidebar 0.3s ease-in-out forwards";
+}
+function hideSidebar() {
+    document.getElementById("sidebar_frame").style.animation = "hidesidebar 0.3s ease-in-out forwards";
+}
+
+async function getUsernameById(targetId) {
+    try {
+        const snapshot = await get(child(dbRef, "PARSEIT/username/"));
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            const username = Object.keys(data).find(key => data[key] === targetId);
+
+            if (username) {
+                document.getElementById("parser_username").innerText = "@" + `${username}`
+                return username;
+            } else {
+                console.log("ID not found");
+                return null;
+            }
+        } else {
+            console.log("No data available");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+};
+
 function submitthis() {
     return get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
         .then((snapshot) => {
             return snapshot.val();
         });
+}
+
+function logout() {
+    localStorage.removeItem("user-parser-admin");
+    window.location.href = "login.html";
 }
