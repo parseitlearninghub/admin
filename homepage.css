@@ -497,3 +497,40 @@ body {
   justify-content: flex-start;
   align-items: center;
 }
+
+#addacademicyear_div {
+  width: 100%;
+  background-color: transparent;
+  margin-top: 10px;
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: flex-start;
+  border: 0.5px solid #dcdcdc;
+}
+
+#description_txt {
+  width: 100%;
+  height: 50px;
+  box-sizing: border-box;
+  font-family: Inter-Regular;
+  border: none;
+  padding-left: 15px;
+}
+
+#description_txt:focus {
+  outline: none;
+}
+
+#submitacademicyear {
+  border: none;
+  background-color: #ff3334;
+  box-sizing: border-box;
+  width: 100%;
+  height: 50px;
+  font-family: "Inter-Medium";
+  border-radius: 5px;
+  color: #fefefe;
+}

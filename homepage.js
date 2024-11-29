@@ -83,7 +83,10 @@ document.getElementById("section-radio-2").addEventListener("click", function ()
     //console.log(section);
 });
 document.getElementById("academicyr_lbl").addEventListener("click", function () {
+    viewAcademicYear();
+    document.getElementById("allacademicyear_sec").style.display = "flex";
     document.getElementById("setupacad_div").style.display = "flex";
+    document.getElementById('description_txt').value = "";
 
 });
 document.getElementById("canceladdacad_btn").addEventListener("click", function () {
@@ -92,6 +95,7 @@ document.getElementById("canceladdacad_btn").addEventListener("click", function 
     setLabelSemester();
     viewAcademicYear();
     document.getElementById("setupacad_div").style.display = "none";
+    document.getElementById('addacademicyear_div').style.display = "none";
 
 });
 
@@ -184,7 +188,6 @@ document.getElementById("endacad_btn").addEventListener("click", function () {
         setButtonStart();
     });
 });
-
 document.getElementById("sem1").addEventListener("click", function () {
     update(ref(database, "PARSEIT/administration/academicyear/status"), {
         current_sem: "1",
@@ -192,13 +195,29 @@ document.getElementById("sem1").addEventListener("click", function () {
         setLabelSemester();
     });
 });
-
 document.getElementById("sem2").addEventListener("click", function () {
     update(ref(database, "PARSEIT/administration/academicyear/status"), {
         current_sem: "2",
     }).then(() => {
         setLabelSemester();
     });
+});
+document.getElementById("addacademicyear_btn").addEventListener("click", function () {
+    document.getElementById('allacademicyear_sec').style.display = "none";
+    document.getElementById('addacademicyear_div').style.display = "flex";
+});
+document.getElementById("submitacademicyear").addEventListener("click", function () {
+    const academic_ref = generateAcadRef();
+    const title = document.getElementById('description_txt').value;
+    update(ref(database, "PARSEIT/administration/academicyear/BSIT/" + academic_ref), {
+        title: title,
+    }).then(() => {
+        viewAcademicYear();
+        document.getElementById('allacademicyear_sec').style.display = "flex";
+        document.getElementById('addacademicyear_div').style.display = "none";
+
+    });
+
 });
 
 //functions
@@ -535,4 +554,9 @@ function setButtonStart() {
                 document.getElementById('endacad_btn').style.display = "none";
             }
         });
+}
+function generateAcadRef() {
+    const currentTime = Date.now();
+    const random = Math.random().toString(36).substr(2, 5);
+    return currentTime.toString() + "P" + random;
 }
