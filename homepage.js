@@ -563,7 +563,6 @@ function generateAcadRef() {
     const random = Math.random().toString(36).substr(2, 5);
     return currentTime.toString() + "P" + random;
 }
-
 async function createParseclass(yearlvl, sem, academicRef) {
     try {
         const sourceRef = `PARSEIT/administration/programs/${yearlvl}/${sem}/`;
@@ -574,10 +573,9 @@ async function createParseclass(yearlvl, sem, academicRef) {
                 if (data.hasOwnProperty(subjectKey)) {
                     data[subjectKey] = {
                         ...data[subjectKey],
-                        customField: "Custom Value",
-                        academicYear: academicRef,
-                        addedBy: "Admin",
-                        timestamp: Date.now()
+                        parseclass_id: academicRef + "_" + subjectKey.replace(/\s+/g, "")
+
+
                     };
                 }
             }
@@ -591,8 +589,6 @@ async function createParseclass(yearlvl, sem, academicRef) {
         console.error("Error during data transfer:", error);
     }
 }
-
-
 function createAllParseClass(acadRef) {
     createParseclass("year-lvl-1", "first-sem", acadRef);
     createParseclass("year-lvl-1", "second-sem", acadRef);
@@ -605,4 +601,11 @@ function createAllParseClass(acadRef) {
 
     createParseclass("year-lvl-4", "first-sem", acadRef);
     createParseclass("year-lvl-4", "second-sem", acadRef);
+}
+
+function submitthis() {
+    return get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
+        .then((snapshot) => {
+            return snapshot.val();
+        });
 }
