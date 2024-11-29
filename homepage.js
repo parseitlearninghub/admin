@@ -54,6 +54,9 @@ window.addEventListener("load", function () {
     setLabelSemester();
     viewAcademicYear();
     setButtonStart();
+
+    createParseclassTest("year-lvl-2", "second-sem", "10");
+    createParseclassTest("year-lvl-2", "second-sem", "11");
 });
 
 
@@ -215,9 +218,7 @@ document.getElementById("submitacademicyear").addEventListener("click", function
         viewAcademicYear();
         document.getElementById('allacademicyear_sec').style.display = "flex";
         document.getElementById('addacademicyear_div').style.display = "none";
-
     });
-
 });
 
 //functions
@@ -559,4 +560,32 @@ function generateAcadRef() {
     const currentTime = Date.now();
     const random = Math.random().toString(36).substr(2, 5);
     return currentTime.toString() + "P" + random;
+}
+
+async function createParseclassTest(yearlvl, sem, academicRef) {
+    try {
+        const sourceRef = `PARSEIT/administration/programs/${yearlvl}/${sem}/`;
+        const snapshot = await get(child(dbRef, sourceRef));
+        if (snapshot.exists()) {
+            let data = snapshot.val();
+            for (const subjectKey in data) {
+                if (data.hasOwnProperty(subjectKey)) {
+                    data[subjectKey] = {
+                        ...data[subjectKey],
+                        customField: "Custom Value",
+                        academicYear: academicRef,
+                        addedBy: "Admin",
+                        timestamp: Date.now()
+                    };
+                }
+            }
+            const destinationRef = `PARSEIT/administration/parseclass/${academicRef}/${yearlvl}/${sem}/`;
+            await update(ref(database, destinationRef), data);
+            console.log("Data with custom fields successfully updated for each subject!");
+        } else {
+            console.log("No data found at the source reference.");
+        }
+    } catch (error) {
+        console.error("Error during data transfer:", error);
+    }
 }
