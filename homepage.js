@@ -230,6 +230,7 @@ document.getElementById("logout_btn").addEventListener("click", function () {
     logout();
 });
 document.getElementById("cancelcreateparseclass_btn").addEventListener("click", function () {
+    showdashboard();
     document.getElementById("createparseclass_div").style.display = "none";
     document.getElementById("assignTeacher_btn").style.visibility = "visible";
     document.getElementById("assignTeacher_txt").disabled = false;
@@ -240,6 +241,9 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     document.getElementById("addStudent_txt").disabled = false;
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
+    hidedashboard();
+    hideAddTeacher();
+    hideAddAdmin();
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -256,6 +260,10 @@ document.getElementById("createfirstyr_btn").addEventListener("click", function 
     });
 });
 document.getElementById("createsecondyr_btn").addEventListener("click", function () {
+    hidedashboard();
+    hideAddTeacher();
+    hideAddAdmin();
+
     document.getElementById("createparseclass_yr").innerText = "Year: Sophomore (2nd year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -272,6 +280,10 @@ document.getElementById("createsecondyr_btn").addEventListener("click", function
     });
 });
 document.getElementById("createthirdyr_btn").addEventListener("click", function () {
+
+    hidedashboard();
+    hideAddTeacher();
+    hideAddAdmin();
     document.getElementById("createparseclass_yr").innerText = "Year: Junior (3rd year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -288,6 +300,9 @@ document.getElementById("createthirdyr_btn").addEventListener("click", function 
     });
 });
 document.getElementById("createfourthyr_btn").addEventListener("click", function () {
+    hidedashboard();
+    hideAddTeacher();
+    hideAddAdmin();
     document.getElementById("createparseclass_yr").innerText = "Year: Senior (4th year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -594,6 +609,14 @@ function hideAddAdmin() {
     document.getElementById("menu_div").style.display = "block";
     document.getElementById("navbar").style.display = "flex";
     document.getElementById("addadmin_div").style.display = "none";
+}
+function hidedashboard() {
+    document.getElementById("menu_div").style.display = "none";
+    document.getElementById("navbar").style.display = "none";
+}
+function showdashboard() {
+    document.getElementById("menu_div").style.display = "block";
+    document.getElementById("navbar").style.display = "flex";
 }
 async function viewAcademicYear() {
     const currentAcadYear = await checkCurrentAcadYear();
