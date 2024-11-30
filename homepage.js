@@ -53,8 +53,8 @@ let admin_id = localStorage.getItem("user-parser-admin");
 
 
 
+setScreenSize(window.innerWidth, window.innerHeight);
 window.addEventListener("load", function () {
-    setScreenSize(window.innerWidth, window.innerHeight);
     document.getElementById("loading_animation_div").style.display = "none";
     document.getElementById("home_div").style.display = "flex";
     subjectparseclass_id = "";
