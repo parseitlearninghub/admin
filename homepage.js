@@ -247,6 +247,7 @@ document.getElementById("createfirstyr_btn").addEventListener("click", function 
     getSemester().then((sem) => {
         populateSubjects("year-lvl-1", sem, "1732877975535Pi6j2l");
         document.getElementById("createparseclass_div").style.display = "flex";
+        document.getElementById("createparseclass_div").style.position = "fixed";
         if (sem === "first-sem") {
             document.getElementById("createparseclass_sem").innerText = "Semester: First";
         }
