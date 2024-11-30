@@ -57,12 +57,7 @@ window.addEventListener("load", function () {
     document.body.style.display = "flex";
     subjectparseclass_id = "";
     setLabelAcademicYear();
-    setLabelSemester();
-    viewAcademicYear();
     setButtonStart();
-    getUsernameById(admin_id).then((username) => {
-        document.getElementById("parser_username").innerText = "@" + `${username}`
-    });
 });
 
 //processess
@@ -92,10 +87,10 @@ document.getElementById("section-radio-2").addEventListener("click", function ()
 });
 document.getElementById("academicyr_lbl").addEventListener("click", function () {
     viewAcademicYear();
+    setLabelSemester();
     document.getElementById("allacademicyear_sec").style.display = "flex";
     document.getElementById("setupacad_div").style.display = "flex";
     document.getElementById('description_txt').value = "";
-
 });
 document.getElementById("canceladdacad_btn").addEventListener("click", function () {
 
@@ -222,9 +217,10 @@ document.getElementById("submitacademicyear").addEventListener("click", function
     });
 });
 document.getElementById("nav_btn").addEventListener("click", function () {
-
-    showSidebar();
-
+    getUsernameById(admin_id).then((username) => {
+        document.getElementById("parser_username").innerText = "@" + `${username}`
+        showSidebar();
+    });
 });
 document.getElementById("sidebar_frame").addEventListener("click", function () {
     hideSidebar();
