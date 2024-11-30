@@ -17,7 +17,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: transparent;
-  display: none;
+  display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -35,14 +35,15 @@ body {
 }
 
 #loading_animation_div {
-  height: 95%;
-  width: 90%;
+  height: 100%;
+  width: 100%;
   background-color: #fefefe;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   z-index: 1000;
+  position: fixed;
 }
 
 #loading_animation_gif {
