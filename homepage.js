@@ -611,12 +611,10 @@ function hideAddAdmin() {
     document.getElementById("addadmin_div").style.display = "none";
 }
 function hidedashboard() {
-    document.getElementById("menu_div").style.display = "none";
-    document.getElementById("navbar").style.display = "none";
+    document.getElementById("home_div").style.display = "none";
 }
 function showdashboard() {
-    document.getElementById("menu_div").style.display = "block";
-    document.getElementById("navbar").style.display = "flex";
+    document.getElementById("home_div").style.display = "flex";
 }
 async function viewAcademicYear() {
     const currentAcadYear = await checkCurrentAcadYear();
