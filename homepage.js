@@ -242,7 +242,7 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     showHome();
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
-    hideHome();
+
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -254,12 +254,13 @@ document.getElementById("createfirstyr_btn").addEventListener("click", function 
         else {
             document.getElementById("createparseclass_sem").innerText = "Semester: Second";
         }
+        hideHome();
     }).catch((error) => {
         console.error("Error fetching semester:", error);
     });
 });
 document.getElementById("createsecondyr_btn").addEventListener("click", function () {
-    hideHome();
+
     document.getElementById("createparseclass_yr").innerText = "Year: Sophomore (2nd year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -271,12 +272,13 @@ document.getElementById("createsecondyr_btn").addEventListener("click", function
         else {
             document.getElementById("createparseclass_sem").innerText = "Semester: Second";
         }
+        hideHome();
     }).catch((error) => {
         console.error("Error fetching semester:", error);
     });
 });
 document.getElementById("createthirdyr_btn").addEventListener("click", function () {
-    hideHome();
+
     document.getElementById("createparseclass_yr").innerText = "Year: Junior (3rd year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -288,12 +290,13 @@ document.getElementById("createthirdyr_btn").addEventListener("click", function 
         else {
             document.getElementById("createparseclass_sem").innerText = "Semester: Second";
         }
+        hideHome();
     }).catch((error) => {
         console.error("Error fetching semester:", error);
     });
 });
 document.getElementById("createfourthyr_btn").addEventListener("click", function () {
-    hideHome();
+
     document.getElementById("createparseclass_yr").innerText = "Year: Senior (4th year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -305,6 +308,7 @@ document.getElementById("createfourthyr_btn").addEventListener("click", function
         else {
             document.getElementById("createparseclass_sem").innerText = "Semester: Second";
         }
+        hideHome();
     }).catch((error) => {
         console.error("Error fetching semester:", error);
     });
