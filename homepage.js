@@ -59,6 +59,7 @@ getUsernameById(admin_id);
 window.addEventListener("load", function () {
     setScreenSize(window.innerWidth, window.innerHeight);
     document.body.style.display = "flex";
+    subjectparseclass_id = "";
 });
 
 //processess
@@ -230,9 +231,17 @@ document.getElementById("logout_btn").addEventListener("click", function () {
 });
 document.getElementById("cancelcreateparseclass_btn").addEventListener("click", function () {
     document.getElementById("createparseclass_div").style.display = "none";
+    document.getElementById("assignTeacher_btn").style.visibility = "visible";
+    document.getElementById("assignTeacher_txt").disabled = false;
+    subjectparseclass_id = "";
+
+    document.getElementById("addStudent_btn").style.display = "block";
+    document.getElementById("viewStudent_btn").style.display = "none";
+    document.getElementById("addStudent_txt").disabled = false;
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
+    document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
         populateSubjects("year-lvl-1", sem, "1732877975535Pi6j2l");
         document.getElementById("createparseclass_div").style.display = "flex";
@@ -248,6 +257,7 @@ document.getElementById("createfirstyr_btn").addEventListener("click", function 
 });
 document.getElementById("createsecondyr_btn").addEventListener("click", function () {
     document.getElementById("createparseclass_yr").innerText = "Year: Sophomore (2nd year)";
+    document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
         populateSubjects("year-lvl-2", sem, "1732877975535Pi6j2l");
         document.getElementById("createparseclass_div").style.display = "flex";
@@ -263,6 +273,7 @@ document.getElementById("createsecondyr_btn").addEventListener("click", function
 });
 document.getElementById("createthirdyr_btn").addEventListener("click", function () {
     document.getElementById("createparseclass_yr").innerText = "Year: Junior (3rd year)";
+    document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
         populateSubjects("year-lvl-3", sem, "1732877975535Pi6j2l");
         document.getElementById("createparseclass_div").style.display = "flex";
@@ -278,6 +289,7 @@ document.getElementById("createthirdyr_btn").addEventListener("click", function 
 });
 document.getElementById("createfourthyr_btn").addEventListener("click", function () {
     document.getElementById("createparseclass_yr").innerText = "Year: Senior (4th year)";
+    document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
         populateSubjects("year-lvl-4", sem, "1732877975535Pi6j2l");
         document.getElementById("createparseclass_div").style.display = "flex";
@@ -291,6 +303,63 @@ document.getElementById("createfourthyr_btn").addEventListener("click", function
         console.error("Error fetching semester:", error);
     });
 });
+document.getElementById("assignTeacher_btn").addEventListener("click", function () {
+    const targetId = document.getElementById("assignTeacher_txt").value;
+    if (subjectparseclass_id === "") {
+        document.getElementById("parseclass_list").style.border = "0.5px solid red";
+    }
+    else if (targetId === "") {
+        document.getElementById("addteacher_parseclass").style.border = "0.5px solid red";
+    }
+    else {
+        getTeacher(targetId).then((snapshot) => {
+            if (snapshot) {
+                document.getElementById("addteacher_parseclass").style.border = "0.5px solid #dcdcdc";
+                document.getElementById("assignTeacher_btn").style.visibility = "hidden";
+                document.getElementById("assignTeacher_txt").disabled = true;
+
+            }
+
+            if (!snapshot) {
+                document.getElementById("addteacher_parseclass").style.border = "0.5px solid red";
+
+            }
+        })
+
+    }
+
+});
+document.getElementById("addStudent_btn").addEventListener("click", function () {
+    const targetId = document.getElementById("addStudent_txt").value;
+    if (targetId === "") {
+        document.getElementById("addstudent_parseclass").style.border = "0.5px solid red";
+    }
+    else {
+        getStudent(targetId).then((snapshot) => {
+            if (snapshot) {
+                document.getElementById("addstudent_parseclass").style.border = "0.5px solid #dcdcdc";
+                document.getElementById("addStudent_btn").style.display = "none";
+                document.getElementById("addStudent_txt").disabled = true;
+                document.getElementById("viewStudent_btn").style.display = "block";
+
+            }
+
+            if (!snapshot) {
+                document.getElementById("addstudent_parseclass").style.border = "0.5px solid red";
+
+            }
+        })
+
+    }
+
+});
+document.getElementById("viewStudent_btn").addEventListener("touchstart", function () {
+    document.getElementById("viewid_div").style.display = "flex";
+});
+document.getElementById("viewStudent_btn").addEventListener("touchend", function () {
+    document.getElementById("viewid_div").style.display = "none";
+});
+
 
 //functions
 function setScreenSize(width, height) {
@@ -703,24 +772,20 @@ function logout() {
     localStorage.removeItem("user-parser-admin");
     window.location.href = "login.html";
 }
-async function getSemester() {
-    let sem = "";
-    try {
-        const snapshot = await get(child(dbRef, "PARSEIT/administration/academicyear/status"));
-        if (snapshot.exists()) {
-            if (snapshot.val().current_sem === "1") {
-                sem = "first-sem";
-            }
-            else {
-                sem = "second-sem";
-            }
-        }
-    } catch (error) {
-        console.error("Error fetching semester data:", error);
-    }
-    return sem;
-}
+function getSemester() {
 
+    return get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                if (snapshot.val().current_sem === "1") {
+                    return "first-sem";
+                }
+                else {
+                    return "second-sem";
+                }
+            }
+        });
+}
 async function populateSubjects(yearlvl, sem, acad_ref) {
     get(child(dbRef, "PARSEIT/administration/parseclass/" + acad_ref + "/" + yearlvl + "/" + sem))
         .then((snapshot) => {
@@ -742,6 +807,7 @@ async function populateSubjects(yearlvl, sem, acad_ref) {
 
                     radioButton.addEventListener("click", () => {
                         subjectparseclass_id = `${data[key].parseclass_id}`;
+                        document.getElementById("parseclass_list").style.border = "0.5px solid #dcdcdc";
                     });
 
 
@@ -762,4 +828,33 @@ async function populateSubjects(yearlvl, sem, acad_ref) {
         .catch((error) => {
             alert(error);
         });
+}
+function getTeacher(targetId) {
+    return get(child(dbRef, `PARSEIT/administration/teachers/${targetId}`))
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                if (snapshot.val().activated === "yes") {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+        })
+}
+
+function getStudent(targetId) {
+    return get(child(dbRef, `PARSEIT/administration/students/${targetId}`))
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                if (snapshot.val().activated === "yes") {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+        })
 }
