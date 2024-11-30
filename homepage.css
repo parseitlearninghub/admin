@@ -572,6 +572,7 @@ body {
   height: 100%;
   z-index: 10000;
   pointer-events: none;
+  display: block;
 }
 
 #sidebar_frame {
@@ -583,6 +584,7 @@ body {
   justify-content: flex-start;
   /* animation: sidebar 0.3s ease-in-out forwards; */
   pointer-events: all;
+  will-change: transform, opacity;
 }
 
 #sidebar_nav {
