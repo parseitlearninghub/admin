@@ -241,7 +241,7 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     document.getElementById("addStudent_txt").disabled = false;
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
-    setScreenSize(window.innerWidth, window.innerHeight);
+
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {

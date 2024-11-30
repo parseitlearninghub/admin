@@ -223,7 +223,7 @@ body {
 #formaddteacher_div::-webkit-scrollbar,
 #formaddadmin_div::-webkit-scrollbar,
 #createparseclass_div::-webkit-scrollbar,
-#createparseclass_body::-webkit-scrollbar {
+#createparseclass_main::-webkit-scrollbar {
   display: none;
 }
 
@@ -655,7 +655,7 @@ body {
   position: fixed;
   width: 100%;
   height: 100%;
-  background-color: black;
+  background-color: #fefefe;
   z-index: 100;
   display: none;
   justify-content: center;
@@ -666,8 +666,12 @@ body {
 #createparseclass_body {
   width: 90%;
   height: 100%;
-  background-color: transparent;
+  background-color: #fefefe;
   overflow-x: scroll;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
 }
 
 #create_sub {
@@ -686,11 +690,13 @@ body {
 #createparseclass_main {
   margin: 0;
   padding: 0;
-  background-color: transparent;
+  background-color: cyan;
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  overflow-x: scroll;
 }
 
 .radio-subjectlist {
@@ -707,8 +713,10 @@ body {
   align-items: flex-start;
   background-color: transparent;
   width: 100%;
+  height: 100%;
   margin-top: 10px;
   flex-direction: column;
+  overflow-x: scroll;
 }
 
 .radio-subject {
@@ -737,6 +745,8 @@ body {
   margin-top: 10px;
   display: flex;
   overflow: hidden;
+
+  box-sizing: border-box;
 }
 
 .nodatafound {
