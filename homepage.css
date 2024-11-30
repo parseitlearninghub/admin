@@ -106,10 +106,10 @@ body {
   height: 100%;
 }
 .option_sec {
-  height: auto;
   width: 100%;
   background-color: #ff3334;
   border-radius: 5px;
+  z-index: -1;
 }
 
 #menu_div {
