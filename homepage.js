@@ -239,9 +239,10 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     document.getElementById("addStudent_btn").style.display = "block";
     document.getElementById("viewStudent_btn").style.display = "none";
     document.getElementById("addStudent_txt").disabled = false;
+    showHome();
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
-
+    hideHome();
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -599,6 +600,13 @@ function hideAddAdmin() {
     document.getElementById("navbar").style.display = "flex";
     document.getElementById("addadmin_div").style.display = "none";
 }
+
+function hideHome() {
+    document.getElementById("home_div").style.display = "none";
+}
+function showHome() {
+    document.getElementById("home_div").style.display = "flex";
+}
 async function viewAcademicYear() {
     const currentAcadYear = await checkCurrentAcadYear();
     get(child(dbRef, "PARSEIT/administration/academicyear/BSIT/"))
@@ -864,13 +872,3 @@ function getStudent(targetId) {
 
         })
 }
-
-// function setDetailsPosition() {
-//     const reference = document.getElementById('addStudent_btn');
-//     const target = document.getElementById('viewid_div');
-//     const rect = reference.getBoundingClientRect();
-
-//     target.style.position = 'absolute';
-//     target.style.top = `${rect.bottom + window.scrollY}px`;
-//     target.style.left = `${rect.left + window.scrollX}px`;
-// }
