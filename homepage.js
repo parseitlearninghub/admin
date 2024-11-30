@@ -88,7 +88,6 @@ document.getElementById("section-radio-2").addEventListener("click", function ()
     //console.log(section);
 });
 document.getElementById("academicyr_lbl").addEventListener("click", function () {
-    viewAcademicYear();
     setLabelSemester();
     document.getElementById("allacademicyear_sec").style.display = "flex";
     document.getElementById("setupacad_div").style.display = "flex";
@@ -242,7 +241,7 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     showHome();
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
-
+    viewAcademicYear();
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -260,7 +259,7 @@ document.getElementById("createfirstyr_btn").addEventListener("click", function 
     });
 });
 document.getElementById("createsecondyr_btn").addEventListener("click", function () {
-
+    viewAcademicYear();
     document.getElementById("createparseclass_yr").innerText = "Year: Sophomore (2nd year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -278,7 +277,7 @@ document.getElementById("createsecondyr_btn").addEventListener("click", function
     });
 });
 document.getElementById("createthirdyr_btn").addEventListener("click", function () {
-
+    viewAcademicYear();
     document.getElementById("createparseclass_yr").innerText = "Year: Junior (3rd year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -296,7 +295,7 @@ document.getElementById("createthirdyr_btn").addEventListener("click", function 
     });
 });
 document.getElementById("createfourthyr_btn").addEventListener("click", function () {
-
+    viewAcademicYear();
     document.getElementById("createparseclass_yr").innerText = "Year: Senior (4th year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
