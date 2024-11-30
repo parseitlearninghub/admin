@@ -50,16 +50,15 @@ let subjectparseclass_id = "";
 let admin_id = localStorage.getItem("user-parser-admin");
 
 //preloads
-setLabelAcademicYear();
-setLabelSemester();
-viewAcademicYear();
-setButtonStart();
-getUsernameById(admin_id);
-
 window.addEventListener("load", function () {
     setScreenSize(window.innerWidth, window.innerHeight);
     document.body.style.display = "flex";
     subjectparseclass_id = "";
+    setLabelAcademicYear();
+    setLabelSemester();
+    viewAcademicYear();
+    setButtonStart();
+    getUsernameById(admin_id);
 });
 
 //processess
