@@ -46,18 +46,20 @@ const dbRefAdmin = ref(databaseAdmin);
 //variables
 let year = "";
 let section = "";
+let subjectparseclass_id = "";
 let admin_id = localStorage.getItem("user-parser-admin");
+
+//preloads
+setLabelAcademicYear();
+setLabelSemester();
+viewAcademicYear();
+setButtonStart();
+getUsernameById(admin_id);
 
 window.addEventListener("load", function () {
     setScreenSize(window.innerWidth, window.innerHeight);
     document.body.style.display = "flex";
-    setLabelAcademicYear();
-    setLabelSemester();
-    viewAcademicYear();
-    setButtonStart();
-    getUsernameById(admin_id);
 });
-
 
 //processess
 document.getElementById("first_radio").addEventListener("click", function () {
@@ -225,6 +227,69 @@ document.getElementById("sidebar_frame").addEventListener("click", function () {
 });
 document.getElementById("logout_btn").addEventListener("click", function () {
     logout();
+});
+document.getElementById("cancelcreateparseclass_btn").addEventListener("click", function () {
+    document.getElementById("createparseclass_div").style.display = "none";
+});
+document.getElementById("createfirstyr_btn").addEventListener("click", function () {
+    document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
+    getSemester().then((sem) => {
+        populateSubjects("year-lvl-1", sem, "1732877975535Pi6j2l");
+        document.getElementById("createparseclass_div").style.display = "flex";
+        if (sem === "first-sem") {
+            document.getElementById("createparseclass_sem").innerText = "Semester: First";
+        }
+        else {
+            document.getElementById("createparseclass_sem").innerText = "Semester: Second";
+        }
+    }).catch((error) => {
+        console.error("Error fetching semester:", error);
+    });
+});
+document.getElementById("createsecondyr_btn").addEventListener("click", function () {
+    document.getElementById("createparseclass_yr").innerText = "Year: Sophomore (2nd year)";
+    getSemester().then((sem) => {
+        populateSubjects("year-lvl-2", sem, "1732877975535Pi6j2l");
+        document.getElementById("createparseclass_div").style.display = "flex";
+        if (sem === "first-sem") {
+            document.getElementById("createparseclass_sem").innerText = "Semester: First";
+        }
+        else {
+            document.getElementById("createparseclass_sem").innerText = "Semester: Second";
+        }
+    }).catch((error) => {
+        console.error("Error fetching semester:", error);
+    });
+});
+document.getElementById("createthirdyr_btn").addEventListener("click", function () {
+    document.getElementById("createparseclass_yr").innerText = "Year: Junior (3rd year)";
+    getSemester().then((sem) => {
+        populateSubjects("year-lvl-3", sem, "1732877975535Pi6j2l");
+        document.getElementById("createparseclass_div").style.display = "flex";
+        if (sem === "first-sem") {
+            document.getElementById("createparseclass_sem").innerText = "Semester: First";
+        }
+        else {
+            document.getElementById("createparseclass_sem").innerText = "Semester: Second";
+        }
+    }).catch((error) => {
+        console.error("Error fetching semester:", error);
+    });
+});
+document.getElementById("createfourthyr_btn").addEventListener("click", function () {
+    document.getElementById("createparseclass_yr").innerText = "Year: Senior (4th year)";
+    getSemester().then((sem) => {
+        populateSubjects("year-lvl-4", sem, "1732877975535Pi6j2l");
+        document.getElementById("createparseclass_div").style.display = "flex";
+        if (sem === "first-sem") {
+            document.getElementById("createparseclass_sem").innerText = "Semester: First";
+        }
+        else {
+            document.getElementById("createparseclass_sem").innerText = "Semester: Second";
+        }
+    }).catch((error) => {
+        console.error("Error fetching semester:", error);
+    });
 });
 
 //functions
@@ -606,14 +671,12 @@ function createAllParseClass(acadRef) {
     createParseclass("year-lvl-4", "first-sem", acadRef);
     createParseclass("year-lvl-4", "second-sem", acadRef);
 }
-
 function showSidebar() {
     document.getElementById("sidebar_frame").style.animation = "showsidebar 0.3s ease-in-out forwards";
 }
 function hideSidebar() {
     document.getElementById("sidebar_frame").style.animation = "hidesidebar 0.3s ease-in-out forwards";
 }
-
 async function getUsernameById(targetId) {
     try {
         const snapshot = await get(child(dbRef, "PARSEIT/username/"));
@@ -636,15 +699,67 @@ async function getUsernameById(targetId) {
         console.error("Error fetching data:", error);
     }
 };
-
-function submitthis() {
-    return get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
-        .then((snapshot) => {
-            return snapshot.val();
-        });
-}
-
 function logout() {
     localStorage.removeItem("user-parser-admin");
     window.location.href = "login.html";
+}
+async function getSemester() {
+    let sem = "";
+    try {
+        const snapshot = await get(child(dbRef, "PARSEIT/administration/academicyear/status"));
+        if (snapshot.exists()) {
+            if (snapshot.val().current_sem === "1") {
+                sem = "first-sem";
+            }
+            else {
+                sem = "second-sem";
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching semester data:", error);
+    }
+    return sem;
+}
+
+async function populateSubjects(yearlvl, sem, acad_ref) {
+    get(child(dbRef, "PARSEIT/administration/parseclass/" + acad_ref + "/" + yearlvl + "/" + sem))
+        .then((snapshot) => {
+            const academicyear_cont = document.getElementById('parseclass_list');
+            academicyear_cont.innerHTML = "";
+            const data = snapshot.val();
+
+            if (data) {
+                Object.keys(data).forEach((key) => {
+                    const title = data[key]?.title || key;
+                    const container = document.createElement("div");
+                    container.className = "radio-subject";
+
+                    const radioButton = document.createElement("input");
+                    radioButton.type = "radio";
+                    radioButton.id = `parseclass-${data[key].parseclass_id}`;
+                    radioButton.name = "subject-list";
+                    radioButton.className = "radio-subjectlist";
+
+                    radioButton.addEventListener("click", () => {
+                        subjectparseclass_id = `${data[key].parseclass_id}`;
+                    });
+
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `parseclass-${data[key].parseclass_id}`;
+                    label.textContent = title;
+                    label.className = "lbl-subjectlist";
+
+                    container.appendChild(radioButton);
+                    container.appendChild(label);
+                    academicyear_cont.appendChild(container);
+
+                });
+            } else {
+                academicyear_cont.innerHTML = "<div class='nodatafound'>No data found.</div>";
+            }
+        })
+        .catch((error) => {
+            alert(error);
+        });
 }
