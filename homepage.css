@@ -109,7 +109,6 @@ body {
   width: 100%;
   background-color: #ff3334;
   border-radius: 5px;
-  z-index: -1;
 }
 
 #menu_div {
@@ -601,18 +600,22 @@ body {
 @keyframes showsidebar {
   from {
     transform: translateX(-100%);
+    z-index: 3000;
   }
   to {
     transform: translateX(0);
+    z-index: 3000;
   }
 }
 
 @keyframes hidesidebar {
   from {
     transform: translateX(0);
+    z-index: 3000;
   }
   to {
     transform: translateX(-100%);
+    z-index: 3000;
   }
 }
 
