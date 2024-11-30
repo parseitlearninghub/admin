@@ -657,6 +657,7 @@ body {
   display: none;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 #createparseclass_body {
@@ -722,7 +723,8 @@ body {
 }
 
 #addteacher_parseclass,
-#addstudent_parseclass {
+#addstudent_parseclass,
+#addcluster_parseclass {
   width: 100%;
   border: 0.5px solid #dcdcdc;
   border-radius: 7px;
@@ -738,7 +740,8 @@ body {
 }
 
 #assignTeacher_txt,
-#addStudent_txt {
+#addStudent_txt,
+#addCluster_txt {
   height: 100%;
   width: 100%;
   border: none;
@@ -748,11 +751,13 @@ body {
 }
 
 #assignTeacher_txt:focus,
-#addStudent_txt:focus {
+#addStudent_txt:focus,
+#addCluster_txt:focus {
   outline: none;
 }
 #assignTeacher_btn,
-#addStudent_btn {
+#addStudent_btn,
+#addCluster_btn {
   height: 100%;
   width: 100px;
   border: none;
@@ -795,7 +800,7 @@ body {
   background-color: #fefefe;
   height: 100px;
   border-radius: 7px;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 @keyframes fadeInFromTop {
@@ -818,4 +823,23 @@ body {
     opacity: 0;
     transform: translateY(50px); /* Move downwards while fading out */
   }
+}
+
+#enrollParseclass {
+  width: 100%;
+  border: none;
+  border-radius: 7px;
+  height: 50px;
+  margin-top: 10px;
+  background-color: #ff3334;
+  color: #fefefe;
+  font-family: Inter-Medium;
+}
+
+.clustericon {
+  width: 20px;
+}
+
+#addCluster_txt {
+  padding-left: 5px;
 }
