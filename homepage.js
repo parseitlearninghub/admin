@@ -369,6 +369,8 @@ document.getElementById("viewStudent_btn").addEventListener("touchend", function
 function setScreenSize(width, height) {
     document.body.style.width = width + "px";
     document.body.style.height = height + "px";
+    document.documentElement.style.height = height + "px";
+
 }
 function showSection(year) {
     let section_a = "";
