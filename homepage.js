@@ -355,9 +355,11 @@ document.getElementById("addStudent_btn").addEventListener("click", function () 
 });
 document.getElementById("viewStudent_btn").addEventListener("touchstart", function () {
     document.getElementById("viewid_div").style.display = "flex";
+    document.getElementById("iddetails").style.animation = "fadeInFromTop 0.3s ease-out forwards";
 });
 document.getElementById("viewStudent_btn").addEventListener("touchend", function () {
     document.getElementById("viewid_div").style.display = "none";
+    document.getElementById("iddetails").style.animation = "fadeOutFromBottom 0.3s ease-out forwards";
 });
 
 
@@ -858,3 +860,13 @@ function getStudent(targetId) {
 
         })
 }
+
+// function setDetailsPosition() {
+//     const reference = document.getElementById('addStudent_btn');
+//     const target = document.getElementById('viewid_div');
+//     const rect = reference.getBoundingClientRect();
+
+//     target.style.position = 'absolute';
+//     target.style.top = `${rect.bottom + window.scrollY}px`;
+//     target.style.left = `${rect.left + window.scrollX}px`;
+// }

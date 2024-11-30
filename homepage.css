@@ -781,17 +781,41 @@ body {
 #viewid_div {
   display: none;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   position: fixed;
   width: 100%;
   height: 100%;
   background-color: transparent;
   z-index: 500;
+  margin-top: 50%;
 }
 
 #iddetails {
   width: 90%;
-  background-color: #181818;
+  background-color: #fefefe;
   height: 100px;
   border-radius: 7px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+@keyframes fadeInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutFromBottom {
+  0% {
+    opacity: 1;
+    transform: translateY(0); /* Start at normal position */
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(50px); /* Move downwards while fading out */
+  }
 }
