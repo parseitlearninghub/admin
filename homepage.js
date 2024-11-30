@@ -48,6 +48,7 @@ let year = "";
 let section = "";
 let subjectparseclass_id = "";
 let admin_id = localStorage.getItem("user-parser-admin");
+let currentacad_ref = "";
 
 //preloads
 
@@ -213,6 +214,7 @@ document.getElementById("submitacademicyear").addEventListener("click", function
     }).then(() => {
         viewAcademicYear();
         createAllParseClass(academic_ref);
+        currentacad_ref = academic_ref;
         document.getElementById('allacademicyear_sec').style.display = "flex";
         document.getElementById('addacademicyear_div').style.display = "none";
     });
@@ -241,11 +243,11 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     showHome();
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
-    viewAcademicYear();
+
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
-        populateSubjects("year-lvl-1", sem, "1732877975535Pi6j2l");
+        populateSubjects("year-lvl-1", sem, currentacad_ref);
         document.getElementById("createparseclass_div").style.display = "flex";
         if (sem === "first-sem") {
             document.getElementById("createparseclass_sem").innerText = "Semester: First";
@@ -263,7 +265,7 @@ document.getElementById("createsecondyr_btn").addEventListener("click", function
     document.getElementById("createparseclass_yr").innerText = "Year: Sophomore (2nd year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
-        populateSubjects("year-lvl-2", sem, "1732877975535Pi6j2l");
+        populateSubjects("year-lvl-2", sem, currentacad_ref);
         document.getElementById("createparseclass_div").style.display = "flex";
         if (sem === "first-sem") {
             document.getElementById("createparseclass_sem").innerText = "Semester: First";
@@ -281,7 +283,7 @@ document.getElementById("createthirdyr_btn").addEventListener("click", function 
     document.getElementById("createparseclass_yr").innerText = "Year: Junior (3rd year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
-        populateSubjects("year-lvl-3", sem, "1732877975535Pi6j2l");
+        populateSubjects("year-lvl-3", sem, currentacad_ref);
         document.getElementById("createparseclass_div").style.display = "flex";
         if (sem === "first-sem") {
             document.getElementById("createparseclass_sem").innerText = "Semester: First";
@@ -299,7 +301,7 @@ document.getElementById("createfourthyr_btn").addEventListener("click", function
     document.getElementById("createparseclass_yr").innerText = "Year: Senior (4th year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
-        populateSubjects("year-lvl-4", sem, "1732877975535Pi6j2l");
+        populateSubjects("year-lvl-4", sem, currentacad_ref);
         document.getElementById("createparseclass_div").style.display = "flex";
         if (sem === "first-sem") {
             document.getElementById("createparseclass_sem").innerText = "Semester: First";
