@@ -221,7 +221,7 @@ body {
 #formaddstudent_div::-webkit-scrollbar,
 #formaddteacher_div::-webkit-scrollbar,
 #formaddadmin_div::-webkit-scrollbar,
-#createparseclass_main::-webkit-scrollbar {
+#createparseclass_div::-webkit-scrollbar {
   display: none;
 }
 
@@ -659,6 +659,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  overflow-x: scroll;
 }
 
 #createparseclass_body {
@@ -687,7 +688,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  overflow-x: scroll;
 }
 
 .radio-subjectlist {
