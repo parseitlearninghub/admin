@@ -54,6 +54,8 @@ let admin_id = localStorage.getItem("user-parser-admin");
 
 window.addEventListener("load", function () {
     setScreenSize(window.innerWidth, window.innerHeight);
+    document.getElementById("home_div").style.display = "flex";
+    document.getElementById("loading_animation_div").style.display = "none";
     document.body.style.display = "flex";
     subjectparseclass_id = "";
     setLabelAcademicYear();

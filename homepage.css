@@ -29,9 +29,32 @@ body {
   width: 90%;
   height: 100%;
   background-color: transparent;
-  display: flex;
+  display: none;
   justify-content: space-between;
   flex-direction: column;
+}
+
+#loading_animation_div {
+  height: 95%;
+  width: 90%;
+  background-color: #fefefe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+#loading_animation_gif {
+  height: 50px;
+  width: 50px;
+}
+
+#parsing_lbl {
+  font-family: Inter-Regular;
+  color: #f30505;
+  margin-top: 15px;
+  font-size: 12px;
 }
 
 #navbar {
