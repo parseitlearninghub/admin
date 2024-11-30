@@ -60,7 +60,9 @@ window.addEventListener("load", function () {
     setLabelSemester();
     viewAcademicYear();
     setButtonStart();
-    getUsernameById(admin_id);
+    getUsernameById(admin_id).then((username) => {
+        document.getElementById("parser_username").innerText = "@" + `${username}`
+    });
 });
 
 //processess
@@ -767,24 +769,23 @@ function showSidebar() {
 function hideSidebar() {
     document.getElementById("sidebar_frame").style.animation = "hidesidebar 0.3s ease-in-out forwards";
 }
-async function getUsernameById(targetId) {
+function getUsernameById(targetId) {
     try {
-        const snapshot = await get(child(dbRef, "PARSEIT/username/"));
-        if (snapshot.exists()) {
-            const data = snapshot.val();
-            const username = Object.keys(data).find(key => data[key] === targetId);
-
-            if (username) {
-                document.getElementById("parser_username").innerText = "@" + `${username}`
-                return username;
+        return get(child(dbRef, "PARSEIT/username/")).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const username = Object.keys(data).find(key => data[key] === targetId);
+                if (username) {
+                    return username;
+                } else {
+                    console.log("ID not found");
+                    return null;
+                }
             } else {
-                console.log("ID not found");
+                console.log("No data available");
                 return null;
             }
-        } else {
-            console.log("No data available");
-            return null;
-        }
+        });
     } catch (error) {
         console.error("Error fetching data:", error);
     }
