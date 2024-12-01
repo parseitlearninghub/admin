@@ -47,8 +47,11 @@ const dbRefAdmin = ref(databaseAdmin);
 let year = "";
 let section = "";
 let subjectparseclass_id = "";
+let selectedSubject = "";
+let selectedTeacher = "";
 let admin_id = localStorage.getItem("user-parser-admin");
 let currentacad_ref = "";
+let acad_radio = "";
 
 //preloads
 
@@ -250,6 +253,8 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     showHome();
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
+    year = "1";
+    viewAcademicYear();
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -268,6 +273,7 @@ document.getElementById("createfirstyr_btn").addEventListener("click", function 
     });
 });
 document.getElementById("createsecondyr_btn").addEventListener("click", function () {
+    year = "2";
     viewAcademicYear();
     document.getElementById("createparseclass_yr").innerText = "Year: Sophomore (2nd year)";
     document.getElementById("addStudent_txt").value = "";
@@ -286,6 +292,7 @@ document.getElementById("createsecondyr_btn").addEventListener("click", function
     });
 });
 document.getElementById("createthirdyr_btn").addEventListener("click", function () {
+    year = "3";
     document.getElementById("createparseclass_yr").innerText = "Year: Junior (3rd year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -304,6 +311,7 @@ document.getElementById("createthirdyr_btn").addEventListener("click", function 
     });
 });
 document.getElementById("createfourthyr_btn").addEventListener("click", function () {
+    year = "4";
     viewAcademicYear();
     document.getElementById("createparseclass_yr").innerText = "Year: Senior (4th year)";
     document.getElementById("addStudent_txt").value = "";
@@ -332,6 +340,7 @@ document.getElementById("assignTeacher_btn").addEventListener("click", function 
     else {
         getTeacher(targetId).then((snapshot) => {
             if (snapshot) {
+                selectedTeacher = document.getElementById("assignTeacher_txt").value;
                 document.getElementById("addteacher_parseclass").style.border = "0.5px solid #dcdcdc";
                 document.getElementById("assignTeacher_btn").style.visibility = "hidden";
                 document.getElementById("assignTeacher_txt").disabled = true;
@@ -380,6 +389,19 @@ document.getElementById("viewStudent_btn").addEventListener("touchend", function
     document.getElementById("iddetails").style.animation = "fadeOutFromBottom 0.3s ease-out forwards";
 });
 
+document.getElementById("enrollParseclass").addEventListener("click", function () {
+    const academicref = currentacad_ref;
+    const yr = year;
+    const sem = getSemester();
+    const subject = selectedSubject;
+    const section = document.getElementById('sectionsched_txt').value;
+    const teacherid = document.getElementById('assignTeacher_txt').value;
+    const sched_day = document.getElementById('day_txt').value;
+    const sched_end = document.getElementById('end_txt').value;
+    const sched_start = document.getElementById('start_txt').value;
+    //console.log(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
+    assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
+});
 
 //functions
 function setScreenSize(width, height) {
@@ -615,7 +637,6 @@ function hideAddAdmin() {
     document.getElementById("navbar").style.display = "flex";
     document.getElementById("addadmin_div").style.display = "none";
 }
-
 function hideHome() {
     document.getElementById("home_div").style.display = "none";
 }
@@ -624,6 +645,7 @@ function showHome() {
 }
 async function viewAcademicYear() {
     const currentAcadYear = currentacad_ref;
+    acad_radio = "";
     get(child(dbRef, "PARSEIT/administration/academicyear/BSIT/"))
         .then((snapshot) => {
             const academicyear_cont = document.getElementById('allacademicyear_div');
@@ -660,9 +682,8 @@ async function viewAcademicYear() {
 
                     if (`${key}` === currentAcadYear) {
                         radioButton.checked = true;
+
                     }
-
-
                 });
             } else {
                 academicyear_cont.innerHTML = "<div class='nodatafound'>No data found.</div>";
@@ -743,6 +764,7 @@ async function createParseclass(yearlvl, sem, academicRef) {
                     data[subjectKey] = {
                         ...data[subjectKey],
                         //put custom data
+                        parseclass_id: academicRef + "-" + subjectKey.replace(/\s+/g, ""),
                     };
                 }
             }
@@ -832,12 +854,15 @@ async function populateSubjects(yearlvl, sem, acad_ref) {
                     radioButton.id = `parseclass-${data[key].parseclass_id}`;
                     radioButton.name = "subject-list";
                     radioButton.className = "radio-subjectlist";
+                    radioButton.value = title;
 
                     radioButton.addEventListener("click", () => {
                         subjectparseclass_id = `${data[key].parseclass_id}`;
+                        selectedSubject = title;
                         document.getElementById("parseclass_list").style.border = "0.5px solid #dcdcdc";
-                    });
 
+
+                    });
 
                     const label = document.createElement("label");
                     label.htmlFor = `parseclass-${data[key].parseclass_id}`;
@@ -871,7 +896,6 @@ function getTeacher(targetId) {
 
         })
 }
-
 function getStudent(targetId) {
     return get(child(dbRef, `PARSEIT/administration/students/${targetId}`))
         .then((snapshot) => {
@@ -885,4 +909,47 @@ function getStudent(targetId) {
             }
 
         })
+}
+
+function EnrollCluster() {
+    enrollTeacher(parseclass_id, yr, sem, subject, section, teacherid);
+
+}
+
+function assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start) {
+    let sem_final = "first-sem";
+    if (sem === "2") {
+        sem_final = "second-sem";
+    }
+    update(ref(database, `PARSEIT/administration/parseclass/${academicref}/year-lvl-${yr}/${sem_final}/${subject}/${section}/`), {
+        teacher: teacherid,
+        parseclass_id: academicref + section + subject,
+        sched_day: sched_day,
+        sched_end: sched_end,
+        sched_start: sched_start,
+    }).then(() => {
+        document.getElementById("check_animation_div").style.display = "flex";
+        setTimeout(() => {
+            document.getElementById("check_animation_div").style.display = "none";
+        }, 2000);
+        document.getElementById('sectionsched_txt').value = "";
+        document.getElementById('assignTeacher_txt').value = "";
+        document.getElementById('addStudent_txt').value = "";
+    });
+}
+
+function enrollStudent(academicref, yr, sem, subject, section, studentid) {
+    let sem_final = "first-sem";
+    if (sem === "2") {
+        sem_final = "second-sem";
+    }
+    update(ref(database, `PARSEIT/administration/parseclass/${academicref}/year-lvl-${yr}/${sem_final}/${subject}/${section}/${studentid}/`), {
+        finalgrade: "0"
+    }).then(() => {
+        document.getElementById("check_animation_div").style.display = "flex";
+        setTimeout(() => {
+            document.getElementById("check_animation_div").style.display = "none";
+        }, 2000);
+
+    });
 }
