@@ -688,7 +688,7 @@ body {
   padding: 0;
   width: 100%;
   height: 100%;
-  background-color: #fefefe;
+  background-color: transparent;
   z-index: 100;
   display: none;
   justify-content: flex-start;
@@ -698,12 +698,13 @@ body {
 
 #createparseclass_body {
   width: 90%;
-  background-color: #fefefe;
-  overflow-x: scroll;
+  background-color: transparent;
+  overflow: hidden;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
+  height: 100%;
 }
 
 #create_sub {
@@ -727,7 +728,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  overflow-x: scroll;
+  height: 100%;
+  overflow: hidden;
 }
 
 .radio-subjectlist {
@@ -738,18 +740,6 @@ body {
   font-family: Inter-Regular;
 }
 
-#parseclass_subjects {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  background-color: transparent;
-  width: 100%;
-  height: 100%;
-  margin-top: 10px;
-  flex-direction: column;
-  overflow-x: scroll;
-}
-
 .radio-subject {
   display: flex;
   justify-content: flex-start;
@@ -757,6 +747,7 @@ body {
   flex: 1 1 calc(50% - 16px);
   box-sizing: border-box;
   padding: 5px;
+  flex-shrink: 0;
 }
 
 #parseclass_list {
@@ -780,10 +771,22 @@ body {
   margin-top: 10px;
   display: flex;
   overflow: hidden;
-
+  flex-shrink: 0;
   box-sizing: border-box;
 }
-
+#parseclass_subjects {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: transparent;
+  width: 100%;
+  height: 100%;
+  margin-top: 10px;
+  flex-direction: column;
+  overflow-x: scroll;
+  flex-shrink: 0;
+  scrollbar-width: none;
+}
 .nodatafound {
   margin-left: 8px;
   font-family: Inter-Bold;
@@ -884,6 +887,7 @@ body {
   background-color: #ff3334;
   color: #fefefe;
   font-family: Inter-Medium;
+  flex-shrink: 0;
 }
 
 .clustericon {
