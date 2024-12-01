@@ -742,9 +742,7 @@ async function createParseclass(yearlvl, sem, academicRef) {
                 if (data.hasOwnProperty(subjectKey)) {
                     data[subjectKey] = {
                         ...data[subjectKey],
-                        parseclass_id: academicRef + "_" + subjectKey.replace(/\s+/g, "")
-
-
+                        //put custom data
                     };
                 }
             }

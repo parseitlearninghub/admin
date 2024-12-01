@@ -768,7 +768,11 @@ body {
 
 #addteacher_parseclass,
 #addstudent_parseclass,
-#addcluster_parseclass {
+#addcluster_parseclass,
+#addScheduleDay_parseclass,
+#addScheduleStart_parseclass,
+#addScheduleEnd_parseclass,
+#addScheduleSection_parseclass {
   width: 100%;
   border: 0.5px solid #dcdcdc;
   border-radius: 7px;
