@@ -61,6 +61,7 @@ window.addEventListener("load", function () {
     subjectparseclass_id = "";
     setLabelAcademicYear();
     setButtonStart();
+    checkCurrentAcadYear();
 });
 
 //processess
@@ -90,15 +91,14 @@ document.getElementById("section-radio-2").addEventListener("click", function ()
 });
 document.getElementById("academicyr_lbl").addEventListener("click", function () {
     setLabelSemester();
+    viewAcademicYear();
     document.getElementById("allacademicyear_sec").style.display = "flex";
     document.getElementById("setupacad_div").style.display = "flex";
     document.getElementById('description_txt').value = "";
 });
 document.getElementById("canceladdacad_btn").addEventListener("click", function () {
-
     setLabelAcademicYear();
     setLabelSemester();
-    viewAcademicYear();
     document.getElementById("setupacad_div").style.display = "none";
     document.getElementById('addacademicyear_div').style.display = "none";
 
@@ -212,11 +212,18 @@ document.getElementById("submitacademicyear").addEventListener("click", function
     update(ref(database, "PARSEIT/administration/academicyear/BSIT/" + academic_ref), {
         title: title,
     }).then(() => {
-        viewAcademicYear();
-        createAllParseClass(academic_ref);
-        currentacad_ref = academic_ref;
-        document.getElementById('allacademicyear_sec').style.display = "flex";
-        document.getElementById('addacademicyear_div').style.display = "none";
+        update(ref(database, "PARSEIT/administration/academicyear/status/"), {
+            academic_ref: academic_ref,
+            current_sem: "1",
+            ongoing: "false",
+        }).then(() => {
+            viewAcademicYear();
+            createAllParseClass(academic_ref);
+            currentacad_ref = academic_ref;
+            document.getElementById('allacademicyear_sec').style.display = "flex";
+            document.getElementById('addacademicyear_div').style.display = "none";
+        });
+
     });
 });
 document.getElementById("nav_btn").addEventListener("click", function () {
@@ -243,11 +250,11 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     showHome();
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
-
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
         populateSubjects("year-lvl-1", sem, currentacad_ref);
+        //console.log("year-lvl-1", sem, currentacad_ref);
         document.getElementById("createparseclass_div").style.display = "flex";
         if (sem === "first-sem") {
             document.getElementById("createparseclass_sem").innerText = "Semester: First";
@@ -279,7 +286,6 @@ document.getElementById("createsecondyr_btn").addEventListener("click", function
     });
 });
 document.getElementById("createthirdyr_btn").addEventListener("click", function () {
-    viewAcademicYear();
     document.getElementById("createparseclass_yr").innerText = "Year: Junior (3rd year)";
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
@@ -291,6 +297,7 @@ document.getElementById("createthirdyr_btn").addEventListener("click", function 
         else {
             document.getElementById("createparseclass_sem").innerText = "Semester: Second";
         }
+        viewAcademicYear();
         hideHome();
     }).catch((error) => {
         console.error("Error fetching semester:", error);
@@ -616,7 +623,7 @@ function showHome() {
     document.getElementById("home_div").style.display = "flex";
 }
 async function viewAcademicYear() {
-    const currentAcadYear = await checkCurrentAcadYear();
+    const currentAcadYear = currentacad_ref;
     get(child(dbRef, "PARSEIT/administration/academicyear/BSIT/"))
         .then((snapshot) => {
             const academicyear_cont = document.getElementById('allacademicyear_div');
@@ -698,10 +705,12 @@ function setLabelSemester() {
             }
         });
 }
-function checkCurrentAcadYear() {
-    return get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
+async function checkCurrentAcadYear() {
+    return await get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
         .then((snapshot) => {
+            currentacad_ref = snapshot.val().academic_ref;
             return snapshot.val().academic_ref;
+
         });
 }
 function setButtonStart() {
