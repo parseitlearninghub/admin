@@ -412,7 +412,7 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     //console.log(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
     assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
     enrollStudent(academicref, yr, sem, subject, section, studentid);
-    enrollCluster(database, sourcePath, destinationPath);
+    enrollCluster(database, sourcePath, destinationPath, yr, section);
 });
 
 //functions
@@ -948,9 +948,12 @@ function enrollStudent(academicref, yr, sem, subject, section, studentid) {
     memberId[studentid] = {
         finalgrade: "0"
     };
+
+
     update(ref(database, `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`), {
         members: memberId
     }).then(() => {
+        updateStudentYrSection(studentid, translateYr(yr), section)
         document.getElementById("check_animation_div").style.display = "flex";
         setTimeout(() => {
             document.getElementById("check_animation_div").style.display = "none";
@@ -962,11 +965,25 @@ function enrollStudent(academicref, yr, sem, subject, section, studentid) {
         console.error("Error updating data:", error);
     });
 }
-const sourcePath = "PARSEIT/administration/admins/0000000/mycluster/forparseroom/cluster/";
-const destinationPath = "PARSEIT/administration/test/teachers/7210704/myclusters/forparseroom/cluster/";
-enrollCluster(database, sourcePath, destinationPath);
 
-async function enrollCluster(database, sourcePath, destinationPath) {
+// async function enrollCluster(database, sourcePath, destinationPath) {
+//     try {
+//         const sourceRef = ref(databaseAdmin, sourcePath);
+//         const snapshot = await get(sourceRef);
+//         if (snapshot.exists()) {
+//             const data = snapshot.val();
+//             const destinationRef = ref(database, destinationPath);
+//             await set(destinationRef, data);
+//             console.log(`Data successfully copied from ${sourcePath} to ${destinationPath}`);
+//         } else {
+//             console.log(`No data found at ${sourcePath}`);
+//         }
+//     } catch (error) {
+//         console.error("Error copying data:", error);
+//     }
+// }
+
+async function enrollCluster(database, sourcePath, destinationPath, yr, section) {
     try {
         const sourceRef = ref(databaseAdmin, sourcePath);
         const snapshot = await get(sourceRef);
@@ -975,10 +992,39 @@ async function enrollCluster(database, sourcePath, destinationPath) {
             const destinationRef = ref(database, destinationPath);
             await set(destinationRef, data);
             console.log(`Data successfully copied from ${sourcePath} to ${destinationPath}`);
+            for (const studentId in data) {
+                if (data.hasOwnProperty(studentId)) {
+                    // Assuming you want to update the student's year and section in another function
+                    updateStudentYrSection(studentId, translateYr(yr), section);
+                }
+            }
         } else {
             console.log(`No data found at ${sourcePath}`);
         }
     } catch (error) {
         console.error("Error copying data:", error);
+    }
+}
+
+
+function updateStudentYrSection(parser_id, yr, section) {
+    update(ref(database, `PARSEIT/administration/students/${parser_id}/`), {
+        yearlvl: yr,
+        section: section
+    });
+}
+
+function translateYr(yr) {
+    switch (yr) {
+        case "year-lvl-1":
+            return "1";
+        case "year-lvl-2": // Changed to unique value
+            return "2";
+        case "year-lvl-3":
+            return "3";
+        case "year-lvl-4":
+            return "4";
+        default:
+            console.log("error");
     }
 }
