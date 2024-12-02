@@ -404,12 +404,25 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     const clusterid = "12345";
 
     const sourcePath = `PARSEIT/administration/admins/${localStorage.getItem("user-parser-admin")}/mycluster/forparseroom/${clusterid}/cluster/`;
-    const destinationPath = `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`;
+    const destinationPath = `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/members`;
 
     //console.log(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
-    assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
-    enrollStudent(academicref, yr, sem, subject, section, studentid);
-    enrollCluster(database, sourcePath, destinationPath);
+
+
+
+
+    if (teacherid !== "") {
+        assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
+    }
+    if (studentid !== "") {
+        enrollStudent(academicref, yr, sem, subject, section, studentid);
+    }
+    if (clusterid !== "") {
+        enrollCluster(database, sourcePath, destinationPath);
+    }
+
+
+
 });
 document.getElementById("myCluster_btn").addEventListener("click", function () {
     //removeSidebarAnimation();
@@ -970,7 +983,6 @@ function enrollStudent(academicref, yr, sem, subject, section, studentid) {
         finalgrade: "0"
     };
 
-
     update(ref(database, `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`), {
         members: memberId
     }).then(() => {
@@ -994,7 +1006,7 @@ async function enrollCluster(database, sourcePath, destinationPath) {
         if (snapshot.exists()) {
             const data = snapshot.val();
             const destinationRef = ref(database, destinationPath);
-            await set(destinationRef, data);
+            await update(destinationRef, data);
             console.log(`Data successfully copied from ${sourcePath} to ${destinationPath}`);
         } else {
             console.log(`No data found at ${sourcePath}`);
@@ -1042,7 +1054,7 @@ function getMyClusters(admin_id) {
                 Object.entries(data).forEach(([key, cluster]) => {
                     const clusterHTML = `
                         <div class="radio-cluster-wrapper">
-                            <label class="cluster-radio-default" for="cluster-radio-${key}">
+                            <label class="cluster-radio-default" for="cluster-radio-${admin_id}-${key}">
                                 ${cluster.name || "Unnamed Cluster"}
                             </label>
                         </div>`;
