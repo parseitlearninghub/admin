@@ -764,7 +764,6 @@ async function createParseclass(yearlvl, sem, academicRef) {
                     data[subjectKey] = {
                         ...data[subjectKey],
                         //put custom data
-                        parseclass_id: academicRef + "-" + subjectKey.replace(/\s+/g, ""),
                     };
                 }
             }
