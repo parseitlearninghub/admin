@@ -253,11 +253,12 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     showHome();
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
-    year = "1";
     viewAcademicYear();
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
+    document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-1');
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
+        document.getElementById("createparseclass_sem").setAttribute('data-value', `${sem}`);
         populateSubjects("year-lvl-1", sem, currentacad_ref);
         //console.log("year-lvl-1", sem, currentacad_ref);
         document.getElementById("createparseclass_div").style.display = "flex";
@@ -273,11 +274,12 @@ document.getElementById("createfirstyr_btn").addEventListener("click", function 
     });
 });
 document.getElementById("createsecondyr_btn").addEventListener("click", function () {
-    year = "2";
     viewAcademicYear();
     document.getElementById("createparseclass_yr").innerText = "Year: Sophomore (2nd year)";
+    document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-2');
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
+        document.getElementById("createparseclass_sem").setAttribute('data-value', `${sem}`);
         populateSubjects("year-lvl-2", sem, currentacad_ref);
         document.getElementById("createparseclass_div").style.display = "flex";
         if (sem === "first-sem") {
@@ -292,11 +294,13 @@ document.getElementById("createsecondyr_btn").addEventListener("click", function
     });
 });
 document.getElementById("createthirdyr_btn").addEventListener("click", function () {
-    year = "3";
+
     document.getElementById("createparseclass_yr").innerText = "Year: Junior (3rd year)";
+    document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-3');
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
         populateSubjects("year-lvl-3", sem, currentacad_ref);
+        document.getElementById("createparseclass_sem").setAttribute('data-value', `${sem}`);
         document.getElementById("createparseclass_div").style.display = "flex";
         if (sem === "first-sem") {
             document.getElementById("createparseclass_sem").innerText = "Semester: First";
@@ -311,11 +315,12 @@ document.getElementById("createthirdyr_btn").addEventListener("click", function 
     });
 });
 document.getElementById("createfourthyr_btn").addEventListener("click", function () {
-    year = "4";
     viewAcademicYear();
     document.getElementById("createparseclass_yr").innerText = "Year: Senior (4th year)";
+    document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-4');
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
+        document.getElementById("createparseclass_sem").setAttribute('data-value', `${sem}`);
         populateSubjects("year-lvl-4", sem, currentacad_ref);
         document.getElementById("createparseclass_div").style.display = "flex";
         if (sem === "first-sem") {
@@ -391,16 +396,23 @@ document.getElementById("viewStudent_btn").addEventListener("touchend", function
 
 document.getElementById("enrollParseclass").addEventListener("click", function () {
     const academicref = currentacad_ref;
-    const yr = year;
-    const sem = getSemester();
+    const yr = document.getElementById("createparseclass_yr").getAttribute('data-value');
+    const sem = document.getElementById("createparseclass_sem").getAttribute('data-value');
     const subject = selectedSubject;
     const section = document.getElementById('sectionsched_txt').value;
     const teacherid = document.getElementById('assignTeacher_txt').value;
+    const studentid = document.getElementById('addStudent_txt').value;
     const sched_day = document.getElementById('day_txt').value;
     const sched_end = document.getElementById('end_txt').value;
     const sched_start = document.getElementById('start_txt').value;
+
+    const sourcePath = `PARSEIT/administration/admins/${localStorage.getItem("user-parser-admin")}/mycluster/forparseroom/cluster/`;
+    const destinationPath = `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`;
+
     //console.log(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
     assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
+    enrollStudent(academicref, yr, sem, subject, section, studentid);
+    enrollCluster(database, sourcePath, destinationPath);
 });
 
 //functions
@@ -841,7 +853,6 @@ async function populateSubjects(yearlvl, sem, acad_ref) {
             const academicyear_cont = document.getElementById('parseclass_list');
             academicyear_cont.innerHTML = "";
             const data = snapshot.val();
-
             if (data) {
                 Object.keys(data).forEach((key) => {
                     const title = data[key]?.title || key;
@@ -910,22 +921,16 @@ function getStudent(targetId) {
         })
 }
 
-function EnrollCluster() {
-    enrollTeacher(parseclass_id, yr, sem, subject, section, teacherid);
-
-}
-
 function assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start) {
-    let sem_final = "first-sem";
-    if (sem === "2") {
-        sem_final = "second-sem";
-    }
-    update(ref(database, `PARSEIT/administration/parseclass/${academicref}/year-lvl-${yr}/${sem_final}/${subject}/${section}/`), {
-        teacher: teacherid,
-        parseclass_id: academicref + section + subject,
-        sched_day: sched_day,
-        sched_end: sched_end,
-        sched_start: sched_start,
+    //console.log(`PARSEIT/administration/parseclass/${academicref}/year-lvl-${yr}/${sem}/${subject}/${section}/`)
+    update(ref(database, `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`), {
+        teacher_id: teacherid,
+        parseclass_id: academicref + "_" + section + "_" + subject.replace(/\s+/g, ""),
+        schedule: {
+            sched_day: sched_day,
+            sched_end: sched_end,
+            sched_start: sched_start
+        }
     }).then(() => {
         document.getElementById("check_animation_div").style.display = "flex";
         setTimeout(() => {
@@ -934,21 +939,46 @@ function assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_
         document.getElementById('sectionsched_txt').value = "";
         document.getElementById('assignTeacher_txt').value = "";
         document.getElementById('addStudent_txt').value = "";
+    }).catch((error) => {
+        console.error("Error updating data:", error);
     });
 }
-
 function enrollStudent(academicref, yr, sem, subject, section, studentid) {
-    let sem_final = "first-sem";
-    if (sem === "2") {
-        sem_final = "second-sem";
-    }
-    update(ref(database, `PARSEIT/administration/parseclass/${academicref}/year-lvl-${yr}/${sem_final}/${subject}/${section}/${studentid}/`), {
+    const memberId = {};
+    memberId[studentid] = {
         finalgrade: "0"
+    };
+    update(ref(database, `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`), {
+        members: memberId
     }).then(() => {
         document.getElementById("check_animation_div").style.display = "flex";
         setTimeout(() => {
             document.getElementById("check_animation_div").style.display = "none";
         }, 2000);
-
+        document.getElementById('sectionsched_txt').value = "";
+        document.getElementById('assignTeacher_txt').value = "";
+        document.getElementById('addStudent_txt').value = "";
+    }).catch((error) => {
+        console.error("Error updating data:", error);
     });
+}
+const sourcePath = "PARSEIT/administration/admins/0000000/mycluster/forparseroom/cluster/";
+const destinationPath = "PARSEIT/administration/test/teachers/7210704/myclusters/forparseroom/cluster/";
+enrollCluster(database, sourcePath, destinationPath);
+
+async function enrollCluster(database, sourcePath, destinationPath) {
+    try {
+        const sourceRef = ref(databaseAdmin, sourcePath);
+        const snapshot = await get(sourceRef);
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            const destinationRef = ref(database, destinationPath);
+            await set(destinationRef, data);
+            console.log(`Data successfully copied from ${sourcePath} to ${destinationPath}`);
+        } else {
+            console.log(`No data found at ${sourcePath}`);
+        }
+    } catch (error) {
+        console.error("Error copying data:", error);
+    }
 }
