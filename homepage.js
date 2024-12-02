@@ -401,8 +401,9 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     const sched_day = document.getElementById('day_txt').value;
     const sched_end = document.getElementById('end_txt').value;
     const sched_start = document.getElementById('start_txt').value;
+    const clusterid = "12345";
 
-    const sourcePath = `PARSEIT/administration/admins/${localStorage.getItem("user-parser-admin")}/mycluster/forparseroom/cluster/`;
+    const sourcePath = `PARSEIT/administration/admins/${localStorage.getItem("user-parser-admin")}/mycluster/forparseroom/${clusterid}/cluster/`;
     const destinationPath = `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`;
 
     //console.log(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
@@ -413,6 +414,7 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
 document.getElementById("myCluster_btn").addEventListener("click", function () {
     //removeSidebarAnimation();
     document.getElementById("cluster_div").style.display = "flex";
+    getMyClusters(admin_id);
 });
 let startX = 0;
 let endX = 0;
@@ -1024,3 +1026,36 @@ function translateYr(yr) {
     }
 }
 
+
+function getMyClusters(admin_id) {
+    const mycluster_cont = document.getElementById("cluster_div");
+    let mycluster = "";
+    // if (!admin_id) {
+    //     console.error("Invalid admin_id");
+    //     return;
+    // }
+    const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/`;
+    try {
+        return get(child(dbRefAdmin, path)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                Object.entries(data).forEach(([key, cluster]) => {
+                    const clusterHTML = `
+                        <div class="radio-cluster-wrapper">
+                            <label class="cluster-radio-default" for="cluster-radio-${key}">
+                                ${cluster.name || "Unnamed Cluster"}
+                            </label>
+                        </div>`;
+
+                    mycluster += clusterHTML;
+                    mycluster_cont.innerHTML = mycluster;
+                });
+
+            } else {
+                console.log("No data available");
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
