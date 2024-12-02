@@ -235,9 +235,6 @@ document.getElementById("nav_btn").addEventListener("click", function () {
         showSidebar();
     });
 });
-// document.getElementById("sidebar_frame").addEventListener("click", function () {
-//     hideSidebar();
-// });
 document.getElementById("logout_btn").addEventListener("click", function () {
     logout();
 });
@@ -413,11 +410,29 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     enrollStudent(academicref, yr, sem, subject, section, studentid);
     enrollCluster(database, sourcePath, destinationPath);
 });
-
 document.getElementById("myCluster_btn").addEventListener("click", function () {
     //removeSidebarAnimation();
     document.getElementById("cluster_div").style.display = "flex";
 });
+let startX = 0;
+let endX = 0;
+document.addEventListener('touchstart', (event) => {
+    startX = event.touches[0].clientX;
+});
+document.addEventListener('touchend', (event) => {
+    endX = event.changedTouches[0].clientX;
+    // if (endX - startX > 50) {
+    //     showSidebar();
+    // }
+    if (startX - endX > 50) {
+        hideSidebar();
+        document.getElementById("cluster_div").style.display = "none";
+
+    }
+});
+
+
+
 
 //functions
 function setScreenSize(width, height) {
@@ -1009,28 +1024,3 @@ function translateYr(yr) {
     }
 }
 
-// function removeSidebarAnimation() {
-//     document.getElementById("sidebar_frame").style.animation = "none";
-// }
-
-let startX = 0;
-let endX = 0;
-
-document.addEventListener('touchstart', (event) => {
-    // Record the starting touch point
-    startX = event.touches[0].clientX;
-});
-
-document.addEventListener('touchend', (event) => {
-    // Record the ending touch point
-    endX = event.changedTouches[0].clientX;
-
-    // Check if the swipe was from left to right
-    if (endX - startX > 50) { // Adjust threshold as needed
-        showSidebar();
-    }
-
-    if (startX - endX > 50) { // Adjust threshold as needed
-        hideSidebar();
-    }
-});
