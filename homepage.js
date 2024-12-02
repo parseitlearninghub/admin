@@ -235,9 +235,9 @@ document.getElementById("nav_btn").addEventListener("click", function () {
         showSidebar();
     });
 });
-document.getElementById("sidebar_frame").addEventListener("click", function () {
-    hideSidebar();
-});
+// document.getElementById("sidebar_frame").addEventListener("click", function () {
+//     hideSidebar();
+// });
 document.getElementById("logout_btn").addEventListener("click", function () {
     logout();
 });
@@ -393,7 +393,6 @@ document.getElementById("viewStudent_btn").addEventListener("touchend", function
     document.getElementById("viewid_div").style.display = "none";
     document.getElementById("iddetails").style.animation = "fadeOutFromBottom 0.3s ease-out forwards";
 });
-
 document.getElementById("enrollParseclass").addEventListener("click", function () {
     const academicref = currentacad_ref;
     const yr = document.getElementById("createparseclass_yr").getAttribute('data-value');
@@ -412,7 +411,12 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     //console.log(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
     assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
     enrollStudent(academicref, yr, sem, subject, section, studentid);
-    enrollCluster(database, sourcePath, destinationPath, yr, section);
+    enrollCluster(database, sourcePath, destinationPath);
+});
+
+document.getElementById("myCluster_btn").addEventListener("click", function () {
+    //removeSidebarAnimation();
+    document.getElementById("cluster_div").style.display = "flex";
 });
 
 //functions
@@ -966,24 +970,7 @@ function enrollStudent(academicref, yr, sem, subject, section, studentid) {
     });
 }
 
-// async function enrollCluster(database, sourcePath, destinationPath) {
-//     try {
-//         const sourceRef = ref(databaseAdmin, sourcePath);
-//         const snapshot = await get(sourceRef);
-//         if (snapshot.exists()) {
-//             const data = snapshot.val();
-//             const destinationRef = ref(database, destinationPath);
-//             await set(destinationRef, data);
-//             console.log(`Data successfully copied from ${sourcePath} to ${destinationPath}`);
-//         } else {
-//             console.log(`No data found at ${sourcePath}`);
-//         }
-//     } catch (error) {
-//         console.error("Error copying data:", error);
-//     }
-// }
-
-async function enrollCluster(database, sourcePath, destinationPath, yr, section) {
+async function enrollCluster(database, sourcePath, destinationPath) {
     try {
         const sourceRef = ref(databaseAdmin, sourcePath);
         const snapshot = await get(sourceRef);
@@ -992,12 +979,6 @@ async function enrollCluster(database, sourcePath, destinationPath, yr, section)
             const destinationRef = ref(database, destinationPath);
             await set(destinationRef, data);
             console.log(`Data successfully copied from ${sourcePath} to ${destinationPath}`);
-            for (const studentId in data) {
-                if (data.hasOwnProperty(studentId)) {
-                    // Assuming you want to update the student's year and section in another function
-                    updateStudentYrSection(studentId, translateYr(yr), section);
-                }
-            }
         } else {
             console.log(`No data found at ${sourcePath}`);
         }
@@ -1005,7 +986,6 @@ async function enrollCluster(database, sourcePath, destinationPath, yr, section)
         console.error("Error copying data:", error);
     }
 }
-
 
 function updateStudentYrSection(parser_id, yr, section) {
     update(ref(database, `PARSEIT/administration/students/${parser_id}/`), {
@@ -1028,3 +1008,29 @@ function translateYr(yr) {
             console.log("error");
     }
 }
+
+// function removeSidebarAnimation() {
+//     document.getElementById("sidebar_frame").style.animation = "none";
+// }
+
+let startX = 0;
+let endX = 0;
+
+document.addEventListener('touchstart', (event) => {
+    // Record the starting touch point
+    startX = event.touches[0].clientX;
+});
+
+document.addEventListener('touchend', (event) => {
+    // Record the ending touch point
+    endX = event.changedTouches[0].clientX;
+
+    // Check if the swipe was from left to right
+    if (endX - startX > 50) { // Adjust threshold as needed
+        showSidebar();
+    }
+
+    if (startX - endX > 50) { // Adjust threshold as needed
+        hideSidebar();
+    }
+});

@@ -634,6 +634,10 @@ body {
   width: 100%;
   height: 100%;
   background-color: #fefefe;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
 }
 
 #bottom_footer {
@@ -961,4 +965,27 @@ body {
 
 .schedtxt:focus {
   outline: none;
+}
+
+.side_options_wrapper {
+  width: 100%;
+  height: 50px;
+  background-color: yellow;
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.sidebar_options_lbl {
+  font-family: Inter-Medium;
+  font-size: 18px;
+  margin-left: 15px;
+}
+
+.cluster_div {
+  background-color: green;
+  width: 100%;
+  height: 80px;
+  display: none;
 }
