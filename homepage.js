@@ -408,9 +408,6 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
 
     //console.log(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
 
-
-
-
     if (teacherid !== "") {
         assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
     }
@@ -418,7 +415,7 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
         enrollStudent(academicref, yr, sem, subject, section, studentid);
     }
     if (clusterid !== "") {
-        enrollCluster(database, sourcePath, destinationPath);
+        enrollCluster(sourcePath, destinationPath, yr, section);
     }
 
 
@@ -999,7 +996,7 @@ function enrollStudent(academicref, yr, sem, subject, section, studentid) {
     });
 }
 
-async function enrollCluster(database, sourcePath, destinationPath) {
+async function enrollCluster(sourcePath, destinationPath, yr, section) {
     try {
         const sourceRef = ref(databaseAdmin, sourcePath);
         const snapshot = await get(sourceRef);
@@ -1007,6 +1004,10 @@ async function enrollCluster(database, sourcePath, destinationPath) {
             const data = snapshot.val();
             const destinationRef = ref(database, destinationPath);
             await update(destinationRef, data);
+            snapshot.forEach(childSnapshot => {
+                const key = childSnapshot.key;
+                updateStudentYrSection(key, yr, section)
+            });
             console.log(`Data successfully copied from ${sourcePath} to ${destinationPath}`);
         } else {
             console.log(`No data found at ${sourcePath}`);
@@ -1016,8 +1017,8 @@ async function enrollCluster(database, sourcePath, destinationPath) {
     }
 }
 
-function updateStudentYrSection(parser_id, yr, section) {
-    update(ref(database, `PARSEIT/administration/students/${parser_id}/`), {
+async function updateStudentYrSection(parser_id, yr, section) {
+    await update(ref(database, `PARSEIT/administration/students/${parser_id}/`), {
         yearlvl: yr,
         section: section
     });
