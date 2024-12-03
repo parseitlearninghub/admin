@@ -988,7 +988,7 @@ body {
   align-items: center;
 }
 
-#addCluster {
+#viewwCluster {
   margin-right: 15px;
   font-size: 14px;
   font-family: Inter-Medium;
@@ -1024,18 +1024,20 @@ body {
   margin-left: 5px;
 }
 
-.addcluster_div {
+.viewcluster_div {
   position: fixed;
   width: 100%;
-  height: 100%;
-  background-color: #f30505;
+  background-color: transparent;
   z-index: 1;
-  display: flex;
+  /* display: flex; */
+  display: none;
   justify-content: center;
   align-items: center;
+  z-index: 100000;
+  
 }
 
-.addcluster_frame {
+.viewcluster_frame {
   height: 80%;
   width: 80%;
   background-color: #fefefe;
@@ -1043,30 +1045,102 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  overflow: hidden;
+  border-radius: 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
 
-.addcluster_header {
+.viewcluster_header {
   height: 60px;
   width: 100%;
-  background-color: blue;
+  background-color: transparent;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.addcluster_body {
+.viewcluster_body {
   height: 100%;
   width: 100%;
-  background-color: green;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 10px;
+  flex-direction: column;
+
 }
 
 .mycluster_lbl {
   font-family: "Inter-Bold";
   font-size: 21px;
+  margin-left: 15px;
 }
 
 #clusterclose_btn {
-  font-family: "Inter-Medium";
-  font-size: 14px;
+  font-family: "Inter-Regular";
+  font-size: 12px;
   border: none;
+  background-color: transparent;
+
+  margin-right: 15px;
+}
+
+.cluster-wrapper{
+  width: 100%;
+  background-color: transparent;
+  margin-top: 5px;
+  display: flex; 
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 5px;
+}
+.cluster-lbl{
+  font-family: Inter-Medium ;
+  background-color: transparent;
+  width: 100%;
+}
+
+.cluster-div{
+  margin-top: 15px;
+}
+
+.cluster-list{
+  width: 80%;
+  background-color: transparent;
+  /* display: flex; */
+  display: none;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 17%;
+  padding: 5px;
+}
+
+#select-cluster-btn{
+  width: 90%;
+  margin-top: 15px;
+  background-color: #ff3334;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  font-family: "Inter-Regular";
+  color: #fefefe;
+}
+
+.cluster-lbl-wrapper{
+  background-color: transparent;
+  width: 100%;
+}
+.cluster-radio{
+  margin-left: 10%;
+  accent-color: #ff3334;
+}
+
+.cluster-user{
+  font-family: Inter-Regular ;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }

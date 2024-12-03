@@ -443,6 +443,24 @@ document.addEventListener('touchend', (event) => {
     }
 });
 
+document.getElementById("addCluster_btn").addEventListener("click", function () {
+    document.getElementById("viewcluster_div").style.display = "flex";
+    //document.getElementById("iddetails").style.animation = "fadeInFromTop 0.3s ease-out forwards";
+});
+document.getElementById("clusterclose_btn").addEventListener("click", function () {
+    document.getElementById("viewcluster_div").style.display = "none";
+    //document.getElementById("iddetails").style.animation = "fadeInFromTop 0.3s ease-out forwards";
+});
+
+document.getElementById("cluster-lbl-wrapper").addEventListener("touchstart", function () {
+    console.log("touchdown");
+});
+
+
+
+
+
+
 
 
 
