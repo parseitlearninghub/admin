@@ -1100,6 +1100,7 @@ body {
   font-family: Inter-Medium ;
   background-color: transparent;
   width: 100%;
+  font-size: 16px;
 }
 
 .cluster-div{
@@ -1143,4 +1144,12 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+}
+.view-details-btn{
+  font-family: "Inter-Regular";
+  font-size: 20px;
+  border: none;
+  background-color: transparent;
+  opacity: 0.3;
+  margin-top: 10px;
 }

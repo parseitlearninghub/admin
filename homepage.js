@@ -452,8 +452,8 @@ document.getElementById("clusterclose_btn").addEventListener("click", function (
     //document.getElementById("iddetails").style.animation = "fadeInFromTop 0.3s ease-out forwards";
 });
 
-document.getElementById("cluster-lbl-wrapper").addEventListener("touchstart", function () {
-    console.log("touchdown");
+document.getElementById("view-details-btn").addEventListener("click", function () {
+    document.getElementById("cluster-list").style.display = "flex";
 });
 
 
