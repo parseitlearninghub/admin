@@ -398,13 +398,14 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     const yr = document.getElementById("createparseclass_yr").getAttribute('data-value');
     const sem = document.getElementById("createparseclass_sem").getAttribute('data-value');
     const subject = selectedSubject;
-    const section = document.getElementById('sectionsched_txt').value;
-    const teacherid = document.getElementById('assignTeacher_txt').value;
-    const studentid = document.getElementById('addStudent_txt').value;
-    const sched_day = document.getElementById('day_txt').value;
-    const sched_end = document.getElementById('end_txt').value;
-    const sched_start = document.getElementById('start_txt').value;
-    const clusterid = selectedCluster_id;
+    let section = document.getElementById('sectionsched_txt').value;
+    let teacherid = document.getElementById('assignTeacher_txt').value;
+    let studentid = document.getElementById('addStudent_txt').value;
+    let sched_day = document.getElementById('day_txt').value;
+    let sched_end = document.getElementById('end_txt').value;
+    let sched_start = document.getElementById('start_txt').value;
+    let cluster = document.getElementById('addCluster_txt').value;
+    let clusterid = selectedCluster_id;
 
     const sourcePath = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${clusterid}/cluster/`;
     const destinationPath = `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/members`;
@@ -421,6 +422,24 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
         enrollCluster(sourcePath, destinationPath, yr, section);
     }
 
+    setTimeout(() => {
+        document.getElementById("check_animation_div").style.display = "none";
+    }, 2000);
+
+
+    section = "";
+    teacherid = "";
+    studentid = "";
+    sched_day = "";
+    sched_end = ""
+    sched_start = "";
+    cluster = "";
+
+    const radios = document.querySelectorAll('input[type="radio"]');
+    // Loop through and uncheck them
+    radios.forEach(radio => {
+        radio.checked = false;
+    });
 
 
 });
@@ -977,12 +996,6 @@ function assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_
         }
     }).then(() => {
         document.getElementById("check_animation_div").style.display = "flex";
-        setTimeout(() => {
-            document.getElementById("check_animation_div").style.display = "none";
-        }, 2000);
-        document.getElementById('sectionsched_txt').value = "";
-        document.getElementById('assignTeacher_txt').value = "";
-        document.getElementById('addStudent_txt').value = "";
     }).catch((error) => {
         console.error("Error updating data:", error);
     });
@@ -998,12 +1011,6 @@ function enrollStudent(academicref, yr, sem, subject, section, studentid) {
     }).then(() => {
         updateStudentYrSection(studentid, translateYr(yr), section)
         document.getElementById("check_animation_div").style.display = "flex";
-        setTimeout(() => {
-            document.getElementById("check_animation_div").style.display = "none";
-        }, 2000);
-        document.getElementById('sectionsched_txt').value = "";
-        document.getElementById('assignTeacher_txt').value = "";
-        document.getElementById('addStudent_txt').value = "";
     }).catch((error) => {
         console.error("Error updating data:", error);
     });
