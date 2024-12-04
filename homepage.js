@@ -406,7 +406,7 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     const sched_start = document.getElementById('start_txt').value;
     const clusterid = selectedCluster_id;
 
-    const sourcePath = `PARSEIT/administration/admins/${localStorage.getItem("user-parser-admin")}/mycluster/forparseroom/${clusterid}/cluster/`;
+    const sourcePath = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${clusterid}/cluster/`;
     const destinationPath = `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/members`;
 
     //console.log(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
