@@ -65,6 +65,7 @@ window.addEventListener("load", function () {
     setLabelAcademicYear();
     setButtonStart();
     checkCurrentAcadYear();
+    viewCluster(admin_id);
 });
 
 //processess
@@ -422,7 +423,6 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
 
 });
 document.getElementById("myCluster_btn").addEventListener("click", function () {
-    //removeSidebarAnimation();
     document.getElementById("cluster_div").style.display = "flex";
     getMyClusters(admin_id);
 });
@@ -445,22 +445,15 @@ document.addEventListener('touchend', (event) => {
 
 document.getElementById("addCluster_btn").addEventListener("click", function () {
     document.getElementById("viewcluster_div").style.display = "flex";
-    //document.getElementById("iddetails").style.animation = "fadeInFromTop 0.3s ease-out forwards";
 });
 document.getElementById("clusterclose_btn").addEventListener("click", function () {
     document.getElementById("viewcluster_div").style.display = "none";
-    //document.getElementById("iddetails").style.animation = "fadeInFromTop 0.3s ease-out forwards";
+
 });
 
-document.getElementById("view-details-btn").addEventListener("click", function () {
-    document.getElementById("cluster-list").style.display = "flex";
-});
-
-
-
-
-
-
+// document.getElementById("cluster-title-id").addEventListener("click", function () {
+//     document.getElementById("cluster-parser-id").style.display = "flex";
+// });
 
 
 
@@ -1086,6 +1079,70 @@ function getMyClusters(admin_id) {
                 console.log("No data available");
             }
         });
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
+
+
+
+async function viewCluster(admin_id) {
+    const mycluster_cont = document.getElementById("cluster-div");
+    const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/`;
+
+    try {
+        const snapshot = await get(child(dbRefAdmin, path));
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+
+            Object.entries(data).forEach(([key, cluster]) => {
+                // Create cluster title container
+                const clusterTitleDiv = document.createElement("div");
+                clusterTitleDiv.classList.add("cluster-title-div");
+                clusterTitleDiv.id = `cluster-title-${key}`;
+
+                // Create radio button for the cluster title
+                const radioInput = document.createElement("input");
+                radioInput.type = "radio";
+                radioInput.classList.add("radio-title");
+                radioInput.id = `radio-title-${key}`;
+                radioInput.name = "radio-cluster-title";
+                clusterTitleDiv.appendChild(radioInput);
+
+                // Create label for the cluster title
+                const clusterLabel = document.createElement("label");
+                clusterLabel.classList.add("cluster-title");
+                clusterLabel.id = `cluster-title-${key}`;
+                clusterLabel.setAttribute("for", `radio-title-${key}`);
+                clusterLabel.textContent = cluster.name;
+                clusterTitleDiv.appendChild(clusterLabel);
+
+                mycluster_cont.appendChild(clusterTitleDiv);
+
+                document.getElementById(`radio-title-${key}`).addEventListener('click', function () {
+                    document.querySelectorAll(`.id-cluster-${key}`).forEach(function (element) {
+                        element.style.display = 'flex';
+                    });
+                });
+
+                Object.entries(cluster.cluster).forEach(([cluster_studentid]) => {
+                    const listDiv = document.createElement("div");
+                    listDiv.classList.add(`cluster-list`);
+                    listDiv.classList.add(`cluster-list-${key}`);
+                    const studentIdSpan = document.createElement("span");
+                    studentIdSpan.classList.add("id-cluster");
+                    studentIdSpan.classList.add(`id-cluster-${key}`);
+                    studentIdSpan.id = `cluster-parser-${cluster_studentid}`;
+                    studentIdSpan.textContent = cluster_studentid;
+
+                    listDiv.appendChild(studentIdSpan);
+                    mycluster_cont.appendChild(listDiv);
+                });
+            });
+
+        } else {
+            console.log("No data available");
+        }
     } catch (error) {
         console.error("Error fetching data:", error);
     }

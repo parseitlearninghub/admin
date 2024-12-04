@@ -851,6 +851,7 @@ body {
   background-color: transparent;
   z-index: 500;
   margin-top: 50%;
+  pointer-events: all;
 }
 
 #iddetails {
@@ -1034,11 +1035,11 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 100000;
-  
+  height: 100%;
+  pointer-events: all;
 }
 
 .viewcluster_frame {
-  height: 80%;
   width: 80%;
   background-color: #fefefe;
   display: flex;
@@ -1047,7 +1048,8 @@ body {
   flex-direction: column;
   overflow: hidden;
   border-radius: 5px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
 
 .viewcluster_header {
@@ -1069,6 +1071,9 @@ body {
   padding-bottom: 10px;
   flex-direction: column;
 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mycluster_lbl {
@@ -1086,39 +1091,73 @@ body {
   margin-right: 15px;
 }
 
-.cluster-wrapper{
+.cluster-wrapper {
   width: 100%;
   background-color: transparent;
   margin-top: 5px;
-  display: flex; 
+  display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
   gap: 5px;
 }
-.cluster-lbl{
-  font-family: Inter-Medium ;
+.cluster-lbl {
+  font-family: Inter-Medium;
   background-color: transparent;
   width: 100%;
   font-size: 16px;
 }
-
-.cluster-div{
-  margin-top: 15px;
-}
-
-.cluster-list{
-  width: 80%;
+.cluster-div {
   background-color: transparent;
-  /* display: flex; */
-  display: none;
-  justify-content: flex-start;
-  align-items: center;
-  margin-left: 17%;
-  padding: 5px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: Inter-Regular;
+  font-size: 17px;
+  flex-direction: column;
+  margin-bottom: 10px;
 }
 
-#select-cluster-btn{
+.cluster-title-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10%;
+}
+
+.cluster-title {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 200px;
+}
+.radio-title {
+  accent-color: #ff3334;
+  margin-right: 10px;
+}
+
+.cluster-list {
+  background-color: transparent;
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #5c5c5c;
+  margin-top: 3px;
+}
+
+.id-cluster {
+  margin-left: 22%;
+  font-size: 14px;
+  background-color: transparent;
+  width: 20px;
+  color: #5c5c5c;
+  display: none;
+  margin-bottom: 3px;
+}
+
+#select-cluster-btn {
   width: 90%;
   margin-top: 15px;
   background-color: #ff3334;
@@ -1127,29 +1166,4 @@ body {
   border-radius: 4px;
   font-family: "Inter-Regular";
   color: #fefefe;
-}
-
-.cluster-lbl-wrapper{
-  background-color: transparent;
-  width: 100%;
-}
-.cluster-radio{
-  margin-left: 10%;
-  accent-color: #ff3334;
-}
-
-.cluster-user{
-  font-family: Inter-Regular ;
-  font-size: 14px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.view-details-btn{
-  font-family: "Inter-Regular";
-  font-size: 20px;
-  border: none;
-  background-color: transparent;
-  opacity: 0.3;
-  margin-top: 10px;
 }
