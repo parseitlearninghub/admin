@@ -253,12 +253,12 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     document.getElementById("addStudent_txt").disabled = false;
 
     document.getElementById("addStudent_txt").value = "";
-    document.getElementById("addTeacher_txt").value = "";
+    document.getElementById("assignTeacher_txt").value = "";
     document.getElementById("day_txt").value = "";
     document.getElementById("start_txt").value = "";
     document.getElementById("end_txt").value = "";
     document.getElementById("addCluster_txt").value = "";
-
+    document.getElementById("sectionsched schedtxt").value = "";
     showHome();
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
