@@ -259,6 +259,7 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     document.getElementById("addCluster_txt").value = "";
     document.getElementById("sectionsched_txt").value = "";
     showHome();
+    window.location.reload();
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
     viewAcademicYear();
