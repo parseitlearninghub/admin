@@ -47,17 +47,16 @@ let acad_radio = "";
 let selectedCluster_id = "";
 let selectedCluster_name = "";
 let selected_section = "";
+setLabelAcademicYear();
+setButtonStart();
+checkCurrentAcadYear();
+viewCluster(admin_id);
 
 //preloads
 setScreenSize(window.innerWidth, window.innerHeight);
 window.addEventListener("load", function () {
     document.getElementById("loading_animation_div").style.display = "none";
     document.getElementById("home_div").style.display = "flex";
-    subjectparseclass_id = "";
-    setLabelAcademicYear();
-    setButtonStart();
-    checkCurrentAcadYear();
-    viewCluster(admin_id);
 });
 
 //processess
