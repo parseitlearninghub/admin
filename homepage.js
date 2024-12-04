@@ -57,6 +57,7 @@ window.addEventListener("load", function () {
     setLabelAcademicYear();
     setButtonStart();
     checkCurrentAcadYear();
+    viewCluster(admin_id);
 });
 
 //processess
@@ -500,7 +501,7 @@ document.addEventListener('touchend', (event) => {
     }
 });
 document.getElementById("addCluster_btn").addEventListener("click", function () {
-    viewCluster(admin_id);
+    document.getElementById("viewcluster_div").style.display = "flex";
 });
 document.getElementById("clusterclose_btn").addEventListener("click", function () {
     document.getElementById("viewcluster_div").style.display = "none";
@@ -1200,7 +1201,7 @@ async function viewCluster(admin_id) {
                     mycluster_cont.appendChild(listDiv);
                 });
             });
-            document.getElementById("viewcluster_div").style.display = "flex";
+
         } else {
             console.log("No data available");
         }
