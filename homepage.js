@@ -52,6 +52,8 @@ let selectedTeacher = "";
 let admin_id = localStorage.getItem("user-parser-admin");
 let currentacad_ref = "";
 let acad_radio = "";
+let selectedCluster_id = "";
+let selectedCluster_name = "";
 
 //preloads
 
@@ -402,7 +404,7 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     const sched_day = document.getElementById('day_txt').value;
     const sched_end = document.getElementById('end_txt').value;
     const sched_start = document.getElementById('start_txt').value;
-    const clusterid = "12345";
+    const clusterid = selectedCluster_id;
 
     const sourcePath = `PARSEIT/administration/admins/${localStorage.getItem("user-parser-admin")}/mycluster/forparseroom/${clusterid}/cluster/`;
     const destinationPath = `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/members`;
@@ -451,11 +453,11 @@ document.getElementById("clusterclose_btn").addEventListener("click", function (
 
 });
 
-// document.getElementById("cluster-title-id").addEventListener("click", function () {
-//     document.getElementById("cluster-parser-id").style.display = "flex";
-// });
+document.getElementById("select-cluster-btn").addEventListener("click", function () {
+    document.getElementById("viewcluster_div").style.display = "none";
+    document.getElementById('addCluster_txt').value = selectedCluster_name;
 
-
+});
 
 //functions
 function setScreenSize(width, height) {
@@ -1120,6 +1122,8 @@ async function viewCluster(admin_id) {
                 mycluster_cont.appendChild(clusterTitleDiv);
 
                 document.getElementById(`radio-title-${key}`).addEventListener('click', function () {
+                    selectedCluster_id = `${key}`;
+                    selectedCluster_name = `${cluster.name}`;
                     // First, hide all clusters by setting their display to 'none'
                     document.querySelectorAll(".id-cluster").forEach(function (element) {
                         element.style.display = 'none';
