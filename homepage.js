@@ -51,7 +51,7 @@ let selected_section = "";
 //preloads
 setScreenSize(window.innerWidth, window.innerHeight);
 window.addEventListener("load", function () {
-    document.getElementById("loading_animation_div").style.display = "none";
+    // document.getElementById("loading_animation_div").style.display = "none";
     document.getElementById("home_div").style.display = "flex";
     subjectparseclass_id = "";
     setLabelAcademicYear();
