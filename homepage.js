@@ -1,16 +1,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import {
-    getAuth,
-    createUserWithEmailAndPassword,
-} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
-import {
     getDatabase,
     ref,
     get,
     child,
     update,
-    remove,
-    set,
 } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 
 const firebaseConfig = {
@@ -24,7 +18,6 @@ const firebaseConfig = {
     appId: "1:15166597986:web:04b0219b1733780ae61a3b",
 };
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
 const database = getDatabase(app);
 const dbRef = ref(database);
 
@@ -38,7 +31,6 @@ const firebaseConfigAdmin = {
     appId: "1:1009498274532:web:69083f905357ae31b74af1"
 };
 const appAdmin = initializeApp(firebaseConfigAdmin, "ParseITAdmin");
-const authAdmin = getAuth(appAdmin);
 const databaseAdmin = getDatabase(appAdmin);
 const dbRefAdmin = ref(databaseAdmin);
 
@@ -57,9 +49,6 @@ let selectedCluster_name = "";
 let selected_section = "";
 
 //preloads
-
-
-
 setScreenSize(window.innerWidth, window.innerHeight);
 window.addEventListener("load", function () {
     document.getElementById("loading_animation_div").style.display = "none";
@@ -1081,7 +1070,6 @@ async function enrollStudent(academicref, yr, sem, subject, section, studentid) 
         console.error("Error updating data:", error);
     }
 }
-
 async function enrollCluster(sourcePath, destinationPath, yr, section) {
     try {
         const sourceRef = ref(databaseAdmin, sourcePath);
