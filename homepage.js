@@ -1120,6 +1120,12 @@ async function viewCluster(admin_id) {
                 mycluster_cont.appendChild(clusterTitleDiv);
 
                 document.getElementById(`radio-title-${key}`).addEventListener('click', function () {
+                    // First, hide all clusters by setting their display to 'none'
+                    document.querySelectorAll(".id-cluster").forEach(function (element) {
+                        element.style.display = 'none';
+                    });
+
+                    // Then, show the spans for the selected cluster
                     document.querySelectorAll(`.id-cluster-${key}`).forEach(function (element) {
                         element.style.display = 'flex';
                     });
