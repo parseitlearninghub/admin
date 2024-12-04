@@ -68,7 +68,6 @@ window.addEventListener("load", function () {
     setLabelAcademicYear();
     setButtonStart();
     checkCurrentAcadYear();
-    viewCluster(admin_id);
 });
 
 //processess
@@ -258,12 +257,13 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     document.getElementById("start_txt").value = "";
     document.getElementById("end_txt").value = "";
     document.getElementById("addCluster_txt").value = "";
-    document.getElementById("sectionsched schedtxt").value = "";
+    document.getElementById("sectionsched_txt").value = "";
     showHome();
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
     viewAcademicYear();
     hideEnrollButton();
+    viewCluster(admin_id);
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
     document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-1');
     document.getElementById("addStudent_txt").value = "";
@@ -285,7 +285,8 @@ document.getElementById("createfirstyr_btn").addEventListener("click", function 
 });
 document.getElementById("createsecondyr_btn").addEventListener("click", function () {
     viewAcademicYear();
-    hideEnrollButton()
+    hideEnrollButton();
+    viewCluster(admin_id);
     document.getElementById("createparseclass_yr").innerText = "Year: Sophomore (2nd year)";
     document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-2');
     document.getElementById("addStudent_txt").value = "";
@@ -307,6 +308,7 @@ document.getElementById("createsecondyr_btn").addEventListener("click", function
 document.getElementById("createthirdyr_btn").addEventListener("click", function () {
     hideEnrollButton();
     viewAcademicYear();
+    viewCluster(admin_id);
     document.getElementById("createparseclass_yr").innerText = "Year: Junior (3rd year)";
     document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-3');
     document.getElementById("addStudent_txt").value = "";
@@ -328,6 +330,7 @@ document.getElementById("createthirdyr_btn").addEventListener("click", function 
 document.getElementById("createfourthyr_btn").addEventListener("click", function () {
     viewAcademicYear();
     hideEnrollButton();
+    viewCluster(admin_id);
     document.getElementById("createparseclass_yr").innerText = "Year: Senior (4th year)";
     document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-4');
     document.getElementById("addStudent_txt").value = "";
@@ -425,13 +428,13 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     let sched_day = document.getElementById('day_txt').value;
     let sched_end = document.getElementById('end_txt').value;
     let sched_start = document.getElementById('start_txt').value;
-    let cluster = document.getElementById('addCluster_txt').value;
     let clusterid = selectedCluster_id;
 
     const sourcePath = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${clusterid}/cluster/`;
     const destinationPath = `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/members`;
 
     //console.log(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
+
 
     if (teacherid !== "") {
         if (check_teacher == true) {
@@ -442,22 +445,30 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     if (studentid !== "") {
         if (check_student == true) {
             enrollStudent(academicref, yr, sem, subject, section, studentid);
+
         }
     }
+    else {
+        document.getElementById("addstudent_parseclass").style.border = "0.5px solid red";
+
+    }
+
     if (clusterid !== "") {
         enrollCluster(sourcePath, destinationPath, yr, section);
     }
 
+
     document.getElementById("check_animation_div").style.display = "flex";
     setTimeout(() => {
         document.getElementById("check_animation_div").style.display = "none";
-        section = "";
-        teacherid = "";
-        studentid = "";
-        sched_day = "";
-        sched_end = ""
-        sched_start = "";
-        cluster = "";
+        document.getElementById('sectionsched_txt').value = "";
+        document.getElementById('assignTeacher_txt').value = "";
+        document.getElementById('addStudent_txt').value = "";
+        document.getElementById('day_txt').value = "";
+        document.getElementById('start_txt').value = ""
+        document.getElementById('end_txt').value = "";
+        document.getElementById('day_txt').value = "";
+        document.getElementById('addCluster_txt').value = "";
 
         const radios = document.querySelectorAll('input[type="radio"]');
         radios.forEach(radio => {
@@ -467,12 +478,11 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
 
 
 
-
-
 });
 document.getElementById("myCluster_btn").addEventListener("click", function () {
     document.getElementById("cluster_div").style.display = "flex";
     getMyClusters(admin_id);
+
 });
 let startX = 0;
 let endX = 0;
@@ -500,6 +510,7 @@ document.getElementById("clusterclose_btn").addEventListener("click", function (
 document.getElementById("select-cluster-btn").addEventListener("click", function () {
     document.getElementById("viewcluster_div").style.display = "none";
     document.getElementById('addCluster_txt').value = selectedCluster_name;
+    document.getElementById('enrollParseclass').style.visibility = "visible";
 
 });
 document.getElementById('sectionsched_txt').addEventListener('blur', (event) => {
@@ -1030,7 +1041,6 @@ async function assignTeacher(academicref, yr, sem, subject, section, teacherid, 
             sched_start: sched_start
         }
     }).then(() => {
-
     }).catch((error) => {
         console.error("Error updating data:", error);
     });
@@ -1044,7 +1054,8 @@ async function enrollStudent(academicref, yr, sem, subject, section, studentid) 
     await update(ref(database, `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`), {
         members: memberId
     }).then(() => {
-        updateStudentYrSection(studentid, translateYr(yr), section)
+        updateStudentYrSection(studentid, translateYr(yr), section);
+
     }).catch((error) => {
         console.error("Error updating data:", error);
     });
@@ -1059,7 +1070,7 @@ async function enrollCluster(sourcePath, destinationPath, yr, section) {
             await update(destinationRef, data);
             snapshot.forEach(childSnapshot => {
                 const key = childSnapshot.key;
-                updateStudentYrSection(key, yr, section)
+                updateStudentYrSection(key, yr, section);
             });
             console.log(`Data successfully copied from ${sourcePath} to ${destinationPath}`);
         } else {
@@ -1208,6 +1219,9 @@ async function populateEnrollDetails(acadRef, yrlvl, sem, subject) {
             }
             noSection = false;
             check_teacher = true;
+            document.getElementById('assignTeacher_txt').disabled = true;
+            document.getElementById('assignTeacher_btn').style.visibility = "hidden";
+
         } else {
             console.log('No data exists for the provided details');
         }
