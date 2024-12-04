@@ -254,6 +254,7 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
 });
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
     viewAcademicYear();
+    hideEnrollButton();
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
     document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-1');
     document.getElementById("addStudent_txt").value = "";
@@ -275,6 +276,7 @@ document.getElementById("createfirstyr_btn").addEventListener("click", function 
 });
 document.getElementById("createsecondyr_btn").addEventListener("click", function () {
     viewAcademicYear();
+    hideEnrollButton()
     document.getElementById("createparseclass_yr").innerText = "Year: Sophomore (2nd year)";
     document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-2');
     document.getElementById("addStudent_txt").value = "";
@@ -294,7 +296,8 @@ document.getElementById("createsecondyr_btn").addEventListener("click", function
     });
 });
 document.getElementById("createthirdyr_btn").addEventListener("click", function () {
-
+    hideEnrollButton();
+    viewAcademicYear();
     document.getElementById("createparseclass_yr").innerText = "Year: Junior (3rd year)";
     document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-3');
     document.getElementById("addStudent_txt").value = "";
@@ -308,7 +311,6 @@ document.getElementById("createthirdyr_btn").addEventListener("click", function 
         else {
             document.getElementById("createparseclass_sem").innerText = "Semester: Second";
         }
-        viewAcademicYear();
         hideHome();
     }).catch((error) => {
         console.error("Error fetching semester:", error);
@@ -316,6 +318,7 @@ document.getElementById("createthirdyr_btn").addEventListener("click", function 
 });
 document.getElementById("createfourthyr_btn").addEventListener("click", function () {
     viewAcademicYear();
+    hideEnrollButton();
     document.getElementById("createparseclass_yr").innerText = "Year: Senior (4th year)";
     document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-4');
     document.getElementById("addStudent_txt").value = "";
@@ -346,6 +349,7 @@ document.getElementById("assignTeacher_btn").addEventListener("click", function 
         getTeacher(targetId).then((snapshot) => {
             if (snapshot) {
                 check_teacher = true;
+                showEnrollButton();
                 selectedTeacher = document.getElementById("assignTeacher_txt").value;
                 document.getElementById("addteacher_parseclass").style.border = "0.5px solid #dcdcdc";
                 document.getElementById("assignTeacher_btn").style.visibility = "hidden";
@@ -364,13 +368,17 @@ document.getElementById("assignTeacher_btn").addEventListener("click", function 
 });
 document.getElementById("addStudent_btn").addEventListener("click", function () {
     const targetId = document.getElementById("addStudent_txt").value;
-    if (targetId === "") {
+    if (subjectparseclass_id === "") {
+        document.getElementById("parseclass_list").style.border = "0.5px solid red";
+    }
+    else if (targetId === "") {
         document.getElementById("addstudent_parseclass").style.border = "0.5px solid red";
     }
     else {
         getStudent(targetId).then((snapshot) => {
             if (snapshot) {
                 check_student = true;
+                showEnrollButton();
                 document.getElementById("addstudent_parseclass").style.border = "0.5px solid #dcdcdc";
                 document.getElementById("addStudent_btn").style.display = "none";
                 document.getElementById("addStudent_txt").disabled = true;
@@ -431,6 +439,7 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
         enrollCluster(sourcePath, destinationPath, yr, section);
     }
 
+    document.getElementById("check_animation_div").style.display = "flex";
     setTimeout(() => {
         document.getElementById("check_animation_div").style.display = "none";
         section = "";
@@ -473,7 +482,6 @@ document.addEventListener('touchend', (event) => {
 
     }
 });
-
 document.getElementById("addCluster_btn").addEventListener("click", function () {
     document.getElementById("viewcluster_div").style.display = "flex";
 });
@@ -481,7 +489,6 @@ document.getElementById("clusterclose_btn").addEventListener("click", function (
     document.getElementById("viewcluster_div").style.display = "none";
 
 });
-
 document.getElementById("select-cluster-btn").addEventListener("click", function () {
     document.getElementById("viewcluster_div").style.display = "none";
     document.getElementById('addCluster_txt').value = selectedCluster_name;
@@ -993,10 +1000,9 @@ function getStudent(targetId) {
 
         })
 }
-
-function assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start) {
+async function assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start) {
     //console.log(`PARSEIT/administration/parseclass/${academicref}/year-lvl-${yr}/${sem}/${subject}/${section}/`)
-    update(ref(database, `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`), {
+    await update(ref(database, `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`), {
         teacher_id: teacherid,
         parseclass_id: academicref + "_" + section + "_" + subject.replace(/\s+/g, ""),
         schedule: {
@@ -1005,27 +1011,25 @@ function assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_
             sched_start: sched_start
         }
     }).then(() => {
-        document.getElementById("check_animation_div").style.display = "flex";
+
     }).catch((error) => {
         console.error("Error updating data:", error);
     });
 }
-function enrollStudent(academicref, yr, sem, subject, section, studentid) {
+async function enrollStudent(academicref, yr, sem, subject, section, studentid) {
     const memberId = {};
     memberId[studentid] = {
         finalgrade: "0"
     };
 
-    update(ref(database, `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`), {
+    await update(ref(database, `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`), {
         members: memberId
     }).then(() => {
         updateStudentYrSection(studentid, translateYr(yr), section)
-        document.getElementById("check_animation_div").style.display = "flex";
     }).catch((error) => {
         console.error("Error updating data:", error);
     });
 }
-
 async function enrollCluster(sourcePath, destinationPath, yr, section) {
     try {
         const sourceRef = ref(databaseAdmin, sourcePath);
@@ -1046,14 +1050,12 @@ async function enrollCluster(sourcePath, destinationPath, yr, section) {
         console.error("Error copying data:", error);
     }
 }
-
 async function updateStudentYrSection(parser_id, yr, section) {
     await update(ref(database, `PARSEIT/administration/students/${parser_id}/`), {
         yearlvl: yr,
         section: section
     });
 }
-
 function translateYr(yr) {
     switch (yr) {
         case "year-lvl-1":
@@ -1068,8 +1070,6 @@ function translateYr(yr) {
             console.log("error");
     }
 }
-
-
 function getMyClusters(admin_id) {
     const mycluster_cont = document.getElementById("cluster_div");
     let mycluster = "";
@@ -1102,9 +1102,6 @@ function getMyClusters(admin_id) {
         console.error("Error fetching data:", error);
     }
 }
-
-
-
 async function viewCluster(admin_id) {
     const mycluster_cont = document.getElementById("cluster-div");
     const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/`;
@@ -1173,4 +1170,10 @@ async function viewCluster(admin_id) {
     } catch (error) {
         console.error("Error fetching data:", error);
     }
+}
+function showEnrollButton() {
+    document.getElementById('enrollParseclass').style.visibility = "visible";
+}
+function hideEnrollButton() {
+    document.getElementById('enrollParseclass').style.visibility = "hidden";
 }

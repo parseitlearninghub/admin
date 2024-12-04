@@ -894,6 +894,7 @@ body {
   color: #fefefe;
   font-family: Inter-Medium;
   flex-shrink: 0;
+  visibility: hidden;
 }
 
 .clustericon {
