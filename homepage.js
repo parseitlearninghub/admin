@@ -54,6 +54,7 @@ let currentacad_ref = "";
 let acad_radio = "";
 let selectedCluster_id = "";
 let selectedCluster_name = "";
+let selected_section = "";
 
 //preloads
 
@@ -494,6 +495,10 @@ document.getElementById("select-cluster-btn").addEventListener("click", function
     document.getElementById('addCluster_txt').value = selectedCluster_name;
 
 });
+document.getElementById('sectionsched_txt').addEventListener('blur', (event) => {
+    noSection = false;
+    selected_section = document.getElementById('sectionsched_txt').value;
+});
 
 //functions
 function setScreenSize(width, height) {
@@ -927,6 +932,7 @@ function getSemester() {
             }
         });
 }
+let noSection = true;
 async function populateSubjects(yearlvl, sem, acad_ref) {
     get(child(dbRef, "PARSEIT/administration/parseclass/" + acad_ref + "/" + yearlvl + "/" + sem))
         .then((snapshot) => {
@@ -947,13 +953,19 @@ async function populateSubjects(yearlvl, sem, acad_ref) {
                     radioButton.value = title;
 
                     radioButton.addEventListener("click", () => {
-                        subjectparseclass_id = `${data[key].parseclass_id}`;
-                        selectedSubject = title;
-                        document.getElementById("parseclass_list").style.border = "0.5px solid #dcdcdc";
-
+                        if (!noSection) {
+                            document.getElementById("parseclass_list").style.border = "0.5px solid #dcdcdc";
+                            document.getElementById("sectionsched_txt").style.border = "0.5px solid #dcdcdc";
+                            subjectparseclass_id = `${data[key].parseclass_id}`;
+                            selectedSubject = title;
+                            populateEnrollDetails(acad_ref, yearlvl, sem, selectedSubject)
+                        }
+                        else {
+                            radioButton.checked = false;
+                            document.getElementById("sectionsched_txt").style.border = "0.5px solid red";
+                        }
 
                     });
-
                     const label = document.createElement("label");
                     label.htmlFor = `parseclass-${data[key].parseclass_id}`;
                     label.textContent = title;
@@ -1060,7 +1072,7 @@ function translateYr(yr) {
     switch (yr) {
         case "year-lvl-1":
             return "1";
-        case "year-lvl-2": // Changed to unique value
+        case "year-lvl-2":
             return "2";
         case "year-lvl-3":
             return "3";
@@ -1112,12 +1124,10 @@ async function viewCluster(admin_id) {
             const data = snapshot.val();
 
             Object.entries(data).forEach(([key, cluster]) => {
-                // Create cluster title container
                 const clusterTitleDiv = document.createElement("div");
                 clusterTitleDiv.classList.add("cluster-title-div");
                 clusterTitleDiv.id = `cluster-title-${key}`;
 
-                // Create radio button for the cluster title
                 const radioInput = document.createElement("input");
                 radioInput.type = "radio";
                 radioInput.classList.add("radio-title");
@@ -1125,7 +1135,6 @@ async function viewCluster(admin_id) {
                 radioInput.name = "radio-cluster-title";
                 clusterTitleDiv.appendChild(radioInput);
 
-                // Create label for the cluster title
                 const clusterLabel = document.createElement("label");
                 clusterLabel.classList.add("cluster-title");
                 clusterLabel.id = `cluster-title-${key}`;
@@ -1138,12 +1147,11 @@ async function viewCluster(admin_id) {
                 document.getElementById(`radio-title-${key}`).addEventListener('click', function () {
                     selectedCluster_id = `${key}`;
                     selectedCluster_name = `${cluster.name}`;
-                    // First, hide all clusters by setting their display to 'none'
+
                     document.querySelectorAll(".id-cluster").forEach(function (element) {
                         element.style.display = 'none';
                     });
 
-                    // Then, show the spans for the selected cluster
                     document.querySelectorAll(`.id-cluster-${key}`).forEach(function (element) {
                         element.style.display = 'flex';
                     });
@@ -1176,4 +1184,25 @@ function showEnrollButton() {
 }
 function hideEnrollButton() {
     document.getElementById('enrollParseclass').style.visibility = "hidden";
+}
+async function populateEnrollDetails(acadRef, yrlvl, sem, subject) {
+    const section = document.getElementById('sectionsched_txt').value;
+    try {
+        const snapshot = await get(child(dbRef, `PARSEIT/administration/parseclass/${acadRef}/${yrlvl}/${sem}/${subject}/${section}`));
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            document.getElementById('assignTeacher_txt').value = data.teacher_id;
+            if (data.schedule) {
+                document.getElementById('day_txt').value = data.schedule.sched_day || '';
+                document.getElementById('start_txt').value = data.schedule.sched_start || '';
+                document.getElementById('end_txt').value = data.schedule.sched_end || '';
+            } else {
+                console.log('No schedule found');
+            }
+        } else {
+            console.log('No data exists for the provided details');
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
 }
