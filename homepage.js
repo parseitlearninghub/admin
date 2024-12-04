@@ -345,6 +345,7 @@ document.getElementById("assignTeacher_btn").addEventListener("click", function 
     else {
         getTeacher(targetId).then((snapshot) => {
             if (snapshot) {
+                check_teacher = true;
                 selectedTeacher = document.getElementById("assignTeacher_txt").value;
                 document.getElementById("addteacher_parseclass").style.border = "0.5px solid #dcdcdc";
                 document.getElementById("assignTeacher_btn").style.visibility = "hidden";
@@ -369,6 +370,7 @@ document.getElementById("addStudent_btn").addEventListener("click", function () 
     else {
         getStudent(targetId).then((snapshot) => {
             if (snapshot) {
+                check_student = true;
                 document.getElementById("addstudent_parseclass").style.border = "0.5px solid #dcdcdc";
                 document.getElementById("addStudent_btn").style.display = "none";
                 document.getElementById("addStudent_txt").disabled = true;
@@ -393,6 +395,8 @@ document.getElementById("viewStudent_btn").addEventListener("touchend", function
     document.getElementById("viewid_div").style.display = "none";
     document.getElementById("iddetails").style.animation = "fadeOutFromBottom 0.3s ease-out forwards";
 });
+let check_student = false;
+let check_teacher = false;
 document.getElementById("enrollParseclass").addEventListener("click", function () {
     const academicref = currentacad_ref;
     const yr = document.getElementById("createparseclass_yr").getAttribute('data-value');
@@ -413,10 +417,15 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     //console.log(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
 
     if (teacherid !== "") {
-        assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
+        if (check_teacher) {
+            assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
+        }
+
     }
     if (studentid !== "") {
-        enrollStudent(academicref, yr, sem, subject, section, studentid);
+        if (check_student) {
+            enrollStudent(academicref, yr, sem, subject, section, studentid);
+        }
     }
     if (clusterid !== "") {
         enrollCluster(sourcePath, destinationPath, yr, section);
@@ -424,22 +433,23 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
 
     setTimeout(() => {
         document.getElementById("check_animation_div").style.display = "none";
-    }, 2000);
+        section = "";
+        teacherid = "";
+        studentid = "";
+        sched_day = "";
+        sched_end = ""
+        sched_start = "";
+        cluster = "";
+
+        const radios = document.querySelectorAll('input[type="radio"]');
+        // Loop through and uncheck them
+        radios.forEach(radio => {
+            radio.checked = false;
+        });
+    }, 3000);
 
 
-    section = "";
-    teacherid = "";
-    studentid = "";
-    sched_day = "";
-    sched_end = ""
-    sched_start = "";
-    cluster = "";
 
-    const radios = document.querySelectorAll('input[type="radio"]');
-    // Loop through and uncheck them
-    radios.forEach(radio => {
-        radio.checked = false;
-    });
 
 
 });
