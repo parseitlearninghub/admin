@@ -426,13 +426,13 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     //console.log(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
 
     if (teacherid !== "") {
-        if (check_teacher) {
+        if (check_teacher == true) {
             assignTeacher(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
         }
 
     }
     if (studentid !== "") {
-        if (check_student) {
+        if (check_student == true) {
             enrollStudent(academicref, yr, sem, subject, section, studentid);
         }
     }
@@ -452,11 +452,10 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
         cluster = "";
 
         const radios = document.querySelectorAll('input[type="radio"]');
-        // Loop through and uncheck them
         radios.forEach(radio => {
             radio.checked = false;
         });
-    }, 3000);
+    }, 2000);
 
 
 
@@ -1199,6 +1198,8 @@ async function populateEnrollDetails(acadRef, yrlvl, sem, subject) {
             } else {
                 console.log('No schedule found');
             }
+            noSection = false;
+            check_teacher = true;
         } else {
             console.log('No data exists for the provided details');
         }
