@@ -485,6 +485,8 @@ body {
   border-radius: 100px;
   height: 30px;
   font-family: "Inter-Regular";
+  background-color: transparent;
+  color: transparent;
 }
 
 .allacademicyear_sec {

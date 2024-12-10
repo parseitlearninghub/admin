@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Cluster</title>
+    <link rel="stylesheet" href="addcluster.css" />
+  </head>
+  <body>
+    <div id="loading_animation_div">
+      <img id="loading_animation_gif" src="assets/loading_animation.gif" />
+      <h1 id="parsing_lbl">Parsing...</h1>
+    </div>
+
+    <div class="home-div" id="home-div">
+      <div class="home-header-div"></div>
+      <div class="home-body-div">
+        <section class="add-cluster-header">Add Cluster</section>
+        <section class="add-cluster-name">
+          <input
+            type="text"
+            id="cluster-name-txt"
+            placeholder="Enter Cluster Name"
+          />
+        </section>
+        <section class="add-cluster-id">
+          <div class="add-cluster-id-wrapper">
+            <input
+              type="text"
+              id="cluster-id-txt"
+              placeholder="Enter Student ID"
+            />
+            <button id="add-cluster-btn">Add</button>
+          </div>
+        </section>
+        <section class="cluster-view-list">
+          <section class="cluster-view-list-wrapper">
+            <section class="cluster-view-list-header">
+              <span class="identification">Identification</span>
+              <span class="identification idname">Name</span>
+            </section>
+            <section class="cluster-view-list-body">
+              <!-- <section id="tally-cluster">
+                <span class="parser-id">7210704</span>
+                <span class="parser-name">John Lyndo Anuada</span>
+              </section>
+              <section id="tally-cluster">
+                <span class="parser-id">7210704</span>
+                <span class="parser-name">John Lyndo Anuada Conception</span>
+              </section> -->
+            </section>
+          </section>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="addcluster.js"></script>
+  </body>
+</html>

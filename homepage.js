@@ -1071,6 +1071,18 @@ async function enrollStudent(academicref, yr, sem, subject, section, studentid) 
     }
 }
 async function enrollCluster(sourcePath, destinationPath, yr, section) {
+    if (yr === "year-lvl-1") {
+        yr = "1";
+    }
+    if (yr === "year-lvl-2") {
+        yr = "2";
+    }
+    if (yr === "year-lvl-3") {
+        yr = "3";
+    }
+    if (yr === "year-lvl-4") {
+        yr = "4";
+    }
     try {
         const sourceRef = ref(databaseAdmin, sourcePath);
         const snapshot = await get(sourceRef);
