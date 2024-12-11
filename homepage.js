@@ -222,10 +222,11 @@ document.getElementById("submitacademicyear").addEventListener("click", function
     });
 });
 document.getElementById("nav_btn").addEventListener("click", function () {
-    getUsernameById(admin_id).then((username) => {
-        document.getElementById("parser_username").innerText = "@" + `${username}`
-        showSidebar();
-    });
+    // getUsernameById(admin_id).then((username) => {
+
+    // });
+    document.getElementById("parser_username").innerText = `[Fullname]`
+    showSidebar();
 });
 document.getElementById("logout_btn").addEventListener("click", function () {
     logout();
@@ -442,7 +443,9 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
 
     document.getElementById("check_animation_div").style.display = "flex";
     setTimeout(() => {
-        // document.getElementById("check_animation_div").style.display = "none";
+        document.getElementById("check_animation_div").style.display = "none";
+        window.location.reload();
+
         // document.getElementById('sectionsched_txt').value = "";
         // document.getElementById('assignTeacher_txt').value = "";
         // document.getElementById('addStudent_txt').value = "";
@@ -452,10 +455,13 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
         // document.getElementById('day_txt').value = "";
         // document.getElementById('addCluster_txt').value = "";
 
-        const radios = document.querySelectorAll('input[type="radio"]');
-        radios.forEach(radio => {
-            radio.checked = false;
-        });
+        // const radios = document.querySelectorAll('input[type="radio"]');
+        // radios.forEach(radio => {
+        //     radio.checked = false;
+        // });
+
+
+
     }, 2000);
     document.getElementById('assignTeacher_btn').style.visibility = "visible";
     document.getElementById('assignTeacher_txt').disabled = false;
@@ -558,6 +564,9 @@ document.getElementById("addschedulesection").addEventListener("click", async fu
             document.getElementById('day-select').disabled = true;
         });
     }
+});
+document.getElementById("pushCluster").addEventListener("click", async function () {
+    window.location.href = "addcluster.html";
 });
 
 
@@ -1269,13 +1278,13 @@ async function viewCluster(admin_id) {
                     selectedCluster_id = `${key}`;
                     selectedCluster_name = `${cluster.name}`;
 
-                    document.querySelectorAll(".id-cluster").forEach(function (element) {
-                        element.style.display = 'none';
-                    });
+                    // document.querySelectorAll(".id-cluster").forEach(function (element) {
+                    //     element.style.display = 'none';
+                    // });
 
-                    document.querySelectorAll(`.id-cluster-${key}`).forEach(function (element) {
-                        element.style.display = 'flex';
-                    });
+                    // document.querySelectorAll(`.id-cluster-${key}`).forEach(function (element) {
+                    //     element.style.display = 'flex';
+                    // });
                 });
 
                 Object.entries(cluster.cluster).forEach(([cluster_studentid]) => {

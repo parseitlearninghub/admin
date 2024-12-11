@@ -1250,3 +1250,9 @@ body {
   font-family: "Inter-Regular";
   color: #fefefe;
 }
+
+#pushCluster {
+  border: none;
+  background-color: transparent;
+  margin-right: 10px;
+}
