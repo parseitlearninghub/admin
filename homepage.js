@@ -242,11 +242,7 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
 
     document.getElementById("addStudent_txt").value = "";
     document.getElementById("assignTeacher_txt").value = "";
-    document.getElementById("day_txt").value = "";
-    document.getElementById("start_txt").value = "";
-    document.getElementById("end_txt").value = "";
     document.getElementById("addCluster_txt").value = "";
-    document.getElementById("sectionsched_txt").value = "";
     showHome();
     window.location.reload();
 });
@@ -259,6 +255,7 @@ document.getElementById("createfirstyr_btn").addEventListener("click", function 
     getSemester().then((sem) => {
         document.getElementById("createparseclass_sem").setAttribute('data-value', `${sem}`);
         populateSubjects("year-lvl-1", sem, currentacad_ref);
+        populateSections("1");
         //console.log("year-lvl-1", sem, currentacad_ref);
         document.getElementById("createparseclass_div").style.display = "flex";
         if (sem === "first-sem") {
@@ -281,6 +278,7 @@ document.getElementById("createsecondyr_btn").addEventListener("click", function
     getSemester().then((sem) => {
         document.getElementById("createparseclass_sem").setAttribute('data-value', `${sem}`);
         populateSubjects("year-lvl-2", sem, currentacad_ref);
+        populateSections("2");
         document.getElementById("createparseclass_div").style.display = "flex";
         if (sem === "first-sem") {
             document.getElementById("createparseclass_sem").innerText = "Semester: First";
@@ -301,6 +299,7 @@ document.getElementById("createthirdyr_btn").addEventListener("click", function 
     document.getElementById("addStudent_txt").value = "";
     getSemester().then((sem) => {
         populateSubjects("year-lvl-3", sem, currentacad_ref);
+        populateSections("3");
         document.getElementById("createparseclass_sem").setAttribute('data-value', `${sem}`);
         document.getElementById("createparseclass_div").style.display = "flex";
         if (sem === "first-sem") {
@@ -323,6 +322,7 @@ document.getElementById("createfourthyr_btn").addEventListener("click", function
     getSemester().then((sem) => {
         document.getElementById("createparseclass_sem").setAttribute('data-value', `${sem}`);
         populateSubjects("year-lvl-4", sem, currentacad_ref);
+        populateSections("4");
         document.getElementById("createparseclass_div").style.display = "flex";
         if (sem === "first-sem") {
             document.getElementById("createparseclass_sem").innerText = "Semester: First";
@@ -518,10 +518,6 @@ document.getElementById("select-cluster-btn").addEventListener("click", function
     document.getElementById('addCluster_txt').value = selectedCluster_name;
     document.getElementById('enrollParseclass').style.visibility = "visible";
 
-});
-document.getElementById('sectionsched_txt').addEventListener('blur', (event) => {
-    noSection = false;
-    selected_section = document.getElementById('sectionsched_txt').value;
 });
 
 //functions
@@ -965,33 +961,33 @@ async function populateSubjects(yearlvl, sem, acad_ref) {
             const data = snapshot.val();
             if (data) {
                 Object.keys(data).forEach((key) => {
-                    const title = data[key]?.title || key;
+                    const title = key;
                     const container = document.createElement("div");
                     container.className = "radio-subject";
 
                     const radioButton = document.createElement("input");
                     radioButton.type = "radio";
-                    radioButton.id = `parseclass-${data[key].parseclass_id}`;
+                    radioButton.id = `parseclass-${key.replace(/\s+/g, "")}`;
                     radioButton.name = "subject-list";
                     radioButton.className = "radio-subjectlist";
-                    radioButton.value = title;
+                    radioButton.value = title.replace(/\s+/g, "");
 
                     radioButton.addEventListener("click", () => {
                         if (!noSection) {
                             document.getElementById("parseclass_list").style.border = "0.5px solid #dcdcdc";
-                            document.getElementById("sectionsched_txt").style.border = "0.5px solid #dcdcdc";
-                            subjectparseclass_id = `${data[key].parseclass_id}`;
+                            document.getElementById("section").style.border = "0.5px solid #dcdcdc";
+                            subjectparseclass_id = `${key.replace(/\s+/g, "")}`;
                             selectedSubject = title;
-                            populateEnrollDetails(acad_ref, yearlvl, sem, selectedSubject)
+                            //populateEnrollDetails(acad_ref, yearlvl, sem, selectedSubject)
                         }
                         else {
                             radioButton.checked = false;
-                            document.getElementById("sectionsched_txt").style.border = "0.5px solid red";
+                            document.getElementById("section").style.border = "0.5px solid red";
                         }
 
                     });
                     const label = document.createElement("label");
-                    label.htmlFor = `parseclass-${data[key].parseclass_id}`;
+                    label.htmlFor = `parseclass-${key.replace(/\s+/g, "")}`;
                     label.textContent = title;
                     label.className = "lbl-subjectlist";
 
@@ -1008,6 +1004,52 @@ async function populateSubjects(yearlvl, sem, acad_ref) {
             alert(error);
         });
 }
+
+async function populateSections(yearlvl) {
+    get(child(dbRef, `PARSEIT/administration/section/year-lvl-${yearlvl}`))
+        .then((snapshot) => {
+            const academicyear_cont = document.getElementById('section_list');
+            academicyear_cont.innerHTML = "";
+            const data = snapshot.val();
+            if (data) {
+                Object.keys(data).forEach((key) => {
+                    const title = key;
+                    const sectionname = (data[key]);
+                    const container = document.createElement("div");
+                    container.className = "radio-section";
+
+                    const radioButton = document.createElement("input");
+                    radioButton.type = "radio";
+                    radioButton.id = `parsesection-${title}-${sectionname}`;
+                    radioButton.name = "section-list";
+                    radioButton.className = "radio-sectionlist";
+                    radioButton.value = `${title}-${sectionname}`;
+
+                    radioButton.addEventListener("click", () => {
+                        selected_section = title + "-" + sectionname;
+                        noSection = false;
+                        document.getElementById("section").style.border = "0.5px solid #dcdcdc";
+                    });
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `parsesection-${title}-${sectionname}`;
+                    label.textContent = title + "-" + sectionname;
+                    label.className = "lbl-sectionlist";
+
+                    container.appendChild(radioButton);
+                    container.appendChild(label);
+                    academicyear_cont.appendChild(container);
+
+                });
+            } else {
+                academicyear_cont.innerHTML = "<div class='nodatafound'>No data found.</div>";
+            }
+        })
+        .catch((error) => {
+            alert(error);
+        });
+}
+
 function getTeacher(targetId) {
     return get(child(dbRef, `PARSEIT/administration/teachers/${targetId}`))
         .then((snapshot) => {
@@ -1065,7 +1107,7 @@ async function enrollStudent(academicref, yr, sem, subject, section, studentid) 
         await update(ref(database, membersPath), studentData);
 
         // Update student year and section information
-        updateStudentYrSection(studentid, translateYr(yr), section);
+        // updateStudentYrSection(studentid, translateYr(yr), section);
     } catch (error) {
         console.error("Error updating data:", error);
     }
@@ -1092,7 +1134,7 @@ async function enrollCluster(sourcePath, destinationPath, yr, section) {
             await update(destinationRef, data);
             snapshot.forEach(childSnapshot => {
                 const key = childSnapshot.key;
-                updateStudentYrSection(key, yr, section);
+                // updateStudentYrSection(key, yr, section);
 
             });
             console.log(`Data successfully copied from ${sourcePath} to ${destinationPath}`);
@@ -1103,12 +1145,12 @@ async function enrollCluster(sourcePath, destinationPath, yr, section) {
         console.error("Error copying data:", error);
     }
 }
-async function updateStudentYrSection(parser_id, yr, section) {
-    await update(ref(database, `PARSEIT/administration/students/${parser_id}/`), {
-        yearlvl: yr,
-        section: section
-    });
-}
+// async function updateStudentYrSection(parser_id, yr, section) {
+//     await update(ref(database, `PARSEIT/administration/students/${parser_id}/`), {
+//         yearlvl: yr,
+//         section: section
+//     });
+// }
 function translateYr(yr) {
     switch (yr) {
         case "year-lvl-1":
@@ -1226,37 +1268,37 @@ function showEnrollButton() {
 function hideEnrollButton() {
     document.getElementById('enrollParseclass').style.visibility = "hidden";
 }
-async function populateEnrollDetails(acadRef, yrlvl, sem, subject) {
-    const section = document.getElementById('sectionsched_txt').value;
-    try {
-        const snapshot = await get(child(dbRef, `PARSEIT/administration/parseclass/${acadRef}/${yrlvl}/${sem}/${subject}/${section}`));
-        if (snapshot.exists()) {
-            const data = snapshot.val();
-            document.getElementById('assignTeacher_txt').value = data.teacher_id;
-            if (data.schedule) {
-                document.getElementById('day_txt').value = data.schedule.sched_day || '';
-                document.getElementById('start_txt').value = data.schedule.sched_start || '';
-                document.getElementById('end_txt').value = data.schedule.sched_end || '';
-            } else {
-                document.getElementById('assignTeacher_txt').value = '';
-                document.getElementById('day_txt').value = '';
-                document.getElementById('start_txt').value = '';
-                document.getElementById('end_txt').value = '';
-                console.log('No schedule found');
-            }
-            document.getElementById('assignTeacher_btn').style.visibility = "hidden";
-            document.getElementById('assignTeacher_txt').disabled = true;
+// async function populateEnrollDetails(acadRef, yrlvl, sem, subject) {
+//     const section = document.getElementById('sectionsched_txt').value;
+//     try {
+//         const snapshot = await get(child(dbRef, `PARSEIT/administration/parseclass/${acadRef}/${yrlvl}/${sem}/${subject}/${section}`));
+//         if (snapshot.exists()) {
+//             const data = snapshot.val();
+//             document.getElementById('assignTeacher_txt').value = data.teacher_id;
+//             if (data.schedule) {
+//                 document.getElementById('day_txt').value = data.schedule.sched_day || '';
+//                 document.getElementById('start_txt').value = data.schedule.sched_start || '';
+//                 document.getElementById('end_txt').value = data.schedule.sched_end || '';
+//             } else {
+//                 document.getElementById('assignTeacher_txt').value = '';
+//                 document.getElementById('day_txt').value = '';
+//                 document.getElementById('start_txt').value = '';
+//                 document.getElementById('end_txt').value = '';
+//                 console.log('No schedule found');
+//             }
+//             document.getElementById('assignTeacher_btn').style.visibility = "hidden";
+//             document.getElementById('assignTeacher_txt').disabled = true;
 
-        } else {
-            console.log('No data exists for the provided details');
-            document.getElementById('assignTeacher_txt').value = '';
-            noSection = true;
-            check_teacher = false;
-            document.getElementById('assignTeacher_btn').style.visibility = "visible";
-            document.getElementById('assignTeacher_txt').disabled = false;
+//         } else {
+//             console.log('No data exists for the provided details');
+//             document.getElementById('assignTeacher_txt').value = '';
+//             noSection = true;
+//             check_teacher = false;
+//             document.getElementById('assignTeacher_btn').style.visibility = "visible";
+//             document.getElementById('assignTeacher_txt').disabled = false;
 
-        }
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-}
+//         }
+//     } catch (error) {
+//         console.error('Error fetching data:', error);
+//     }
+// }

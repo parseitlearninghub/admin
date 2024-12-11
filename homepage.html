@@ -125,37 +125,41 @@
         <section id="createparseclass_main">
           <div id="parseclass_subjects">
             <div class="sched" id="sched">
-              <div class="schedday">
-                <input
-                  class="sectionsched schedtxt"
-                  id="sectionsched_txt"
-                  type="text"
-                  placeholder="Section"
-                />
-                <input
-                  class="day schedtxt"
-                  id="day_txt"
-                  type="text"
-                  placeholder="Day Schedule"
-                />
-              </div>
-              <div class="schedtime">
-                <input
-                  class="start schedtxt"
-                  id="start_txt"
-                  type="text"
-                  placeholder="Time In"
-                />
-                <input
-                  class="end schedtxt"
-                  id="end_txt"
-                  type="text"
-                  placeholder="Time Out"
-                />
+              <div class="section" id="section">
+                <div id="section_list"></div>
               </div>
             </div>
             <div id="parseclass_list"></div>
-
+            <div class="schedtime">
+              <input
+                class="start schedtxt"
+                id="start_txt"
+                type="text"
+                placeholder="Time In"
+              />
+              <input
+                class="end schedtxt"
+                id="end_txt"
+                type="text"
+                placeholder="Time Out"
+              />
+            </div>
+            <div class="schedday">
+              <select
+                id="day-select"
+                name="day"
+                class="start schedtxt drpschedday"
+              >
+                <option value="monday">Monday</option>
+                <option value="tuesday">Tuesday</option>
+                <option value="wednesday">Wednesday</option>
+                <option value="thursday">Thursday</option>
+                <option value="friday">Friday</option>
+                <option value="saturday">Saturday</option>
+                <option value="sunday">Sunday</option>
+              </select>
+              <button id="addschedulesection">Add Schedule</button>
+            </div>
             <div id="addteacher_parseclass">
               <img
                 class="sadminicon teachericon"

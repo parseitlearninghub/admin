@@ -270,8 +270,6 @@ body {
 .year,
 .section,
 .regular {
-  width: auto;
-  height: auto;
   background-color: transparent;
   display: flex;
   justify-content: space-evenly;
@@ -307,6 +305,9 @@ body {
   border-radius: 5px;
 }
 
+.section {
+  margin-bottom: 10px;
+}
 .input-wrap-regular {
   width: 100%;
   background-color: transparent;
@@ -738,16 +739,23 @@ body {
   overflow: hidden;
 }
 
-.radio-subjectlist {
+.radio-subjectlist,
+.radio-sectionlist {
   accent-color: #ff3334;
 }
 
-.lbl-subjectlist {
+.lbl-subjectlist,
+.lbl-sectionlist {
   font-family: Inter-Regular;
   opacity: 50%;
 }
 
-.radio-subject {
+.lbl-sectionlist {
+  opacity: 80%;
+}
+
+.radio-subject,
+.radio-section {
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -757,11 +765,34 @@ body {
   flex-shrink: 0;
 }
 
-#parseclass_list {
+.radio-section {
+  margin: 10px;
+}
+
+#parseclass_list,
+#parsesection_list {
   display: flex;
   flex-wrap: wrap;
   border: 0.5px solid #dcdcdc;
   border-radius: 7px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+#section_list {
+  display: flex;
+  width: 100%;
+  margin-left: -5px;
+}
+
+.schedday {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+  box-sizing: border-box;
+  margin-top: 10px;
 }
 
 #addteacher_parseclass,
@@ -796,6 +827,14 @@ body {
 .nodatafound {
   margin-left: 8px;
   font-family: Inter-Bold;
+}
+
+#day-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: none;
+  border-radius: 5px;
 }
 
 #assignTeacher_txt,
@@ -915,13 +954,12 @@ body {
   width: 100%;
 }
 
-.schedday {
+.section {
   display: flex;
-  height: 50px;
-  gap: 10px;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 10px;
+  box-sizing: border-box;
+  margin-bottom: 5px;
 }
 
 .sched {
@@ -929,13 +967,13 @@ body {
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  margin-bottom: 6px;
   display: flex;
   width: 100%;
   flex-shrink: 0;
   background-color: transparent;
   padding-bottom: 5px;
 }
+
 .schedtime {
   display: flex;
   height: 50px;
@@ -969,6 +1007,21 @@ body {
 
 .schedtxt:focus {
   outline: none;
+}
+
+.drpschedday {
+  width: 100%;
+}
+
+#addschedulesection {
+  height: 93%;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  background-color: #ff3334;
+  color: #fefefe;
+  font-family: Inter-Medium;
+  box-sizing: border-box;
 }
 
 .side_options_wrapper {
