@@ -68,9 +68,23 @@ body {
 .home-header-div {
   height: 60px;
   width: 100%;
-  background-color: blue;
+  background-color: transparent;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 15px;
 }
 
+#canceladdcluster-btn{
+  border: none;
+  background-color: transparent;
+}
+
+.canceladdcluster-btn{
+  width: 15px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
 .home-body-div {
   height: 60px;
   width: 100%;
@@ -181,9 +195,9 @@ body {
 
 .identification {
   width: 100%;
-  text-align: left;
+  text-align: center;
   font-family: Inter-Bold;
-  padding-left: 20px;
+  
 }
 .idname {
   padding-left: 0px;
@@ -213,10 +227,10 @@ body {
   padding-left: 20px;
 }
 .parser-name {
-  padding-left: 0px;
   display: inline-block;
-  max-width: 200px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-left:0 ;
+  padding-right: 20px;
 }
