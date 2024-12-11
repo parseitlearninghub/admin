@@ -413,22 +413,21 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     let clusterid = selectedCluster_id;
 
     const sourcePath = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${clusterid}/cluster/`;
-    const destinationPath = `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${selected_section}/members`;
+    const destinationPath = `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${selectedSubject}/${selected_section}/members`;
 
     //console.log(academicref, yr, sem, subject, section, teacherid, sched_day, sched_end, sched_start);
 
 
     if (teacherid !== "") {
         if (check_teacher == true) {
-            assignTeacher(academicref, yr, sem, subject, section, teacherid);
+            assignTeacher(academicref, yr, sem, subject, selected_section, teacherid);
             document.getElementById("addstudent_parseclass").style.border = "0.5px solid #dcdcdc";
         }
 
     }
     if (studentid !== "") {
         if (check_student == true) {
-            enrollStudent(academicref, yr, sem, subject, section, studentid);
-
+            enrollStudent(academicref, yr, sem, subject, selected_section, studentid);
         }
     }
     else {
@@ -982,7 +981,6 @@ function logout() {
     window.location.href = "login.html";
 }
 function getSemester() {
-
     return get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
         .then((snapshot) => {
             if (snapshot.exists()) {
@@ -1342,7 +1340,6 @@ function hideEnrollButton() {
 //         console.error('Error fetching data:', error);
 //     }
 // }
-
 async function populateSchedules(acadref, yrlvl, sem, subject, section) {
     get(child(dbRef, `PARSEIT/administration/parseclass/${acadref}/${yrlvl}/${sem}/${subject}/${section}`))
         .then((snapshot) => {
