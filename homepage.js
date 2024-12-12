@@ -5,6 +5,7 @@ import {
     get,
     child,
     update,
+    remove,
 } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 
 const firebaseConfig = {
@@ -50,13 +51,14 @@ let selected_section = "";
 setLabelAcademicYear();
 setButtonStart();
 checkCurrentAcadYear();
-viewCluster(admin_id);
+
 
 //preloads
 setScreenSize(window.innerWidth, window.innerHeight);
 window.addEventListener("load", function () {
     document.getElementById("loading_animation_div").style.display = "none";
     document.getElementById("home_div").style.display = "flex";
+    
 });
 
 //processess
@@ -492,6 +494,7 @@ document.addEventListener('touchend', (event) => {
     }
 });
 document.getElementById("addCluster_btn").addEventListener("click", function () {
+    viewCluster(admin_id);
     document.getElementById("viewcluster_div").style.display = "flex";
 });
 document.getElementById("clusterclose_btn").addEventListener("click", function () {
@@ -506,9 +509,11 @@ document.getElementById("clusterclose_btn").addEventListener("click", function (
 
 });
 document.getElementById("select-cluster-btn").addEventListener("click", function () {
+    
     document.getElementById("viewcluster_div").style.display = "none";
     document.getElementById('addCluster_txt').value = selectedCluster_name;
     document.getElementById('enrollParseclass').style.visibility = "visible";
+    document.getElementById("addCluster_btn").style.display = "none";
 
 });
 document.getElementById("addschedulesection").addEventListener("click", async function () {
@@ -566,6 +571,7 @@ document.getElementById("addschedulesection").addEventListener("click", async fu
     }
 });
 document.getElementById("pushCluster").addEventListener("click", async function () {
+    await deleteCluster();
     window.location.href = "addcluster.html";
 });
 
@@ -961,7 +967,8 @@ function createAllParseClass(acadRef) {
 function showSidebar() {
     document.getElementById("sidebar_frame").style.animation = "showsidebar 0.3s ease-in-out forwards";
 }
-function hideSidebar() {
+async function hideSidebar() {
+    await deleteCluster();
     document.getElementById("sidebar_frame").style.animation = "hidesidebar 0.3s ease-in-out forwards";
 }
 function getUsernameById(targetId) {
@@ -985,8 +992,9 @@ function getUsernameById(targetId) {
         console.error("Error fetching data:", error);
     }
 };
-function logout() {
+async function logout() {
     localStorage.removeItem("user-parser-admin");
+    await deleteCluster();
     window.location.href = "login.html";
 }
 function getSemester() {
@@ -1226,11 +1234,21 @@ function getMyClusters(admin_id) {
                 const data = snapshot.val();
                 Object.entries(data).forEach(([key, cluster]) => {
                     const clusterHTML = `
-                        <div class="radio-cluster-wrapper">
-                            <label class="cluster-radio-default" for="cluster-radio-${admin_id}-${key}">
+                        <div class="radio-cluster-wrapper" id="${key}">
+                            <label class="cluster-radio-default" onclick="localStorage.setItem('active-view-cluster','${key}');
+                            localStorage.setItem('active-clustername', '${cluster.name}');
+                            window.location.href='addcluster.html';"
+                            " for="cluster-radio-${admin_id}-${key}">
                                 ${cluster.name || "Unnamed Cluster"}
                             </label>
+                            <img src="assets/icons/trash-solid.svg" class="remove-cluster-btn" onclick="
+                            localStorage.setItem('delete-cluster', '${key}');
+                            document.getElementById('${key}').style.display = 'none';
+                            ">
                         </div>`;
+
+                        
+
 
                     mycluster += clusterHTML;
                     mycluster_cont.innerHTML = mycluster;
@@ -1246,18 +1264,18 @@ function getMyClusters(admin_id) {
 }
 async function viewCluster(admin_id) {
     const mycluster_cont = document.getElementById("cluster-div");
+    
     const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/`;
 
     try {
         const snapshot = await get(child(dbRefAdmin, path));
         if (snapshot.exists()) {
             const data = snapshot.val();
-
+            mycluster_cont.innerHTML = '';
             Object.entries(data).forEach(([key, cluster]) => {
                 const clusterTitleDiv = document.createElement("div");
                 clusterTitleDiv.classList.add("cluster-title-div");
                 clusterTitleDiv.id = `cluster-title-${key}`;
-
                 const radioInput = document.createElement("input");
                 radioInput.type = "radio";
                 radioInput.classList.add("radio-title");
@@ -1287,19 +1305,19 @@ async function viewCluster(admin_id) {
                     // });
                 });
 
-                Object.entries(cluster.cluster).forEach(([cluster_studentid]) => {
-                    const listDiv = document.createElement("div");
-                    listDiv.classList.add(`cluster-list`);
-                    listDiv.classList.add(`cluster-list-${key}`);
-                    const studentIdSpan = document.createElement("span");
-                    studentIdSpan.classList.add("id-cluster");
-                    studentIdSpan.classList.add(`id-cluster-${key}`);
-                    studentIdSpan.id = `cluster-parser-${cluster_studentid}`;
-                    studentIdSpan.textContent = cluster_studentid;
+                // Object.entries(cluster.cluster).forEach(([cluster_studentid]) => {
+                //     const listDiv = document.createElement("div");
+                //     listDiv.classList.add(`cluster-list`);
+                //     listDiv.classList.add(`cluster-list-${key}`);
+                //     const studentIdSpan = document.createElement("span");
+                //     studentIdSpan.classList.add("id-cluster");
+                //     studentIdSpan.classList.add(`id-cluster-${key}`);
+                //     studentIdSpan.id = `cluster-parser-${cluster_studentid}`;
+                //     studentIdSpan.textContent = cluster_studentid;
 
-                    listDiv.appendChild(studentIdSpan);
-                    mycluster_cont.appendChild(listDiv);
-                });
+                //     listDiv.appendChild(studentIdSpan);
+                //     mycluster_cont.appendChild(listDiv);
+                // });
             });
 
         } else {
@@ -1371,17 +1389,24 @@ async function populateSchedules(acadref, yrlvl, sem, subject, section) {
                     radioButton.value = title.replace(/\s+/g, "");
 
                     radioButton.addEventListener("click", () => {
+                        
                         document.getElementById('start_txt').value = start;
                         document.getElementById('end_txt').value = end;
                         document.getElementById('day-select').value = title;
+                        document.getElementById('assignTeacher_txt').value = data.teacher_id ;
+
                         document.getElementById('addschedulesection').disabled = true;
                         document.getElementById('addschedulesection').style.backgroundColor = "#dcdcdc";
                         document.getElementById('start_txt').disabled = true;
                         document.getElementById('end_txt').disabled = true;
                         document.getElementById('day-select').disabled = true;
 
+
                         document.getElementById('schedday').style.display = "none";
                         document.getElementById('schedtime').style.display = "none";
+
+                        document.getElementById('assignTeacher_btn').style.display = "none";
+                        
 
                     });
 
@@ -1401,4 +1426,18 @@ async function populateSchedules(acadref, yrlvl, sem, subject, section) {
                 document.getElementById("schedtime").style.marginTop = "0px";
             }
         })
+}
+
+async function deleteCluster() {
+    const ref_cluster_id = localStorage.getItem('delete-cluster');
+const clustersRef = child(dbRefAdmin, `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${ref_cluster_id}`);  // Reference to the entire clusters collection
+
+try {
+    await remove(clustersRef); 
+    console.log("All clusters removed successfully");
+    localStorage.removeItem('delete-cluster');
+} catch (error) {
+    console.error("Error removing clusters:", error);
+}
+
 }

@@ -1083,7 +1083,7 @@ body {
 }
 
 .cluster_div {
-  background-color: #f5f5f5;
+  background-color: #fff0f0;
   width: 100%;
   display: none;
   align-items: flex-start;
@@ -1093,13 +1093,15 @@ body {
 }
 
 .radio-cluster-wrapper {
-  margin-left: 5%;
   background-color: transparent;
   width: 100%;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
-  padding: 4px;
+  padding: 7px;
+  padding-left: 10px;
+  box-sizing: border-box;
+
 }
 
 .cluster-radio-default {
@@ -1255,4 +1257,11 @@ body {
   border: none;
   background-color: transparent;
   margin-right: 10px;
+}
+
+.remove-cluster-btn{
+  font-size: 10px;
+  width: 10px;
+  padding-right: 10px;
+  filter: brightness(0) saturate(100%) invert(27%) sepia(99%) saturate(3837%) hue-rotate(344deg) brightness(107%) contrast(99%);
 }
