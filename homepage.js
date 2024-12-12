@@ -1246,10 +1246,6 @@ function getMyClusters(admin_id) {
                             document.getElementById('${key}').style.display = 'none';
                             ">
                         </div>`;
-
-                        
-
-
                     mycluster += clusterHTML;
                     mycluster_cont.innerHTML = mycluster;
                 });
@@ -1429,7 +1425,7 @@ async function populateSchedules(acadref, yrlvl, sem, subject, section) {
 }
 
 async function deleteCluster() {
-    const ref_cluster_id = localStorage.getItem('delete-cluster');
+const ref_cluster_id = localStorage.getItem('delete-cluster');
 const clustersRef = child(dbRefAdmin, `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${ref_cluster_id}`);  // Reference to the entire clusters collection
 
 try {
