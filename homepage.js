@@ -396,7 +396,10 @@ document.getElementById("addStudent_btn").addEventListener("click", function () 
     }
 
 });
-document.getElementById("viewStudent_btn").addEventListener("touchstart", function () {
+document.getElementById("viewStudent_btn").addEventListener("touchstart", async function () {
+    const parser_username = await getUsernameById(document.getElementById("addStudent_txt").value);
+    await getDetails(document.getElementById("addStudent_txt").value);  
+    document.getElementById("iddetails-username").innerHTML = "Useraname: "+parser_username;   
     document.getElementById("viewid_div").style.display = "flex";
     document.getElementById("iddetails").style.animation = "fadeInFromTop 0.3s ease-out forwards";
 });
@@ -520,6 +523,7 @@ document.getElementById("addschedulesection").addEventListener("click", async fu
     const radios = document.getElementsByName('subject-list');
     const start = document.getElementById('start_txt').value;
     const end = document.getElementById('end_txt').value;
+    const room = document.getElementById('room_txt').value;
     let isSubjectSelected = false;
     for (let i = 0; i < radios.length; i++) {
         if (radios[i].checked) {
@@ -560,6 +564,7 @@ document.getElementById("addschedulesection").addEventListener("click", async fu
             day: day,
             start: start,
             end: end,
+            room: room,
         }).then(() => {
             document.getElementById('schedule_list').style.display = "none";
             document.getElementById('addschedulesection').disabled = true;
@@ -1138,6 +1143,22 @@ function getStudent(targetId) {
 
         })
 }
+
+function getDetails(targetId) {
+    return get(child(dbRef, `PARSEIT/administration/students/${targetId}`))
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                let suffix = snapshot.val().suffix;
+                if(snapshot.val().suffix === "none"){
+                    suffix = snapshot.val().suffix = "";
+                }
+                document.getElementById("iddetails-fullname").innerHTML = "Fullname: "+snapshot.val().firstname+" "+snapshot.val().middlename+" "+snapshot.val().lastname + " " + suffix;
+                document.getElementById("iddetails-email").innerHTML = "Email: "+snapshot.val().email;
+                document.getElementById("iddetails-birthday").innerHTML = "Birthday: "+snapshot.val().birthday;
+    
+            }
+        })
+}
 async function assignTeacher(academicref, yr, sem, subject, section, teacherid) {
     await update(ref(database, `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`), {
         teacher_id: teacherid,
@@ -1220,7 +1241,7 @@ function translateYr(yr) {
             console.log("error");
     }
 }
-function getMyClusters(admin_id) {
+async function getMyClusters(admin_id) {
     const mycluster_cont = document.getElementById("cluster_div");
     let mycluster = "";
     // if (!admin_id) {
@@ -1229,7 +1250,7 @@ function getMyClusters(admin_id) {
     // }
     const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/`;
     try {
-        return get(child(dbRefAdmin, path)).then((snapshot) => {
+        return await get(child(dbRefAdmin, path)).then((snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 Object.entries(data).forEach(([key, cluster]) => {
@@ -1402,7 +1423,8 @@ async function populateSchedules(acadref, yrlvl, sem, subject, section) {
                         document.getElementById('schedtime').style.display = "none";
 
                         document.getElementById('assignTeacher_btn').style.display = "none";
-                        
+
+                        document.getElementById('assignTeacher_txt').disabled = true;
 
                     });
 
