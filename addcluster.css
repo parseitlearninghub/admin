@@ -63,6 +63,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .home-header-div {
@@ -75,13 +76,12 @@ body {
   padding-left: 15px;
 }
 
-#canceladdcluster-btn{
+#canceladdcluster-btn {
   border: none;
   background-color: transparent;
 }
 
-
-.canceladdcluster-btn{
+.canceladdcluster-btn {
   width: 15px;
   margin-left: 10px;
   margin-top: 10px;
@@ -91,8 +91,10 @@ body {
   width: 100%;
   flex: 1;
   background-color: transparent;
-  overflow-x: scroll;
+  overflow-x: hidden;
+  overflow-y: scroll;
   scrollbar-width: none;
+  padding-bottom: 15px;
 }
 
 .add-cluster-header {
@@ -195,13 +197,15 @@ body {
 }
 
 .identification {
-  width: 100%;
-  text-align: center;
+  width: 65%;
+  text-align: left;
   font-family: Inter-Bold;
-  
+  padding-left: 5%;
 }
 .idname {
-  padding-left: 0px;
+  text-align: left;
+  padding: 0;
+  width: 100%;
 }
 .cluster-view-list-body {
   width: 100%;
@@ -227,11 +231,14 @@ body {
   font-family: Inter-Light;
   padding-left: 20px;
 }
+.parser-id {
+  width: 70%;
+}
 .parser-name {
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-left:0 ;
+  padding-left: 0;
   padding-right: 20px;
 }

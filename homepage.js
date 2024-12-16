@@ -6,6 +6,7 @@ import {
     child,
     update,
     remove,
+    onValue,
 } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 
 const firebaseConfig = {
@@ -50,7 +51,6 @@ let selectedCluster_name = "";
 let selected_section = "";
 setLabelAcademicYear();
 setButtonStart();
-checkCurrentAcadYear();
 
 
 //preloads
@@ -58,7 +58,7 @@ setScreenSize(window.innerWidth, window.innerHeight);
 window.addEventListener("load", function () {
     document.getElementById("loading_animation_div").style.display = "none";
     document.getElementById("home_div").style.display = "flex";
-    
+
 });
 
 //processess
@@ -200,12 +200,63 @@ document.getElementById("sem2").addEventListener("click", function () {
     });
 });
 document.getElementById("addacademicyear_btn").addEventListener("click", function () {
-    document.getElementById('allacademicyear_sec').style.display = "none";
-    document.getElementById('addacademicyear_div').style.display = "flex";
+    document.getElementById('optionmenu_addacad').style.display = "none";
+    document.getElementById('submitacademicyear').style.display = "block";
+    document.getElementById('addacademicyear_div').style.display = "block";
 });
+
+document.getElementById("deleteacademicyear_btn").addEventListener("click", function () {
+    const selectedRadioButton = document.querySelector('input[name="academic-year"]:checked');
+    if (selectedRadioButton) {
+        const dataId = selectedRadioButton.dataset.id;
+        if (dataId === currentacad_ref) {
+            document.getElementById('allacademicyear_sec').style.border = "0.5px solid red";
+            setTimeout(() => {
+                document.getElementById('allacademicyear_sec').style.border = "0.5px solid #dcdcdc";
+            }, 1500);
+            return;
+        }
+        else {
+            remove(ref(database, `PARSEIT/administration/academicyear/BSIT/` + dataId));
+            remove(ref(database, `PARSEIT/administration/parseclass/` + dataId));
+            viewAcademicYear();
+        }
+
+    } else {
+        console.log("No radio button selected.");
+    }
+
+});
+
+document.getElementById("setacademicyear_btn").addEventListener("click", function () {
+    const selectedRadioButton = document.querySelector('input[name="academic-year"]:checked');
+    if (selectedRadioButton) {
+        const dataId = selectedRadioButton.dataset.id;
+        if (dataId === currentacad_ref) {
+            document.getElementById('allacademicyear_sec').style.border = "0.5px solid red";
+            setTimeout(() => {
+                document.getElementById('allacademicyear_sec').style.border = "0.5px solid #dcdcdc";
+            }, 1500);
+            return;
+        }
+        else {
+            update(ref(database, "PARSEIT/administration/academicyear/status"), {
+                academic_ref: dataId,
+                current_sem: "1",
+                ongoing: "false",
+            });
+            viewAcademicYear();
+        }
+
+    } else {
+        console.log("No radio button selected.");
+    }
+
+});
+
 document.getElementById("submitacademicyear").addEventListener("click", function () {
     const academic_ref = generateAcadRef();
-    const title = document.getElementById('description_txt').value;
+    let title = document.getElementById('description_txt').value;
     update(ref(database, "PARSEIT/administration/academicyear/BSIT/" + academic_ref), {
         title: title,
     }).then(() => {
@@ -216,9 +267,10 @@ document.getElementById("submitacademicyear").addEventListener("click", function
         }).then(() => {
             viewAcademicYear();
             createAllParseClass(academic_ref);
-            currentacad_ref = academic_ref;
-            document.getElementById('allacademicyear_sec').style.display = "flex";
+            document.getElementById('optionmenu_addacad').style.display = "flex";
+            document.getElementById('submitacademicyear').style.display = "none";
             document.getElementById('addacademicyear_div').style.display = "none";
+            document.getElementById('description_txt').value = '';
         });
 
     });
@@ -239,7 +291,7 @@ document.getElementById("cancelcreateparseclass_btn").addEventListener("click", 
     document.getElementById("assignTeacher_txt").disabled = false;
     subjectparseclass_id = "";
 
-    document.getElementById("addStudent_btn").style.display = "block";
+    document.getElementById("addStudent_btn").style.display = "none";
     document.getElementById("viewStudent_btn").style.display = "none";
     document.getElementById("addStudent_txt").disabled = false;
 
@@ -338,7 +390,38 @@ document.getElementById("createfourthyr_btn").addEventListener("click", function
         console.error("Error fetching semester:", error);
     });
 });
-document.getElementById("assignTeacher_btn").addEventListener("click", function () {
+// document.getElementById("assignTeacher_btn").addEventListener("click", function () {
+//     const targetId = document.getElementById("assignTeacher_txt").value;
+//     if (subjectparseclass_id === "") {
+//         document.getElementById("parseclass_list").style.border = "0.5px solid red";
+//     }
+//     else if (targetId === "") {
+//         document.getElementById("addteacher_parseclass").style.border = "0.5px solid red";
+//     }
+//     else {
+//         getTeacher(targetId).then((snapshot) => {
+//             if (snapshot) {
+//                 check_teacher = true;
+//                 selectedTeacher = document.getElementById("assignTeacher_txt").value;
+//                 console.log(selectedTeacher);
+
+//                 document.getElementById("assignTeacher_txt").value = snapshot.val().firstname + " " + snapshot.val().lastname;
+//                 document.getElementById("addteacher_parseclass").style.border = "0.5px solid #dcdcdc";
+//                 document.getElementById("assignTeacher_btn").style.visibility = "hidden";
+//                 document.getElementById("assignTeacher_txt").disabled = true;
+
+//             }
+
+//             if (!snapshot) {
+//                 document.getElementById("addteacher_parseclass").style.border = "0.5px solid red";
+
+//             }
+//         })
+
+//     }
+
+// });
+document.getElementById("assignTeacher_txt").addEventListener("blur", function () {
     const targetId = document.getElementById("assignTeacher_txt").value;
     if (subjectparseclass_id === "") {
         document.getElementById("parseclass_list").style.border = "0.5px solid red";
@@ -349,8 +432,12 @@ document.getElementById("assignTeacher_btn").addEventListener("click", function 
     else {
         getTeacher(targetId).then((snapshot) => {
             if (snapshot) {
+                //console.log(snapshot);
                 check_teacher = true;
                 selectedTeacher = document.getElementById("assignTeacher_txt").value;
+                //console.log(selectedTeacher);
+
+                document.getElementById("assignTeacher_txt").value = snapshot.firstname + " " + snapshot.lastname;
                 document.getElementById("addteacher_parseclass").style.border = "0.5px solid #dcdcdc";
                 document.getElementById("assignTeacher_btn").style.visibility = "hidden";
                 document.getElementById("assignTeacher_txt").disabled = true;
@@ -367,7 +454,8 @@ document.getElementById("assignTeacher_btn").addEventListener("click", function 
 
 });
 
-document.getElementById("addStudent_btn").addEventListener("click", function () {
+
+document.getElementById("addStudent_txt").addEventListener("blur", function () {
     const targetId = document.getElementById("addStudent_txt").value;
     if (subjectparseclass_id === "") {
         document.getElementById("parseclass_list").style.border = "0.5px solid red";
@@ -398,8 +486,8 @@ document.getElementById("addStudent_btn").addEventListener("click", function () 
 });
 document.getElementById("viewStudent_btn").addEventListener("touchstart", async function () {
     const parser_username = await getUsernameById(document.getElementById("addStudent_txt").value);
-    await getDetails(document.getElementById("addStudent_txt").value);  
-    document.getElementById("iddetails-username").innerHTML = "Useraname: "+parser_username;   
+    await getDetails(document.getElementById("addStudent_txt").value);
+    document.getElementById("iddetails-username").innerHTML = "Username: " + parser_username;
     document.getElementById("viewid_div").style.display = "flex";
     document.getElementById("iddetails").style.animation = "fadeInFromTop 0.3s ease-out forwards";
 });
@@ -414,7 +502,7 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     const yr = document.getElementById("createparseclass_yr").getAttribute('data-value');
     const sem = document.getElementById("createparseclass_sem").getAttribute('data-value');
     const subject = selectedSubject;
-    let teacherid = document.getElementById('assignTeacher_txt').value;
+    let teacherid = selectedTeacher;
     let studentid = document.getElementById('addStudent_txt').value;
     let clusterid = selectedCluster_id;
 
@@ -472,7 +560,7 @@ document.getElementById("enrollParseclass").addEventListener("click", function (
     document.getElementById('assignTeacher_txt').disabled = false;
     document.getElementById('addStudent_txt').disabled = false;
     document.getElementById("viewStudent_btn").style.display = "none";
-    document.getElementById("addStudent_btn").style.display = "block";
+    document.getElementById("addStudent_btn").style.display = "none";
     noSection = true;
 });
 document.getElementById("myCluster_btn").addEventListener("click", function () {
@@ -506,13 +594,13 @@ document.getElementById("clusterclose_btn").addEventListener("click", function (
     noSection = true;
     selectedCluster_id = "";
     selectedCluster_name = "";
-    document.getElementById("viewStudent_btn").style.display = "none";
-    document.getElementById("addStudent_btn").style.display = "block";
+    document.getElementById("viewStudent_btn").style.display = "block";
+    document.getElementById("addStudent_btn").style.display = "none";
 
 
 });
 document.getElementById("select-cluster-btn").addEventListener("click", function () {
-    
+
     document.getElementById("viewcluster_div").style.display = "none";
     document.getElementById('addCluster_txt').value = selectedCluster_name;
     document.getElementById('enrollParseclass').style.visibility = "visible";
@@ -521,9 +609,9 @@ document.getElementById("select-cluster-btn").addEventListener("click", function
 });
 document.getElementById("addschedulesection").addEventListener("click", async function () {
     const radios = document.getElementsByName('subject-list');
-    const start = document.getElementById('start_txt').value;
-    const end = document.getElementById('end_txt').value;
-    const room = document.getElementById('room_txt').value;
+    let start = document.getElementById('start_txt').value;
+    let end = document.getElementById('end_txt').value;
+    let room = document.getElementById('room_txt').value;
     let isSubjectSelected = false;
     for (let i = 0; i < radios.length; i++) {
         if (radios[i].checked) {
@@ -549,7 +637,6 @@ document.getElementById("addschedulesection").addEventListener("click", async fu
         return;
     }
 
-
     if (!isSubjectSelected) {
         document.getElementById("parseclass_list").style.border = "0.5px solid red";
         setTimeout(() => {
@@ -560,18 +647,21 @@ document.getElementById("addschedulesection").addEventListener("click", async fu
         const yr = document.getElementById("createparseclass_yr").getAttribute('data-value');
         const day = document.getElementById('day-select').value;
         const currentTime = Date.now();
+        if (room === "") {
+            room = "TBA";
+        }
         await update(ref(database, `PARSEIT/administration/parseclass/${currentacad_ref}/${yr}/${sem}/${selectedSubject}/${selected_section}/schedule/${currentTime.toString()}/`), {
             day: day,
             start: start,
             end: end,
             room: room,
         }).then(() => {
-            document.getElementById('schedule_list').style.display = "none";
-            document.getElementById('addschedulesection').disabled = true;
-            document.getElementById('addschedulesection').style.backgroundColor = "#dcdcdc";
-            document.getElementById('start_txt').disabled = true;
-            document.getElementById('end_txt').disabled = true;
-            document.getElementById('day-select').disabled = true;
+            populateSchedules(currentacad_ref, yr, sem, selectedSubject, selected_section).then(() => {
+                document.getElementById('start_txt').value = '';
+                end = '';
+                room = '';
+                isSubjectSelected = false;
+            });
         });
     }
 });
@@ -823,8 +913,19 @@ function showHome() {
     document.getElementById("home_div").style.display = "flex";
 }
 async function viewAcademicYear() {
-    const currentAcadYear = currentacad_ref;
-    acad_radio = "";
+    let currentAcadYear = '';
+    const dbRefPath = ref(database, "PARSEIT/administration/academicyear/status/");
+    onValue(dbRefPath, (snapshot) => {
+        if (snapshot.exists()) {
+            currentAcadYear = snapshot.val().academic_ref;
+            currentacad_ref = currentAcadYear;
+        } else {
+            reject(new Error("No data available at the specified reference."));
+        }
+    }, (error) => {
+        reject(error);
+    });
+
     get(child(dbRef, "PARSEIT/administration/academicyear/BSIT/"))
         .then((snapshot) => {
             const academicyear_cont = document.getElementById('allacademicyear_div');
@@ -839,18 +940,13 @@ async function viewAcademicYear() {
 
                     const radioButton = document.createElement("input");
                     radioButton.type = "radio";
-                    radioButton.id = `academic-year-${key}`;
+                    radioButton.id = `${key}`;
                     radioButton.name = "academic-year";
                     radioButton.value = key;
                     radioButton.className = "radio-academicyear";
-
-                    radioButton.addEventListener("click", () => {
-                        updateAcademicYear(`${key}`);
-                    });
-
-
+                    radioButton.setAttribute("data-id", `${key}`);
                     const label = document.createElement("label");
-                    label.htmlFor = `academic-year-${key}`;
+                    label.htmlFor = `${key}`;
                     label.textContent = title;
                     label.className = "lbl-academicyear";
 
@@ -861,7 +957,6 @@ async function viewAcademicYear() {
 
                     if (`${key}` === currentAcadYear) {
                         radioButton.checked = true;
-
                     }
                 });
             } else {
@@ -905,14 +1000,22 @@ function setLabelSemester() {
             }
         });
 }
-async function checkCurrentAcadYear() {
-    return await get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
-        .then((snapshot) => {
-            currentacad_ref = snapshot.val().academic_ref;
-            return snapshot.val().academic_ref;
+// async function checkCurrentAcadYear() {
+//     return new Promise((resolve, reject) => {
+//         const dbRefPath = ref(database, "PARSEIT/administration/academicyear/status/");
 
-        });
-}
+//         onValue(dbRefPath, (snapshot) => {
+//             if (snapshot.exists()) {
+//                 const currentacad_ref = snapshot.val().academic_ref;
+//                 resolve(currentacad_ref);
+//             } else {
+//                 reject(new Error("No data available at the specified reference."));
+//             }
+//         }, (error) => {
+//             reject(error);
+//         });
+//     });
+// }
 function setButtonStart() {
     get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
         .then((snapshot) => {
@@ -1044,7 +1147,23 @@ async function populateSubjects(yearlvl, sem, acad_ref) {
                             const sem = document.getElementById("createparseclass_sem").getAttribute('data-value');
                             const yr = document.getElementById("createparseclass_yr").getAttribute('data-value');
                             populateSchedules(currentacad_ref, yr, sem, selectedSubject, selected_section);
+                            get(child(dbRef, "PARSEIT/administration/parseclass/" + acad_ref + "/" + yearlvl + "/" + sem + "/" + key + "/" + selected_section)).
+                                then((teacher) => {
+                                    if (teacher.exists()) {
+                                        document.getElementById('assignTeacher_txt').value = teacher.val().teacher_id;
+                                        document.getElementById('assignTeacher_txt').focus();
+                                        check_teacher = true;
+                                        selectedTeacher = teacher.val().teacher_id;
+                                    }
+                                    else {
+                                        check_teacher = false;
+                                        document.getElementById('assignTeacher_txt').value = '';
+                                        document.getElementById('assignTeacher_txt').disabled = false;
+                                        document.getElementById('assignTeacher_txt').focus();
 
+                                    }
+
+                                });
 
                         }
                         else {
@@ -1120,7 +1239,7 @@ function getTeacher(targetId) {
         .then((snapshot) => {
             if (snapshot.exists()) {
                 if (snapshot.val().activated === "yes") {
-                    return true;
+                    return snapshot.val();
                 }
                 else {
                     return false;
@@ -1133,14 +1252,11 @@ function getStudent(targetId) {
     return get(child(dbRef, `PARSEIT/administration/students/${targetId}`))
         .then((snapshot) => {
             if (snapshot.exists()) {
-                if (snapshot.val().activated === "yes") {
-                    return true;
-                }
-                else {
-                    return false;
-                }
+                return true;
             }
-
+            else {
+                return false;
+            }
         })
 }
 
@@ -1149,13 +1265,13 @@ function getDetails(targetId) {
         .then((snapshot) => {
             if (snapshot.exists()) {
                 let suffix = snapshot.val().suffix;
-                if(snapshot.val().suffix === "none"){
+                if (snapshot.val().suffix === "none") {
                     suffix = snapshot.val().suffix = "";
                 }
-                document.getElementById("iddetails-fullname").innerHTML = "Fullname: "+snapshot.val().firstname+" "+snapshot.val().middlename+" "+snapshot.val().lastname + " " + suffix;
-                document.getElementById("iddetails-email").innerHTML = "Email: "+snapshot.val().email;
-                document.getElementById("iddetails-birthday").innerHTML = "Birthday: "+snapshot.val().birthday;
-    
+                document.getElementById("iddetails-fullname").innerHTML = "Fullname: " + snapshot.val().firstname + " " + snapshot.val().middlename + " " + snapshot.val().lastname + " " + suffix;
+                document.getElementById("iddetails-email").innerHTML = "Email: " + snapshot.val().email;
+                document.getElementById("iddetails-birthday").innerHTML = "Birthday: " + snapshot.val().birthday;
+
             }
         })
 }
@@ -1281,7 +1397,7 @@ async function getMyClusters(admin_id) {
 }
 async function viewCluster(admin_id) {
     const mycluster_cont = document.getElementById("cluster-div");
-    
+
     const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/`;
 
     try {
@@ -1406,11 +1522,11 @@ async function populateSchedules(acadref, yrlvl, sem, subject, section) {
                     radioButton.value = title.replace(/\s+/g, "");
 
                     radioButton.addEventListener("click", () => {
-                        
+
                         document.getElementById('start_txt').value = start;
                         document.getElementById('end_txt').value = end;
                         document.getElementById('day-select').value = title;
-                        document.getElementById('assignTeacher_txt').value = data.teacher_id ;
+                        document.getElementById('assignTeacher_txt').value = data.teacher_id;
 
                         document.getElementById('addschedulesection').disabled = true;
                         document.getElementById('addschedulesection').style.backgroundColor = "#dcdcdc";
@@ -1447,15 +1563,15 @@ async function populateSchedules(acadref, yrlvl, sem, subject, section) {
 }
 
 async function deleteCluster() {
-const ref_cluster_id = localStorage.getItem('delete-cluster');
-const clustersRef = child(dbRefAdmin, `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${ref_cluster_id}`);  // Reference to the entire clusters collection
+    const ref_cluster_id = localStorage.getItem('delete-cluster');
+    const clustersRef = child(dbRefAdmin, `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${ref_cluster_id}`);  // Reference to the entire clusters collection
 
-try {
-    await remove(clustersRef); 
-    console.log("All clusters removed successfully");
-    localStorage.removeItem('delete-cluster');
-} catch (error) {
-    console.error("Error removing clusters:", error);
-}
+    try {
+        await remove(clustersRef);
+        console.log("All clusters removed successfully");
+        localStorage.removeItem('delete-cluster');
+    } catch (error) {
+        console.error("Error removing clusters:", error);
+    }
 
 }

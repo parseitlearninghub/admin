@@ -405,7 +405,9 @@ body {
   height: 100%;
 }
 
-#addacademicyear_btn {
+#addacademicyear_btn,
+#deleteacademicyear_btn,
+#setacademicyear_btn {
   width: 100%;
   height: 50px;
   border-radius: 5px;
@@ -413,6 +415,13 @@ body {
   font-family: "Inter-Regular";
   background-color: transparent;
   color: #ff3334;
+  margin-top: 10px;
+  display: block;
+}
+
+.optionmenu_addacad {
+  display: flex;
+  gap: 10px;
 }
 
 .extra {
@@ -505,7 +514,6 @@ body {
 .allacademicyear_sec {
   width: 100%;
   background-color: transparent;
-  margin-top: 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -578,6 +586,8 @@ body {
   font-family: "Inter-Medium";
   border-radius: 5px;
   color: #fefefe;
+  margin-top: 10px;
+  display: none;
 }
 
 #sidebar_div {
@@ -841,6 +851,11 @@ body {
   box-sizing: border-box;
 }
 
+#addteacher_parseclass {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
 #parseclass_subjects {
   display: flex;
   justify-content: flex-start;
@@ -894,6 +909,10 @@ body {
   text-align: right;
   margin-right: 10px;
 }
+#assignTeacher_btn,
+#addStudent_btn {
+  display: none;
+}
 
 .teachericon {
   filter: invert(0%) sepia(100%) saturate(5730%) hue-rotate(346deg)
@@ -932,7 +951,7 @@ body {
   border-radius: 7px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   display: flex;
-  flex-direction: column ;
+  flex-direction: column;
   align-items: flex-start;
   justify-content: center;
   gap: 5px;
@@ -940,7 +959,7 @@ body {
   padding-left: 20px;
 }
 
-.lbldetails{
+.lbldetails {
   font-family: Inter-Regular;
   color: #181818;
 }
@@ -1051,7 +1070,7 @@ body {
   width: 100%;
 }
 
-.room{
+.room {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -1118,7 +1137,6 @@ body {
   padding: 7px;
   padding-left: 10px;
   box-sizing: border-box;
-
 }
 
 .cluster-radio-default {
@@ -1276,9 +1294,20 @@ body {
   margin-right: 10px;
 }
 
-.remove-cluster-btn{
+.remove-cluster-btn {
   font-size: 10px;
   width: 10px;
   padding-right: 10px;
-  filter: brightness(0) saturate(100%) invert(27%) sepia(99%) saturate(3837%) hue-rotate(344deg) brightness(107%) contrast(99%);
+  filter: brightness(0) saturate(100%) invert(27%) sepia(99%) saturate(3837%)
+    hue-rotate(344deg) brightness(107%) contrast(99%);
+}
+
+.room_txtss {
+  flex-grow: 1;
+  transition: transform 2s ease, flex-grow 0.5s ease;
+  white-space: nowrap;
+}
+
+#schedday {
+  transition: transform 2s ease, flex-grow 0.5s ease;
 }
