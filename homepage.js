@@ -323,7 +323,6 @@ async function checkTeacherId(id) {
         return false;
     }
 }
-
 function createTemporaryPassTeacher(firstname, lastname, suffix) {
     let temporarypass = "";
     if (suffix === "none") {
@@ -394,6 +393,12 @@ function errorElement(element) {
         document.getElementById(element).style.border = "0.5px solid #dcdcdc";
     }, 1000);
 }
+function showCheckAnimation() {
+    document.getElementById("check_animation_div").style.display = "flex";
+    setTimeout(() => {
+        document.getElementById("check_animation_div").style.display = "none";
+    }, 2000);
+}
 
 async function getCurrentAcadYear() {
     return new Promise(() => {
@@ -435,7 +440,6 @@ async function getCurrentAcadYear() {
         });
     });
 }
-
 document.getElementById("startacad_btn").addEventListener("click", async function () {
     await update(ref(database, "PARSEIT/administration/academicyear/status"), {
         ongoing: "true",
@@ -452,12 +456,10 @@ document.getElementById("academicyr_lbl").addEventListener("click", function () 
     document.getElementById("setupacad_div").style.display = "flex";
     document.getElementById('description_txt').value = "";
 });
-
 document.getElementById("canceladdacad_btn").addEventListener("click", function () {
     document.getElementById("setupacad_div").style.display = "none";
     document.getElementById('addacademicyear_div').style.display = "none";
 });
-
 document.getElementById("sem1").addEventListener("click", async function () {
     await update(ref(database, "PARSEIT/administration/academicyear/status"), {
         current_sem: "1",
@@ -470,7 +472,6 @@ document.getElementById("sem2").addEventListener("click", async function () {
     });
     toggleSem2();
 });
-
 function toggleSem1() {
     document.getElementById('sem1').style.color = "#ff3334";
     document.getElementById('sem1').style.backgroundColor = "#fefefe";
@@ -543,6 +544,7 @@ document.getElementById("setacademicyear_btn").addEventListener("click", functio
                 current_sem: "1",
                 ongoing: "false",
             });
+            showCheckAnimation();
             viewAcademicYear();
         }
 
@@ -567,12 +569,14 @@ document.getElementById("submitacademicyear").addEventListener("click", async fu
             current_sem: "1",
             ongoing: "false",
         }).then(() => {
+            showCheckAnimation();
             viewAcademicYear();
             createAllParseClass(academic_ref);
             document.getElementById('optionmenu_addacad').style.display = "flex";
             document.getElementById('submitacademicyear').style.display = "none";
             document.getElementById('addacademicyear_div').style.display = "none";
             document.getElementById('description_txt').value = '';
+
         });
 
     });
@@ -633,6 +637,7 @@ document.getElementById("deleteacademicyear_btn").addEventListener("click", func
         else {
             remove(ref(database, `PARSEIT/administration/academicyear/BSIT/` + dataId));
             remove(ref(database, `PARSEIT/administration/parseclass/` + dataId));
+            showCheckAnimation();
             viewAcademicYear();
         }
 
