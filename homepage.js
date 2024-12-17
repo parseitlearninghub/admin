@@ -291,7 +291,7 @@ document.getElementById("submitteacher_btn").addEventListener("click", async fun
     let birthday = document.getElementById("birthday_teacher_txt").value;
 
     let id = document.getElementById("id_teacher_txt").value;
-    let verified_id = await checkTeacherId(id);
+    let verified_id = await checkParserId(id);
     if (verified_id) {
         errorElement("input-wrap-teacher-id");
         return;
@@ -315,14 +315,6 @@ document.getElementById("submitteacher_btn").addEventListener("click", async fun
 document.getElementById("viewteacher_btn").addEventListener("click", function () {
     window.location.href = "viewCreatedTeacher.html";
 });
-async function checkTeacherId(id) {
-    let admin = await get(ref(database, "PARSEIT/administration/teachers/" + id));
-    if (admin.val()) {
-        return true;
-    } else {
-        return false;
-    }
-}
 function createTemporaryPassTeacher(firstname, lastname, suffix) {
     let temporarypass = "";
     if (suffix === "none") {
@@ -365,6 +357,123 @@ async function submitTeacher(id, firstname, middlename, lastname, suffix, birthd
     });
 }
 
+
+document.getElementById("submitstudent_btn").addEventListener("click", async function () {
+    let firstname = document.getElementById("firstname_student_txt").value;
+    let lastname = document.getElementById("lastname_student_txt").value;
+    let birthday = document.getElementById("birthday_student_txt").value;
+
+    const selectedRegular = document.querySelector('input[name="regular"]:checked');
+    let regularity = selectedRegular.value;
+
+    const selectedSection = document.querySelector('input[name="section"]:checked');
+    let section = selectedSection.value;
+
+    const selectedYear = document.querySelector('input[name="year"]:checked');
+    let year = selectedYear.value;
+
+    let id = document.getElementById("id_student_txt").value;
+    let verified_id = await checkParserId(id);
+    if (verified_id) {
+        errorElement("input-wrap-student-id");
+        return;
+    }
+    let email = document.getElementById("email_student_txt").value;
+    let verified_email = await checkParserEmail(email);
+    if (verified_email) {
+        errorElement("input-wrap-student-email");
+        return;
+    }
+    let middlename = document.getElementById("middlename_student_txt").value;
+    if (middlename === '') {
+        middlename = 'none';
+    }
+    let suffix = document.getElementById("suffix_student_txt").value;
+    if (suffix === '') {
+        suffix = "none";
+    }
+    submitStudent(regularity, year, section, id, firstname, middlename, lastname, suffix, birthday, email);
+});
+document.querySelectorAll('input[name="year"]').forEach((input) => {
+    input.addEventListener("change", async () => {
+        document.getElementById("input-section").style.display = "flex";
+        const year = document.querySelector('input[name="year"]:checked').value;
+
+        // Fetch data from Firebase
+        await get(child(dbRef, `PARSEIT/administration/section/year-lvl-${year}`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val(); // Retrieve data object
+                const entries = Object.entries(data); // Convert keys and values into an array of [key, value] pairs
+
+                // Assign key and value to section-1 and section-2
+                if (entries.length >= 1) {
+                    const [key1, value1] = entries[0];
+                    document.getElementById("section-1").innerText = `${key1}-${value1}`;
+                    document.getElementById("section-radio-1").setAttribute('value', `${key1}-${value1}`);
+                }
+                if (entries.length >= 2) {
+                    const [key2, value2] = entries[1];
+                    document.getElementById("section-2").innerText = `${key2}-${value2}`;
+                    document.getElementById("section-radio-2").setAttribute('value', `${key2}-${value2}`);
+                }
+            } else {
+                console.log('No data available for the selected year');
+                document.getElementById("section-1").innerText = '';
+                document.getElementById("section-2").innerText = '';
+            }
+        }).catch((error) => {
+            console.error('Error fetching data:', error);
+        });
+    });
+});
+document.getElementById("viewstudent_btn").addEventListener("click", function () {
+    window.location.href = "viewCreatedStudent.html";
+});
+function createTemporaryPassStudent(firstname, lastname, suffix) {
+    let temporarypass = "";
+    if (suffix === "none") {
+        temporarypass = firstname + lastname + ".parser"
+    }
+    else {
+        temporarypass = firstname + lastname + suffix + ".parser"
+    }
+    temporarypass = temporarypass.toLowerCase();
+    return temporarypass.replace(/\s+/g, "");
+}
+function clearAddStudentForm() {
+    setTimeout(() => {
+        document.getElementById("check_animation_div").style.display = "none";
+    }, 2000);
+    document.getElementById("id_student_txt").value = "";
+    document.getElementById("firstname_student_txt").value = "";
+    document.getElementById("middlename_student_txt").value = "";
+    document.getElementById("lastname_student_txt").value = "";
+    document.getElementById("suffix_student_txt").value = "";
+    document.getElementById("birthday_student_txt").value = "";
+    document.getElementById("email_student_txt").value = "";
+}
+async function submitStudent(regularity, year, section, id, firstname, middlename, lastname, suffix, birthday, email) {
+    await update(ref(database, "PARSEIT/administration/students/" + id), {
+        activated: "no",
+        birthday: birthday,
+        disabled: "no",
+        email: email,
+        firstname: firstname,
+        id: id,
+        lastname: lastname,
+        middlename: middlename,
+        regular: regularity,
+        section: section,
+        suffix: suffix,
+        temporarypass: createTemporaryPassStudent(firstname, lastname, suffix),
+        type: "student",
+        yearlvl: year,
+    }).then(() => {
+        document.getElementById("check_animation_div").style.display = "flex";
+        clearAddStudentForm();
+    });
+}
+
 async function checkParserEmail(email) {
     let student = await get(ref(database, `PARSEIT/administration/students/`));
     let teacher = await get(ref(database, `PARSEIT/administration/teachers/`));
@@ -386,7 +495,27 @@ async function checkParserEmail(email) {
     }
     return false;
 }
-
+async function checkParserId(id) {
+    let student = await get(ref(database, `PARSEIT/administration/students/`));
+    let teacher = await get(ref(database, `PARSEIT/administration/teachers/`));
+    if (student.exists()) {
+        const student_id = student.val();
+        for (const parser in student_id) {
+            if (parser === id) {
+                return true;
+            }
+        }
+    }
+    if (teacher.exists()) {
+        const teacher_id = teacher.val();
+        for (const parser in teacher_id) {
+            if (parser === id) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 function errorElement(element) {
     document.getElementById(element).style.border = "0.5px solid red";
     setTimeout(() => {
@@ -399,7 +528,6 @@ function showCheckAnimation() {
         document.getElementById("check_animation_div").style.display = "none";
     }, 2000);
 }
-
 async function getCurrentAcadYear() {
     return new Promise(() => {
         const dbRefPath = ref(database, "PARSEIT/administration/academicyear/status/");
@@ -651,6 +779,54 @@ document.getElementById("deleteacademicyear_btn").addEventListener("click", func
 
 
 
+
+
+
+
+// async function populateSections(yearlvl) {
+//     get(child(dbRef, `PARSEIT/administration/section/year-lvl-${yearlvl}`))
+//         .then((snapshot) => {
+//             const academicyear_cont = document.getElementById('section_list');
+//             academicyear_cont.innerHTML = "";
+//             const data = snapshot.val();
+//             if (data) {
+//                 Object.keys(data).forEach((key) => {
+//                     const title = key;
+//                     const sectionname = (data[key]);
+//                     const container = document.createElement("div");
+//                     container.className = "radio-section";
+
+//                     const radioButton = document.createElement("input");
+//                     radioButton.type = "radio";
+//                     radioButton.id = `parsesection-${title}-${sectionname}`;
+//                     radioButton.name = "section-list";
+//                     radioButton.className = "radio-sectionlist";
+//                     radioButton.value = `${title}-${sectionname}`;
+//                     //console.log(`year-lvl-${yearlvl}/`);
+//                     //radioButton.setAttribute("data-id", `${key}`);
+
+//                     radioButton.addEventListener("click", () => {
+//                         selected_section = title + "-" + sectionname;
+//                     });
+
+//                     const label = document.createElement("label");
+//                     label.htmlFor = `parsesection-${title}-${sectionname}`;
+//                     label.textContent = sectionname;
+//                     label.className = "lbl-sectionlist";
+
+//                     container.appendChild(radioButton);
+//                     container.appendChild(label);
+//                     academicyear_cont.appendChild(container);
+
+//                 });
+//             } else {
+//                 academicyear_cont.innerHTML = "<div class='nodatafound'>No data found.</div>";
+//             }
+//         })
+//         .catch((error) => {
+//             alert(error);
+//         });
+// }
 
 // function setButtonStart() {
 //     get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
@@ -1250,7 +1426,7 @@ document.getElementById("deleteacademicyear_btn").addEventListener("click", func
 //     document.getElementById("section-1").setAttribute('data-value', value_a);
 //     document.getElementById("section-2").innerText = section_b;
 //     document.getElementById("section-2").setAttribute('data-value', value_b);
-//     document.getElementById("input-section").style.display = "flex";
+//
 
 //     //console.log(value_a, value_b, year);
 
@@ -1280,27 +1456,7 @@ document.getElementById("deleteacademicyear_btn").addEventListener("click", func
 
 // }
 
-// function submitStudent(regularity, year, section, id, firstname, middlename, lastname, suffix, birthday, email) {
-//     update(ref(database, "PARSEIT/administration/students/" + id), {
-//         activated: "no",
-//         birthday: birthday,
-//         disabled: "no",
-//         email: email,
-//         firstname: firstname,
-//         id: id,
-//         lastname: lastname,
-//         middlename: middlename,
-//         regular: regularity,
-//         section: section,
-//         suffix: suffix,
-//         temporarypass: createTemporaryPass(firstname, lastname, suffix),
-//         type: "student",
-//         yearlvl: year,
-//     }).then(() => {
-//         document.getElementById("check_animation_div").style.display = "flex";
-//         clearAddStudentForm();
-//     });
-// }
+
 // function clearAddStudentForm() {
 //     setTimeout(() => {
 //         document.getElementById("check_animation_div").style.display = "none";
@@ -1430,50 +1586,7 @@ document.getElementById("deleteacademicyear_btn").addEventListener("click", func
 // //         });
 // // }
 
-// async function populateSections(yearlvl) {
-//     get(child(dbRef, `PARSEIT/administration/section/year-lvl-${yearlvl}`))
-//         .then((snapshot) => {
-//             const academicyear_cont = document.getElementById('section_list');
-//             academicyear_cont.innerHTML = "";
-//             const data = snapshot.val();
-//             if (data) {
-//                 Object.keys(data).forEach((key) => {
-//                     const title = key;
-//                     const sectionname = (data[key]);
-//                     const container = document.createElement("div");
-//                     container.className = "radio-section";
 
-//                     const radioButton = document.createElement("input");
-//                     radioButton.type = "radio";
-//                     radioButton.id = `parsesection-${title}-${sectionname}`;
-//                     radioButton.name = "section-list";
-//                     radioButton.className = "radio-sectionlist";
-//                     radioButton.value = `${title}-${sectionname}`;
-//                     //console.log(`year-lvl-${yearlvl}/`);
-//                     //radioButton.setAttribute("data-id", `${key}`);
-
-//                     radioButton.addEventListener("click", () => {
-//                         selected_section = title + "-" + sectionname;
-//                     });
-
-//                     const label = document.createElement("label");
-//                     label.htmlFor = `parsesection-${title}-${sectionname}`;
-//                     label.textContent = sectionname;
-//                     label.className = "lbl-sectionlist";
-
-//                     container.appendChild(radioButton);
-//                     container.appendChild(label);
-//                     academicyear_cont.appendChild(container);
-
-//                 });
-//             } else {
-//                 academicyear_cont.innerHTML = "<div class='nodatafound'>No data found.</div>";
-//             }
-//         })
-//         .catch((error) => {
-//             alert(error);
-//         });
-// }
 // // let noSection = true;
 // const selectedSubjects = [];
 // async function populateSubjects(yearlvl, sem, acad_ref) {

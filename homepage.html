@@ -383,46 +383,68 @@
           <div id="formaddstudent_div">
             <div class="input-wrap-regular input-regular" id="input-regular">
               <div class="regular">
-                <input type="radio" name="regular" id="regular-radio-1" />
-                <span id="regular-1" value="">Regular</span>
+                <input
+                  type="radio"
+                  name="regular"
+                  id="regular-radio-1"
+                  value="yes"
+                />
+                <label id="regular-1" for="regular-radio-1" value=""
+                  >Regular</label
+                >
               </div>
               <div class="regular">
-                <input type="radio" name="regular" id="regular-radio-2" />
-                <span id="regular-2" value="">Irregular</span>
+                <input
+                  type="radio"
+                  name="regular"
+                  id="regular-radio-2"
+                  value="no"
+                />
+                <label id="regular-2" for="regular-radio-2" value=""
+                  >Irregular</label
+                >
               </div>
             </div>
 
             <div class="input-wrap input-year">
               <div class="year">
-                <input type="radio" name="year" id="first_radio" /> 1st Yr.
+                <input type="radio" name="year" value="1" id="first_radio" />
+                1st Yr.
               </div>
               <div class="year">
-                <input type="radio" name="year" id="second_radio" /> 2nd Yr.
+                <input type="radio" name="year" value="2" id="second_radio" />
+                2nd Yr.
               </div>
               <div class="year">
-                <input type="radio" name="year" id="third_radio" /> 3rd Yr.
+                <input type="radio" name="year" value="3" id="third_radio" />
+                3rd Yr.
               </div>
               <div class="year">
-                <input type="radio" name="year" id="fourth_radio" /> 4th Yr.
+                <input type="radio" name="year" value="4" id="fourth_radio" />
+                4th Yr.
               </div>
             </div>
 
             <div class="input-wrap-section input-regular" id="input-section">
               <div class="section">
                 <input type="radio" name="section" id="section-radio-1" />
-                <span id="section-1" value="">section</span>
+                <label id="section-1" for="section-radio-1" value=""
+                  >section</label
+                >
               </div>
               <div class="section">
                 <input type="radio" name="section" id="section-radio-2" />
-                <span id="section-2" value="">section</span>
+                <label id="section-2" for="section-radio-2" value=""
+                  >section</label
+                >
               </div>
             </div>
 
-            <div class="input-wrap">
+            <div class="input-wrap" id="input-wrap-student-id">
               <input
                 type="text"
                 class="input-txt"
-                id="id_txt"
+                id="id_student_txt"
                 placeholder="Enter Student ID"
               />
             </div>
@@ -431,7 +453,7 @@
               <input
                 type="text"
                 class="input-txt"
-                id="firstname_txt"
+                id="firstname_student_txt"
                 placeholder="Enter First Name"
               />
             </div>
@@ -440,7 +462,7 @@
               <input
                 type="text"
                 class="input-txt"
-                id="middlename_txt"
+                id="middlename_student_txt"
                 placeholder="Enter Middle Name"
               />
             </div>
@@ -449,7 +471,7 @@
               <input
                 type="text"
                 class="input-txt"
-                id="lastname_txt"
+                id="lastname_student_txt"
                 placeholder="Enter Last Name"
               />
             </div>
@@ -458,7 +480,7 @@
               <input
                 type="text"
                 class="input-txt"
-                id="suffix_txt"
+                id="suffix_student_txt"
                 placeholder="Enter Suffix Name"
               />
             </div>
@@ -467,16 +489,16 @@
               <input
                 type="text"
                 class="input-txt"
-                id="birthday_txt"
+                id="birthday_student_txt"
                 placeholder="Enter Birthday"
               />
             </div>
 
-            <div class="input-wrap">
+            <div class="input-wrap" id="input-wrap-student-email">
               <input
                 type="text"
                 class="input-txt"
-                id="email_txt"
+                id="email_student_txt"
                 placeholder="Enter Email Address"
               />
             </div>
