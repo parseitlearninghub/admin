@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Cluster</title>
+    <link rel="stylesheet" href="viewCreatedAdmin.css" />
+  </head>
+  <body>
+    <div id="loading_animation_div">
+      <img id="loading_animation_gif" src="assets/loading_animation.gif" />
+      <h1 id="parsing_lbl">Parsing...</h1>
+    </div>
+
+    <div class="home-div" id="home-div">
+      <div class="home-header-div">
+        <button id="canceladdcluster-btn">
+          <img
+            class="canceladdcluster-btn"
+            src="assets/icons/arrow-left-solid.svg"
+          />
+        </button>
+      </div>
+      <div class="home-body-div">
+        <section class="add-cluster-header">All Admin Users</section>
+        <section class="cluster-view-list">
+          <section class="cluster-view-list-wrapper">
+            <section class="cluster-view-list-header">
+              <span class="identification">ID</span>
+              <span class="identification idname">Name</span>
+            </section>
+            <section
+              class="cluster-view-list-body"
+              id="cluster-view-list-body"
+            ></section>
+          </section>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="viewCreatedAdmin.js"></script>
+  </body>
+</html>
