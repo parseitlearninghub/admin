@@ -24,11 +24,14 @@
       <div class="home-body-div">
         <section class="add-cluster-header">Add Cluster</section>
         <section class="add-cluster-name">
-          <input
-            type="text"
-            id="cluster-name-txt"
-            placeholder="Enter Cluster Name"
-          />
+          <section class="add-cluster-name-wrapper">
+            <input
+              type="text"
+              id="cluster-name-txt"
+              placeholder="Enter Cluster Name"
+            />
+            <button id="delete-cluster-btn">Delete</button>
+          </section>
         </section>
         <section class="add-cluster-id">
           <div class="add-cluster-id-wrapper">
@@ -37,7 +40,8 @@
               id="cluster-id-txt"
               placeholder="Enter Student ID"
             />
-            <button id="add-cluster-btn">Add</button>
+            <button id="add-cluster-btn">+</button>
+            <button id="remove-clusterid-btn">-</button>
           </div>
         </section>
         <section class="cluster-view-list">

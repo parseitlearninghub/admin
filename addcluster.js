@@ -5,6 +5,7 @@ import {
     get,
     child,
     update,
+    remove,
 } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 
 const firebaseConfig = {
@@ -37,13 +38,25 @@ const dbRefAdmin = ref(databaseAdmin);
 
 
 let admin_id = localStorage.getItem("user-parser-admin");
-let current_cluster_id = '';
 setScreenSize(window.innerWidth, window.innerHeight);
 window.addEventListener("load", function () {
+    let active_clustername = localStorage.getItem('active-clustername');
+
     document.getElementById("loading_animation_div").style.display = "none";
     document.getElementById("home-div").style.display = "flex";
-    populateCluster(admin_id, localStorage.getItem('active-clustername'));
-    document.getElementById("cluster-name-txt").value = localStorage.getItem('active-clustername')
+    if (active_clustername !== null) {
+        document.getElementById("cluster-name-txt").value = active_clustername;
+        document.getElementById("cluster-name-txt").disabled = true;
+        enableDeleteCluster();
+        enableRemoveClusterId();
+        populateCluster(admin_id, active_clustername);
+    }
+    else {
+        disableDeleteCluster();
+        disableRemoveClusterId();
+        document.getElementById("cluster-name-txt").disabled = false;
+        document.getElementById("cluster-name-txt").value = '';
+    }
 });
 
 
@@ -51,20 +64,108 @@ window.addEventListener("load", function () {
 document.getElementById("canceladdcluster-btn").addEventListener("click", function () {
     localStorage.removeItem('active-clustername');
     localStorage.removeItem('active-view-cluster');
+    clusterTitleAvailable = false;
     window.location.href = "homepage.html";
 
 });
-document.getElementById("cluster-name-txt").addEventListener("input", function () {
+
+let clusterTitleAvailable = false;
+document.getElementById("cluster-name-txt").addEventListener("input", async function () {
+    const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/`;
     const cluster_name = document.getElementById("cluster-name-txt").value;
-    populateCluster(admin_id, cluster_name);
-    
+    try {
+        return await get(child(dbRefAdmin, path)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const academicyear_cont = document.getElementById('cluster-view-list-body');
+                academicyear_cont.innerHTML = "";
+                Object.entries(data).forEach(([key, cluster]) => {
+                    if (cluster.name !== cluster_name) {
+                        clusterTitleAvailable = true
+                    }
+                    else {
+                        clusterTitleAvailable = false;
+                        errorElement("cluster-name-txt");
+                        document.getElementById('cluster-id-txt').value = "";
+                    }
+                });
+            } else {
+                console.log("No data available");
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+
 });
+
 document.getElementById("add-cluster-btn").addEventListener("click", async function () {
     const student_id = document.getElementById("cluster-id-txt").value;
     const cluster_name = document.getElementById("cluster-name-txt").value;
-    updateCluster(admin_id, student_id, current_cluster_id, cluster_name);
-    populateCluster(admin_id, cluster_name);
+    let active_cluster_id = localStorage.getItem("active-view-cluster");
+    let active_clustername = localStorage.getItem('active-clustername');
+
+    if (clusterTitleAvailable) {
+        if (active_cluster_id !== null && active_cluster_id !== null) {
+            if (student_id !== '') {
+                document.getElementById("remove-clusterid-btn").style.display = 'block';
+                addCluster(admin_id, student_id, active_cluster_id, active_clustername);
+
+
+            } else {
+                errorElement("cluster-id-txt");
+            }
+        }
+        else {
+            if (student_id !== '') {
+                document.getElementById("remove-clusterid-btn").style.display = 'block';
+                addCluster(admin_id, student_id, active_cluster_id, cluster_name);
+
+            } else {
+                errorElement("cluster-id-txt");
+            }
+        }
+    }
+    else {
+        errorElement("cluster-name-txt");
+    }
+
 });
+
+document.getElementById("delete-cluster-btn").addEventListener("click", async function () {
+    //console.log(`PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${localStorage.getItem('active-view-cluster')}/cluster/`)
+    remove(ref(databaseAdmin, `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${localStorage.getItem('active-view-cluster')}`)).then(() => {
+        localStorage.removeItem('active-clustername');
+        localStorage.removeItem('active-view-cluster');
+        clusterTitleAvailable = false;
+        window.location.href = "homepage.html";
+    });
+
+});
+
+document.getElementById("remove-clusterid-btn").addEventListener("click", async function () {
+    const student_id = document.getElementById("cluster-id-txt").value;
+    const active_cluster_name = localStorage.getItem("active-clustername");
+    const active_cluster_id = localStorage.getItem("active-view-cluster");
+    await get(child(dbRefAdmin, `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${active_cluster_id}/cluster/${student_id}`))
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                if (student_id !== '') {
+                    remove(ref(databaseAdmin, `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${localStorage.getItem('active-view-cluster')}/cluster/${student_id}`)).then(() => {
+                        populateCluster(admin_id, active_cluster_name);
+                    });
+
+                } else {
+                    errorElement("cluster-id-txt");
+                }
+
+            } else {
+                errorElement("cluster-id-txt");
+            }
+        });
+
+});
+
 
 
 
@@ -76,8 +177,7 @@ function setScreenSize(width, height) {
     document.getElementById("loading_animation_div").style.visibility = "visible";
 
 }
-
-async function populateCluster(admin_id, cluster_name){
+async function populateCluster(admin_id, cluster_name) {
     const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/`;
     try {
         return await get(child(dbRefAdmin, path)).then((snapshot) => {
@@ -87,7 +187,6 @@ async function populateCluster(admin_id, cluster_name){
                 academicyear_cont.innerHTML = "";
                 Object.entries(data).forEach(([key, cluster]) => {
                     if (cluster.name === cluster_name) {
-                        current_cluster_id = key;
                         for (const property in cluster) {
                             for (const id in cluster[property]) {
                                 if (typeof id === 'string' && id.length >= 7) {
@@ -98,15 +197,17 @@ async function populateCluster(admin_id, cluster_name){
                                             <span class="parser-name">${fullname}</span>
                                         </section>`;
                                     });
+
                                 }
                             }
                         }
                     }
-                    else{
-                        current_cluster_id = "";
+                    else {
+                        document.getElementById('cluster-id-txt').value = "";
                     }
                 });
             } else {
+
                 console.log("No data available");
             }
         });
@@ -129,27 +230,68 @@ async function getParserFullName(id) {
         console.error("Error fetching data:", error);
     }
 }
-async function updateCluster(admin_id, student_id, current_cluster_id, cluster_name) {
+async function addCluster(admin_id, student_id, active_cluster_id, cluster_name) {
     const currentTime = Date.now().toString();
-    
-    if(current_cluster_id !== ''){
-        const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${current_cluster_id}/cluster/`;
-        await update(ref(databaseAdmin, path), {
-            [student_id]: {
-                finalgrade: "0",
-            },
-        });
-    }
-    else{
-        const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${currentTime}`;
-        await update(ref(databaseAdmin, path), {
-            name: cluster_name,
-            cluster: {
-                [student_id]: {
-                    finalgrade: "0",
-                },
-            },
-        });
-    }
 
+    await get(child(dbRef, `PARSEIT/administration/students/${student_id}`))
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                if (active_cluster_id !== null) {
+                    const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${active_cluster_id}/cluster/`;
+                    update(ref(databaseAdmin, path), {
+                        [student_id]: {
+                            finalgrade: "0",
+                        },
+                    });
+                }
+                else {
+                    const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${currentTime}`;
+                    update(ref(databaseAdmin, path), {
+                        name: cluster_name,
+                        cluster: {
+                            [student_id]: {
+                                finalgrade: "0",
+                            },
+                        },
+                    });
+
+                    localStorage.setItem('active-view-cluster', currentTime);
+                    localStorage.setItem('active-clustername', cluster_name);
+                }
+                enableDeleteCluster();
+                enableRemoveClusterId();
+                document.getElementById("cluster-id-txt").value = '';
+                document.getElementById("cluster-name-txt").disabled = true;
+                populateCluster(admin_id, cluster_name);
+            } else {
+                errorElement("cluster-id-txt");
+            }
+        });
+
+}
+
+
+function disableRemoveClusterId() {
+    document.getElementById("remove-clusterid-btn").style.backgroundColor = '#dcdcdc';
+    document.getElementById("remove-clusterid-btn").disabled = true;
+}
+function enableRemoveClusterId() {
+    document.getElementById("remove-clusterid-btn").style.backgroundColor = '#f30505';
+    document.getElementById("remove-clusterid-btn").disabled = false;
+}
+
+function disableDeleteCluster() {
+    document.getElementById("delete-cluster-btn").style.backgroundColor = '#dcdcdc';
+    document.getElementById("delete-cluster-btn").disabled = true;
+}
+
+function enableDeleteCluster() {
+    document.getElementById("delete-cluster-btn").style.backgroundColor = '#f30505';
+    document.getElementById("delete-cluster-btn").disabled = false;
+}
+function errorElement(element) {
+    document.getElementById(element).style.border = "0.5px solid red";
+    setTimeout(() => {
+        document.getElementById(element).style.border = "0.5px solid #dcdcdc";
+    }, 1000);
 }
