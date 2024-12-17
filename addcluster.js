@@ -64,12 +64,11 @@ window.addEventListener("load", function () {
 document.getElementById("canceladdcluster-btn").addEventListener("click", function () {
     localStorage.removeItem('active-clustername');
     localStorage.removeItem('active-view-cluster');
-    clusterTitleAvailable = false;
     window.location.href = "homepage.html";
 
 });
 
-let clusterTitleAvailable = false;
+let clusterTitleAvailable = true;
 document.getElementById("cluster-name-txt").addEventListener("input", async function () {
     const path = `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/`;
     const cluster_name = document.getElementById("cluster-name-txt").value;
@@ -81,7 +80,7 @@ document.getElementById("cluster-name-txt").addEventListener("input", async func
                 academicyear_cont.innerHTML = "";
                 Object.entries(data).forEach(([key, cluster]) => {
                     if (cluster.name !== cluster_name) {
-                        clusterTitleAvailable = true
+                        clusterTitleAvailable = true;
                     }
                     else {
                         clusterTitleAvailable = false;
@@ -137,7 +136,6 @@ document.getElementById("delete-cluster-btn").addEventListener("click", async fu
     remove(ref(databaseAdmin, `PARSEIT/administration/admins/${admin_id}/mycluster/forparseroom/${localStorage.getItem('active-view-cluster')}`)).then(() => {
         localStorage.removeItem('active-clustername');
         localStorage.removeItem('active-view-cluster');
-        clusterTitleAvailable = false;
         window.location.href = "homepage.html";
     });
 
