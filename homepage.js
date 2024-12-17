@@ -52,6 +52,11 @@ const dbRefAdmin = ref(databaseAdmin);
 
 
 let admin_id = localStorage.getItem("user-parser-admin");
+getCurrentAcadYear(); let latest_acad_ref = ''; let latest_ongoing = ''; let latest_sem = '';
+
+// setInterval(() => {
+//     console.log(latest_acad_ref, latest_ongoing, latest_sem);
+// }, 1000);
 
 //preloads
 setScreenSize(window.innerWidth, window.innerHeight);
@@ -59,6 +64,7 @@ window.addEventListener("load", function () {
     document.getElementById("loading_animation_div").style.display = "none";
     document.getElementById("home_div").style.display = "flex";
     showClusters(admin_id);
+
 });
 function setScreenSize(width, height) {
     document.body.style.width = width + "px";
@@ -317,27 +323,7 @@ async function checkTeacherId(id) {
         return false;
     }
 }
-async function checkParserEmail(email) {
-    let student = await get(ref(database, `PARSEIT/administration/students/`));
-    let teacher = await get(ref(database, `PARSEIT/administration/teachers/`));
-    if (student.exists()) {
-        const student_id = student.val();
-        for (const id in student_id) {
-            if (student_id[id]?.email === email) {
-                return true;
-            }
-        }
-    }
-    if (teacher.exists()) {
-        const teacher_id = teacher.val();
-        for (const id in teacher_id) {
-            if (teacher_id[id]?.email === email) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
+
 function createTemporaryPassTeacher(firstname, lastname, suffix) {
     let temporarypass = "";
     if (suffix === "none") {
@@ -380,10 +366,27 @@ async function submitTeacher(id, firstname, middlename, lastname, suffix, birthd
     });
 }
 
-
-
-
-
+async function checkParserEmail(email) {
+    let student = await get(ref(database, `PARSEIT/administration/students/`));
+    let teacher = await get(ref(database, `PARSEIT/administration/teachers/`));
+    if (student.exists()) {
+        const student_id = student.val();
+        for (const id in student_id) {
+            if (student_id[id]?.email === email) {
+                return true;
+            }
+        }
+    }
+    if (teacher.exists()) {
+        const teacher_id = teacher.val();
+        for (const id in teacher_id) {
+            if (teacher_id[id]?.email === email) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 function errorElement(element) {
     document.getElementById(element).style.border = "0.5px solid red";
@@ -392,31 +395,277 @@ function errorElement(element) {
     }, 1000);
 }
 
+async function getCurrentAcadYear() {
+    return new Promise(() => {
+        const dbRefPath = ref(database, "PARSEIT/administration/academicyear/status/");
+        onValue(dbRefPath, (snapshot) => {
+            if (snapshot.exists()) {
+                const currentacad_ref = snapshot.val().academic_ref;
+                latest_acad_ref = currentacad_ref; //set as global acad_ref
+
+                latest_ongoing = snapshot.val().ongoing; //set as global ongoing
+
+                if (latest_ongoing === "true") {
+                    document.getElementById('endacad_btn').style.display = "block";
+                    document.getElementById('startacad_btn').style.display = "none";
+                }
+                else {
+                    document.getElementById('endacad_btn').style.display = "none";
+                    document.getElementById('startacad_btn').style.display = "block";
+                }
+
+                if (snapshot.val().current_sem === "1") {
+                    latest_sem = "first-sem"; //set as global sem
+                    toggleSem1();
+                }
+                else {
+                    latest_sem = "second-sem"; //set as global sem
+                    toggleSem2();
+                }
+
+                get(child(dbRef, `PARSEIT/administration/academicyear/BSIT/${currentacad_ref}`))
+                    .then((acad_ref) => {
+                        document.getElementById('academicyr_lbl').innerText = acad_ref.val().title;
+                    });
+            } else {
+                //console.log("No data available at the specified reference.");
+            }
+        }, (error) => {
+            //console.log(error);
+        });
+    });
+}
+
+document.getElementById("startacad_btn").addEventListener("click", async function () {
+    await update(ref(database, "PARSEIT/administration/academicyear/status"), {
+        ongoing: "true",
+    });
+});
+document.getElementById("endacad_btn").addEventListener("click", async function () {
+    await update(ref(database, "PARSEIT/administration/academicyear/status"), {
+        ongoing: "false",
+    });
+});
+document.getElementById("academicyr_lbl").addEventListener("click", function () {
+    viewAcademicYear();
+    document.getElementById("allacademicyear_sec").style.display = "flex";
+    document.getElementById("setupacad_div").style.display = "flex";
+    document.getElementById('description_txt').value = "";
+});
+
+document.getElementById("canceladdacad_btn").addEventListener("click", function () {
+    document.getElementById("setupacad_div").style.display = "none";
+    document.getElementById('addacademicyear_div').style.display = "none";
+});
+
+document.getElementById("sem1").addEventListener("click", async function () {
+    await update(ref(database, "PARSEIT/administration/academicyear/status"), {
+        current_sem: "1",
+    });
+    toggleSem1();
+});
+document.getElementById("sem2").addEventListener("click", async function () {
+    await update(ref(database, "PARSEIT/administration/academicyear/status"), {
+        current_sem: "2",
+    });
+    toggleSem2();
+});
+
+function toggleSem1() {
+    document.getElementById('sem1').style.color = "#ff3334";
+    document.getElementById('sem1').style.backgroundColor = "#fefefe";
+
+    document.getElementById('sem2').style.color = "#fefefe";
+    document.getElementById('sem2').style.backgroundColor = "transparent";
+}
+function toggleSem2() {
+    document.getElementById('sem1').style.color = "#fefefe";
+    document.getElementById('sem1').style.backgroundColor = "transparent";
+
+    document.getElementById('sem2').style.color = "#ff3334";
+    document.getElementById('sem2').style.backgroundColor = "#fefefe";
+}
+async function viewAcademicYear() {
+    await get(child(dbRef, "PARSEIT/administration/academicyear/BSIT/"))
+        .then((snapshot) => {
+            const academicyear_cont = document.getElementById('allacademicyear_div');
+            academicyear_cont.innerHTML = "";
+            const data = snapshot.val();
+            if (data) {
+                Object.keys(data).forEach((key) => {
+                    const title = data[key]?.title || key;
+                    const container = document.createElement("div");
+                    container.className = "radio-item";
+
+                    const radioButton = document.createElement("input");
+                    radioButton.type = "radio";
+                    radioButton.id = `${key}`;
+                    radioButton.name = "academic-year";
+                    radioButton.value = key;
+                    radioButton.className = "radio-academicyear";
+                    radioButton.setAttribute("data-id", `${key}`);
+                    const label = document.createElement("label");
+                    label.htmlFor = `${key}`;
+                    label.textContent = title;
+                    label.className = "lbl-academicyear";
+
+                    container.appendChild(radioButton);
+                    container.appendChild(label);
+                    academicyear_cont.appendChild(container);
 
 
-// function createTemporaryPassTeacher(firstname, lastname, suffix) {
+                    if (`${key}` === latest_acad_ref) {
+                        radioButton.checked = true;
+                    }
+                });
+            } else {
+                academicyear_cont.innerHTML = "<div class='nodatafound'>No data found.</div>";
+            }
+        })
+        .catch((error) => {
+            alert(error);
+        });
+}
+document.getElementById("setacademicyear_btn").addEventListener("click", function () {
+    const selectedRadioButton = document.querySelector('input[name="academic-year"]:checked');
+    if (selectedRadioButton) {
+        const dataId = selectedRadioButton.dataset.id;
+        if (dataId === latest_acad_ref) {
+            document.getElementById('allacademicyear_sec').style.border = "0.5px solid red";
+            setTimeout(() => {
+                document.getElementById('allacademicyear_sec').style.border = "0.5px solid #dcdcdc";
+            }, 1500);
+            return;
+        }
+        else {
+            update(ref(database, "PARSEIT/administration/academicyear/status"), {
+                academic_ref: dataId,
+                current_sem: "1",
+                ongoing: "false",
+            });
+            viewAcademicYear();
+        }
 
-//     let temporarypass = "";
-//     if (suffix === "none") {
-//         temporarypass = firstname + lastname + ".parserteacher"
-//     }
-//     else {
-//         temporarypass = firstname + lastname + suffix + ".parserteacher"
-//     }
-//     temporarypass = temporarypass.toLowerCase();
-//     return temporarypass.replace(/\s+/g, "");
+    } else {
+        console.log("No radio button selected.");
+    }
 
+});
+document.getElementById("addacademicyear_btn").addEventListener("click", function () {
+    document.getElementById('optionmenu_addacad').style.display = "none";
+    document.getElementById('submitacademicyear').style.display = "block";
+    document.getElementById('addacademicyear_div').style.display = "block";
+});
+document.getElementById("submitacademicyear").addEventListener("click", async function () {
+    const academic_ref = generateAcadRef();
+    let title = document.getElementById('description_txt').value;
+    await update(ref(database, "PARSEIT/administration/academicyear/BSIT/" + academic_ref), {
+        title: title,
+    }).then(() => {
+        update(ref(database, "PARSEIT/administration/academicyear/status/"), {
+            academic_ref: academic_ref,
+            current_sem: "1",
+            ongoing: "false",
+        }).then(() => {
+            viewAcademicYear();
+            createAllParseClass(academic_ref);
+            document.getElementById('optionmenu_addacad').style.display = "flex";
+            document.getElementById('submitacademicyear').style.display = "none";
+            document.getElementById('addacademicyear_div').style.display = "none";
+            document.getElementById('description_txt').value = '';
+        });
+
+    });
+});
+function generateAcadRef() {
+    const currentTime = Date.now();
+    const random = Math.random().toString(36).substr(2, 5);
+    return currentTime.toString() + "P" + random;
+}
+async function createParseclass(yearlvl, sem, academicRef) {
+    try {
+        const sourceRef = `PARSEIT/administration/programs/${yearlvl}/${sem}/`;
+        const snapshot = await get(child(dbRef, sourceRef));
+        if (snapshot.exists()) {
+            let data = snapshot.val();
+            for (const subjectKey in data) {
+                if (data.hasOwnProperty(subjectKey)) {
+                    data[subjectKey] = {
+                        ...data[subjectKey],
+                        //put custom data
+                    };
+                }
+            }
+            const destinationRef = `PARSEIT/administration/parseclass/${academicRef}/${yearlvl}/${sem}/`;
+            await update(ref(database, destinationRef), data);
+            //console.log("Data with custom fields successfully updated for each subject!");
+        } else {
+            //console.log("No data found at the source reference.");
+        }
+    } catch (error) {
+        //console.error("Error during data transfer:", error);
+    }
+}
+function createAllParseClass(acadRef) {
+    createParseclass("year-lvl-1", "first-sem", acadRef);
+    createParseclass("year-lvl-1", "second-sem", acadRef);
+
+    createParseclass("year-lvl-2", "first-sem", acadRef);
+    createParseclass("year-lvl-2", "second-sem", acadRef);
+
+    createParseclass("year-lvl-3", "first-sem", acadRef);
+    createParseclass("year-lvl-3", "second-sem", acadRef);
+
+    createParseclass("year-lvl-4", "first-sem", acadRef);
+    createParseclass("year-lvl-4", "second-sem", acadRef);
+}
+document.getElementById("deleteacademicyear_btn").addEventListener("click", function () {
+    const selectedRadioButton = document.querySelector('input[name="academic-year"]:checked');
+    if (selectedRadioButton) {
+        const dataId = selectedRadioButton.dataset.id;
+        if (dataId === latest_acad_ref) {
+            document.getElementById('allacademicyear_sec').style.border = "0.5px solid red";
+            setTimeout(() => {
+                document.getElementById('allacademicyear_sec').style.border = "0.5px solid #dcdcdc";
+            }, 1500);
+            return;
+        }
+        else {
+            remove(ref(database, `PARSEIT/administration/academicyear/BSIT/` + dataId));
+            remove(ref(database, `PARSEIT/administration/parseclass/` + dataId));
+            viewAcademicYear();
+        }
+
+    } else {
+        console.log("No radio button selected.");
+    }
+
+});
+
+
+
+
+
+
+// function setButtonStart() {
+//     get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
+//         .then((snapshot) => {
+//             if (snapshot.val().ongoing === "true") {
+//                 document.getElementById('startacad_btn').style.display = "none";
+//                 document.getElementById('endacad_btn').style.display = "block";
+
+//             }
+//             else {
+//                 document.getElementById('startacad_btn').style.display = "block";
+//                 document.getElementById('endacad_btn').style.display = "none";
+//             }
+//         });
 // }
 
 
 // function hideHome() {
 //     document.getElementById("home_div").style.display = "none";
 // }
-
-
-
-
-
 // let selectedCluster_id = "";
 // let selectedCluster_name = "";
 // async function viewCluster(admin_id) {
@@ -508,18 +757,7 @@ function errorElement(element) {
 //     //console.log(section);
 // });
 
-// document.getElementById("academicyr_lbl").addEventListener("click", function () {
-//     setLabelSemester();
-//     viewAcademicYear();
-//     document.getElementById("allacademicyear_sec").style.display = "flex";
-//     document.getElementById("setupacad_div").style.display = "flex";
-//     document.getElementById('description_txt').value = "";
-// });
-// document.getElementById("canceladdacad_btn").addEventListener("click", function () {
-//     setLabelAcademicYear();
-//     setLabelSemester();
-//     document.getElementById("setupacad_div").style.display = "none";
-//     document.getElementById('addacademicyear_div').style.display = "none";
+
 
 // });
 
@@ -554,111 +792,6 @@ function errorElement(element) {
 //     submitTeacher(id, firstname, middlename, lastname, suffix, birthday, email);
 // });
 
-
-// document.getElementById("startacad_btn").addEventListener("click", function () {
-//     update(ref(database, "PARSEIT/administration/academicyear/status"), {
-//         ongoing: "true",
-//     }).then(() => {
-//         setButtonStart();
-//     });
-// });
-// document.getElementById("endacad_btn").addEventListener("click", function () {
-//     update(ref(database, "PARSEIT/administration/academicyear/status"), {
-//         ongoing: "false",
-//     }).then(() => {
-//         setButtonStart();
-//     });
-// });
-// document.getElementById("sem1").addEventListener("click", function () {
-//     update(ref(database, "PARSEIT/administration/academicyear/status"), {
-//         current_sem: "1",
-//     }).then(() => {
-//         setLabelSemester();
-//     });
-// });
-// document.getElementById("sem2").addEventListener("click", function () {
-//     update(ref(database, "PARSEIT/administration/academicyear/status"), {
-//         current_sem: "2",
-//     }).then(() => {
-//         setLabelSemester();
-//     });
-// });
-// document.getElementById("addacademicyear_btn").addEventListener("click", function () {
-//     document.getElementById('optionmenu_addacad').style.display = "none";
-//     document.getElementById('submitacademicyear').style.display = "block";
-//     document.getElementById('addacademicyear_div').style.display = "block";
-// });
-
-// document.getElementById("deleteacademicyear_btn").addEventListener("click", function () {
-//     const selectedRadioButton = document.querySelector('input[name="academic-year"]:checked');
-//     if (selectedRadioButton) {
-//         const dataId = selectedRadioButton.dataset.id;
-//         if (dataId === currentacad_ref) {
-//             document.getElementById('allacademicyear_sec').style.border = "0.5px solid red";
-//             setTimeout(() => {
-//                 document.getElementById('allacademicyear_sec').style.border = "0.5px solid #dcdcdc";
-//             }, 1500);
-//             return;
-//         }
-//         else {
-//             remove(ref(database, `PARSEIT/administration/academicyear/BSIT/` + dataId));
-//             remove(ref(database, `PARSEIT/administration/parseclass/` + dataId));
-//             viewAcademicYear();
-//         }
-
-//     } else {
-//         console.log("No radio button selected.");
-//     }
-
-// });
-
-// document.getElementById("setacademicyear_btn").addEventListener("click", function () {
-//     const selectedRadioButton = document.querySelector('input[name="academic-year"]:checked');
-//     if (selectedRadioButton) {
-//         const dataId = selectedRadioButton.dataset.id;
-//         if (dataId === currentacad_ref) {
-//             document.getElementById('allacademicyear_sec').style.border = "0.5px solid red";
-//             setTimeout(() => {
-//                 document.getElementById('allacademicyear_sec').style.border = "0.5px solid #dcdcdc";
-//             }, 1500);
-//             return;
-//         }
-//         else {
-//             update(ref(database, "PARSEIT/administration/academicyear/status"), {
-//                 academic_ref: dataId,
-//                 current_sem: "1",
-//                 ongoing: "false",
-//             });
-//             viewAcademicYear();
-//         }
-
-//     } else {
-//         console.log("No radio button selected.");
-//     }
-
-// });
-
-// document.getElementById("submitacademicyear").addEventListener("click", function () {
-//     const academic_ref = generateAcadRef();
-//     let title = document.getElementById('description_txt').value;
-//     update(ref(database, "PARSEIT/administration/academicyear/BSIT/" + academic_ref), {
-//         title: title,
-//     }).then(() => {
-//         update(ref(database, "PARSEIT/administration/academicyear/status/"), {
-//             academic_ref: academic_ref,
-//             current_sem: "1",
-//             ongoing: "false",
-//         }).then(() => {
-//             viewAcademicYear();
-//             createAllParseClass(academic_ref);
-//             document.getElementById('optionmenu_addacad').style.display = "flex";
-//             document.getElementById('submitacademicyear').style.display = "none";
-//             document.getElementById('addacademicyear_div').style.display = "none";
-//             document.getElementById('description_txt').value = '';
-//         });
-
-//     });
-// });
 
 // document.getElementById("cancelcreateparseclass_btn").addEventListener("click", function () {
 //     document.getElementById("createparseclass_div").style.display = "none";
@@ -1189,166 +1322,13 @@ function errorElement(element) {
 // function showHome() {
 //     document.getElementById("home_div").style.display = "flex";
 // }
-// async function viewAcademicYear() {
-//     let currentAcadYear = '';
-//     const dbRefPath = ref(database, "PARSEIT/administration/academicyear/status/");
-//     onValue(dbRefPath, (snapshot) => {
-//         if (snapshot.exists()) {
-//             currentAcadYear = snapshot.val().academic_ref;
-//             currentacad_ref = currentAcadYear;
-//         } else {
-//             reject(new Error("No data available at the specified reference."));
-//         }
-//     }, (error) => {
-//         reject(error);
-//     });
-
-//     get(child(dbRef, "PARSEIT/administration/academicyear/BSIT/"))
-//         .then((snapshot) => {
-//             const academicyear_cont = document.getElementById('allacademicyear_div');
-//             academicyear_cont.innerHTML = "";
-//             const data = snapshot.val();
-
-//             if (data) {
-//                 Object.keys(data).forEach((key) => {
-//                     const title = data[key]?.title || key;
-//                     const container = document.createElement("div");
-//                     container.className = "radio-item";
-
-//                     const radioButton = document.createElement("input");
-//                     radioButton.type = "radio";
-//                     radioButton.id = `${key}`;
-//                     radioButton.name = "academic-year";
-//                     radioButton.value = key;
-//                     radioButton.className = "radio-academicyear";
-//                     radioButton.setAttribute("data-id", `${key}`);
-//                     const label = document.createElement("label");
-//                     label.htmlFor = `${key}`;
-//                     label.textContent = title;
-//                     label.className = "lbl-academicyear";
-
-//                     container.appendChild(radioButton);
-//                     container.appendChild(label);
-//                     academicyear_cont.appendChild(container);
-
-
-//                     if (`${key}` === currentAcadYear) {
-//                         radioButton.checked = true;
-//                     }
-//                 });
-//             } else {
-//                 academicyear_cont.innerHTML = "<div class='nodatafound'>No data found.</div>";
-//             }
-//         })
-//         .catch((error) => {
-//             alert(error);
-//         });
-// }
 // function updateAcademicYear(id) {
 //     update(ref(database, "PARSEIT/administration/academicyear/status"), {
 //         academic_ref: id,
 //     });
 // }
-// function setLabelAcademicYear() {
-//     get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
-//         .then((snapshot) => {
-//             get(child(dbRef, "PARSEIT/administration/academicyear/BSIT/" + snapshot.val().academic_ref))
-//                 .then((acad_ref) => {
-//                     document.getElementById('academicyr_lbl').innerText = acad_ref.val().title;
-//                 });
-//         });
-// }
-// function setLabelSemester() {
-//     get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
-//         .then((snapshot) => {
-//             if (snapshot.val().current_sem === "1") {
-//                 document.getElementById('sem1').style.color = "#ff3334";
-//                 document.getElementById('sem1').style.backgroundColor = "#fefefe";
 
-//                 document.getElementById('sem2').style.color = "#fefefe";
-//                 document.getElementById('sem2').style.backgroundColor = "transparent";
-//             }
-//             else {
-//                 document.getElementById('sem1').style.color = "#fefefe";
-//                 document.getElementById('sem1').style.backgroundColor = "transparent";
 
-//                 document.getElementById('sem2').style.color = "#ff3334";
-//                 document.getElementById('sem2').style.backgroundColor = "#fefefe";
-//             }
-//         });
-// }
-// // async function checkCurrentAcadYear() {
-// //     return new Promise((resolve, reject) => {
-// //         const dbRefPath = ref(database, "PARSEIT/administration/academicyear/status/");
-
-// //         onValue(dbRefPath, (snapshot) => {
-// //             if (snapshot.exists()) {
-// //                 const currentacad_ref = snapshot.val().academic_ref;
-// //                 resolve(currentacad_ref);
-// //             } else {
-// //                 reject(new Error("No data available at the specified reference."));
-// //             }
-// //         }, (error) => {
-// //             reject(error);
-// //         });
-// //     });
-// // }
-// function setButtonStart() {
-//     get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
-//         .then((snapshot) => {
-//             if (snapshot.val().ongoing === "true") {
-//                 document.getElementById('startacad_btn').style.display = "none";
-//                 document.getElementById('endacad_btn').style.display = "block";
-
-//             }
-//             else {
-//                 document.getElementById('startacad_btn').style.display = "block";
-//                 document.getElementById('endacad_btn').style.display = "none";
-//             }
-//         });
-// }
-// function generateAcadRef() {
-//     const currentTime = Date.now();
-//     const random = Math.random().toString(36).substr(2, 5);
-//     return currentTime.toString() + "P" + random;
-// }
-// async function createParseclass(yearlvl, sem, academicRef) {
-//     try {
-//         const sourceRef = `PARSEIT/administration/programs/${yearlvl}/${sem}/`;
-//         const snapshot = await get(child(dbRef, sourceRef));
-//         if (snapshot.exists()) {
-//             let data = snapshot.val();
-//             for (const subjectKey in data) {
-//                 if (data.hasOwnProperty(subjectKey)) {
-//                     data[subjectKey] = {
-//                         ...data[subjectKey],
-//                         //put custom data
-//                     };
-//                 }
-//             }
-//             const destinationRef = `PARSEIT/administration/parseclass/${academicRef}/${yearlvl}/${sem}/`;
-//             await update(ref(database, destinationRef), data);
-//             console.log("Data with custom fields successfully updated for each subject!");
-//         } else {
-//             console.log("No data found at the source reference.");
-//         }
-//     } catch (error) {
-//         console.error("Error during data transfer:", error);
-//     }
-// }
-// function createAllParseClass(acadRef) {
-//     createParseclass("year-lvl-1", "first-sem", acadRef);
-//     createParseclass("year-lvl-1", "second-sem", acadRef);
-
-//     createParseclass("year-lvl-2", "first-sem", acadRef);
-//     createParseclass("year-lvl-2", "second-sem", acadRef);
-
-//     createParseclass("year-lvl-3", "first-sem", acadRef);
-//     createParseclass("year-lvl-3", "second-sem", acadRef);
-
-//     createParseclass("year-lvl-4", "first-sem", acadRef);
-//     createParseclass("year-lvl-4", "second-sem", acadRef);
-// }
 
 // function getUsernameById(targetId) {
 //     try {
@@ -1372,19 +1352,6 @@ function errorElement(element) {
 //     }
 // };
 
-// function getSemester() {
-//     return get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
-//         .then((snapshot) => {
-//             if (snapshot.exists()) {
-//                 if (snapshot.val().current_sem === "1") {
-//                     return "first-sem";
-//                 }
-//                 else {
-//                     return "second-sem";
-//                 }
-//             }
-//         });
-// }
 
 // // async function populateSubjects(yearlvl, sem, acad_ref) {
 // //     get(child(dbRef, "PARSEIT/administration/parseclass/" + acad_ref + "/" + yearlvl + "/" + sem))
@@ -1769,6 +1736,7 @@ function errorElement(element) {
 // //         console.error('Error fetching data:', error);
 // //     }
 // // }
+
 // async function populateSchedules(acadref, yrlvl, sem, subject, section) {
 //     get(child(dbRef, `PARSEIT/administration/parseclass/${acadref}/${yrlvl}/${sem}/${subject}/${section}`))
 //         .then((snapshot) => {
