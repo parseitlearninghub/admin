@@ -768,7 +768,6 @@ document.getElementById("deleteacademicyear_btn").addEventListener("click", func
     }
 
 });
-
 document.getElementById("createfirstyr_btn").addEventListener("click", function () {
     hideEnrollButton();
     document.getElementById("createparseclass_yr").innerText = "Year: Freshman (1st year)";
@@ -837,15 +836,11 @@ document.getElementById("createfourthyr_btn").addEventListener("click", function
     }
     hideHome();
 });
-
-
 document.getElementById("cancelcreateparseclass_btn").addEventListener("click", function () {
     document.getElementById("createparseclass_div").style.display = "none";
     showHome();
     window.location.reload();
 });
-
-
 function hideEnrollButton() {
     document.getElementById('enrollParseclass').style.visibility = "hidden";
 }
@@ -855,11 +850,6 @@ function hideHome() {
 function showHome() {
     document.getElementById("home_div").style.display = "flex";
 }
-
-// setInterval(() => {
-//     console.log(creategroupchat_section);
-// }, 1000);
-
 let creategroupchat_section = '';
 async function populateSections(yearlvl) {
     get(child(dbRef, `PARSEIT/administration/section/year-lvl-${yearlvl}`))
@@ -1185,6 +1175,7 @@ document.getElementById("assignTeacher_btn").addEventListener("click", async fun
                 //console.error("Error updating teacher ID:", error);
             }
         }
+        showCheckAnimation();
     }
     else {
         errorElement("addteacher_parseclass");
@@ -1203,6 +1194,7 @@ document.getElementById("clear_section").addEventListener("click", function () {
                     if (snapshot.exists()) {
                         selectedSubjects.forEach((subjectKey) => {
                             remove(ref(database, `PARSEIT/administration/parseclass/${latest_acad_ref}/${yrlvl}/${latest_sem}/${subjectKey}/${selectedRadioButton.value}/members`));
+
                         });
                     } else {
                         console.log("No data available");
@@ -1223,7 +1215,7 @@ document.getElementById("clear_section").addEventListener("click", function () {
                     }
                 });
         }
-
+        showCheckAnimation();
     } else {
         console.log("No radio button selected.");
     }
@@ -1303,15 +1295,29 @@ document.getElementById("addStudent_btn").addEventListener("click", async functi
         }
     };
 
-    for (const subject of selectedSubjects) {
-        const membersPath = `PARSEIT/administration/parseclass/${latest_acad_ref}/${yearlvl}/${latest_sem}/${subject}/${creategroupchat_section}/members`;
-        try {
-            await update(ref(database, membersPath), studentData);
-        } catch (error) {
-            console.error("Error updating data:", error);
+    if (await checkStudentId(studentid)) {
+        for (const subject of selectedSubjects) {
+            const membersPath = `PARSEIT/administration/parseclass/${latest_acad_ref}/${yearlvl}/${latest_sem}/${subject}/${creategroupchat_section}/members`;
+            try {
+                await update(ref(database, membersPath), studentData);
+                //create parseclass_id if none
+                let checkparseroomid = await get(ref(database, `PARSEIT/administration/parseclass/${latest_acad_ref}/${yearlvl}/${latest_sem}/${subject}/${creategroupchat_section}/parseclass_id`));
+                if (!checkparseroomid.exists()) {
+                    await update(ref(database, `PARSEIT/administration/parseclass/${latest_acad_ref}/${yearlvl}/${latest_sem}/${subject}/${creategroupchat_section}/`), {
+                        parseclass_id: `${latest_acad_ref}_${creategroupchat_section}_${subject.replace(/\s+/g, "")}`
+                    });
+                }
+            } catch (error) {
+                console.error("Error updating data:", error);
+            }
         }
+        showCheckAnimation();
+        document.getElementById("addStudent_txt").value = '';
     }
-    document.getElementById("addStudent_txt").value = '';
+    else {
+        errorElement("addstudent_parseclass");
+    }
+
 });
 document.getElementById("addCluster_btn").addEventListener("click", async function () {
     await viewCluster(admin_id);
@@ -1379,7 +1385,19 @@ document.getElementById("enrollParseclass").addEventListener("click", async func
     for (const subject of selectedSubjects) {
         const destinationPath = `PARSEIT/administration/parseclass/${latest_acad_ref}/${yearlvl}/${latest_sem}/${subject}/${creategroupchat_section}/members`;
         await enrollCluster(sourcePath, destinationPath, yearlvl, creategroupchat_section);
+
+        //create parseclass_id if none
+        let checkparseroomid = await get(ref(database, `PARSEIT/administration/parseclass/${latest_acad_ref}/${yearlvl}/${latest_sem}/${subject}/${creategroupchat_section}/parseclass_id`));
+        if (!checkparseroomid.exists()) {
+            await update(ref(database, `PARSEIT/administration/parseclass/${latest_acad_ref}/${yearlvl}/${latest_sem}/${subject}/${creategroupchat_section}/`), {
+                parseclass_id: `${latest_acad_ref}_${creategroupchat_section}_${subject.replace(/\s+/g, "")}`
+            });
+        }
+
     }
+
+
+
 });
 async function enrollCluster(sourcePath, destinationPath, yr, section) {
     if (yr === "year-lvl-1") {
@@ -1406,7 +1424,7 @@ async function enrollCluster(sourcePath, destinationPath, yr, section) {
             });
             document.getElementById("enrollParseclass").style.display = "none";
             document.getElementById("addCluster_txt").value = "";
-
+            showCheckAnimation();
             //console.log(`Data successfully copied from ${sourcePath} to ${destinationPath}`);
         } else {
             //console.log(`No data found at ${sourcePath}`);
@@ -1427,6 +1445,18 @@ async function checkTeacherId(id) {
     }
     return false;
 }
+async function checkStudentId(id) {
+    let student = await get(ref(database, `PARSEIT/administration/students/`));
+    if (student.exists()) {
+        const student_id = student.val();
+        for (const parser in student_id) {
+            if (parser === id) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 function makeElementAvailable(element) {
     document.getElementById(element).style.transition = "0.3s ease-in-out";
     document.getElementById(element).style.opacity = "1";
@@ -1438,648 +1468,3 @@ function makeElementUnavailable(element) {
     document.getElementById(element).style.pointerEvents = "none";
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// async function populateSchedules(acadref, yrlvl, sem, subject, section) {
-//     get(child(dbRef, `PARSEIT/administration/parseclass/${acadref}/${yrlvl}/${sem}/${subject}/${section}`))
-//         .then((snapshot) => {
-//             const academicyear_cont = document.getElementById('schedule_list');
-//             academicyear_cont.innerHTML = "";
-//             const data = snapshot.val();
-//             if (data) {
-//                 Object.keys(data.schedule).forEach((key) => {
-//                     const title = data.schedule[key].day;
-//                     const start = data.schedule[key].start;
-//                     const end = data.schedule[key].end;
-//                     const container = document.createElement("div");
-//                     container.className = "radio-schedule";
-//                     //console.log(data.schedule[key].day);
-//                     const radioButton = document.createElement("input");
-//                     radioButton.type = "radio";
-//                     radioButton.id = `schedule-${key.replace(/\s+/g, "")}`;
-//                     radioButton.name = "schedule-list";
-//                     radioButton.className = "radio-schedulelist";
-//                     radioButton.value = title.replace(/\s+/g, "");
-
-//                     radioButton.addEventListener("click", () => {
-
-//                         document.getElementById('start_txt').value = start;
-//                         document.getElementById('end_txt').value = end;
-//                         document.getElementById('day-select').value = title;
-//                         document.getElementById('assignTeacher_txt').value = data.teacher_id;
-
-//                         document.getElementById('addschedulesection').disabled = true;
-//                         document.getElementById('addschedulesection').style.backgroundColor = "#dcdcdc";
-//                         document.getElementById('start_txt').disabled = true;
-//                         document.getElementById('end_txt').disabled = true;
-//                         document.getElementById('day-select').disabled = true;
-
-
-//                         document.getElementById('schedday').style.display = "none";
-//                         document.getElementById('schedtime').style.display = "none";
-
-//                         document.getElementById('assignTeacher_btn').style.display = "none";
-
-//                         document.getElementById('assignTeacher_txt').disabled = true;
-
-//                     });
-
-//                     const label = document.createElement("label");
-//                     label.htmlFor = `schedule-${key.replace(/\s+/g, "")}`;
-//                     label.textContent = `${title} (${start}-${end})`;
-//                     label.className = "lbl-schedulelist";
-
-//                     container.appendChild(radioButton);
-//                     container.appendChild(label);
-//                     academicyear_cont.appendChild(container);
-//                     document.getElementById('schedule_list').style.display = "flex";
-//                     document.getElementById("schedtime").style.marginTop = "10px";
-//                 });
-//             } else {
-//                 document.getElementById('schedule_list').style.display = "none";
-//                 document.getElementById("schedtime").style.marginTop = "0px";
-//             }
-//         })
-// }
-
-
-// document.getElementById("createsecondyr_btn").addEventListener("click", function () {
-//     viewAcademicYear();
-//     hideEnrollButton();
-//     document.getElementById("createparseclass_yr").innerText = "Year: Sophomore (2nd year)";
-//     document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-2');
-//     document.getElementById("addStudent_txt").value = "";
-//     getSemester().then((sem) => {
-//         document.getElementById("createparseclass_sem").setAttribute('data-value', `${sem}`);
-//         populateSubjects("year-lvl-2", sem, currentacad_ref);
-//         populateSections("2");
-//         document.getElementById("createparseclass_div").style.display = "flex";
-//         if (sem === "first-sem") {
-//             document.getElementById("createparseclass_sem").innerText = "Semester: First";
-//         }
-//         else {
-//             document.getElementById("createparseclass_sem").innerText = "Semester: Second";
-//         }
-//         hideHome();
-//     }).catch((error) => {
-//         console.error("Error fetching semester:", error);
-//     });
-// });
-// document.getElementById("createthirdyr_btn").addEventListener("click", function () {
-//     hideEnrollButton();
-//     viewAcademicYear();
-//     document.getElementById("createparseclass_yr").innerText = "Year: Junior (3rd year)";
-//     document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-3');
-//     document.getElementById("addStudent_txt").value = "";
-//     getSemester().then((sem) => {
-//         populateSubjects("year-lvl-3", sem, currentacad_ref);
-//         populateSections("3");
-//         document.getElementById("createparseclass_sem").setAttribute('data-value', `${sem}`);
-//         document.getElementById("createparseclass_div").style.display = "flex";
-//         if (sem === "first-sem") {
-//             document.getElementById("createparseclass_sem").innerText = "Semester: First";
-//         }
-//         else {
-//             document.getElementById("createparseclass_sem").innerText = "Semester: Second";
-//         }
-//         hideHome();
-//     }).catch((error) => {
-//         console.error("Error fetching semester:", error);
-//     });
-// });
-// document.getElementById("createfourthyr_btn").addEventListener("click", function () {
-//     viewAcademicYear();
-//     hideEnrollButton();
-//     document.getElementById("createparseclass_yr").innerText = "Year: Senior (4th year)";
-//     document.getElementById("createparseclass_yr").setAttribute('data-value', 'year-lvl-4');
-//     document.getElementById("addStudent_txt").value = "";
-//     getSemester().then((sem) => {
-//         document.getElementById("createparseclass_sem").setAttribute('data-value', `${sem}`);
-//         populateSubjects("year-lvl-4", sem, currentacad_ref);
-//         populateSections("4");
-//         document.getElementById("createparseclass_div").style.display = "flex";
-//         if (sem === "first-sem") {
-//             document.getElementById("createparseclass_sem").innerText = "Semester: First";
-//         }
-//         else {
-//             document.getElementById("createparseclass_sem").innerText = "Semester: Second";
-//         }
-//         hideHome();
-//     }).catch((error) => {
-//         console.error("Error fetching semester:", error);
-//     });
-// });
-
-
-
-
-
-
-
-
-// function setButtonStart() {
-//     get(child(dbRef, "PARSEIT/administration/academicyear/status/"))
-//         .then((snapshot) => {
-//             if (snapshot.val().ongoing === "true") {
-//                 document.getElementById('startacad_btn').style.display = "none";
-//                 document.getElementById('endacad_btn').style.display = "block";
-
-//             }
-//             else {
-//                 document.getElementById('startacad_btn').style.display = "block";
-//                 document.getElementById('endacad_btn').style.display = "none";
-//             }
-//         });
-// }
-
-
-
-// let selectedCluster_id = "";
-// let selectedCluster_name = "";
-
-
-
-
-
-// // document.getElementById("assignTeacher_btn").addEventListener("click", function () {
-// //     const targetId = document.getElementById("assignTeacher_txt").value;
-// //     if (subjectparseclass_id === "") {
-// //         document.getElementById("parseclass_list").style.border = "0.5px solid red";
-// //     }
-// //     else if (targetId === "") {
-// //         document.getElementById("addteacher_parseclass").style.border = "0.5px solid red";
-// //     }
-// //     else {
-// //         getTeacher(targetId).then((snapshot) => {
-// //             if (snapshot) {
-// //                 check_teacher = true;
-// //                 selectedTeacher = document.getElementById("assignTeacher_txt").value;
-// //                 console.log(selectedTeacher);
-
-// //                 document.getElementById("assignTeacher_txt").value = snapshot.val().firstname + " " + snapshot.val().lastname;
-// //                 document.getElementById("addteacher_parseclass").style.border = "0.5px solid #dcdcdc";
-// //                 document.getElementById("assignTeacher_btn").style.visibility = "hidden";
-// //                 document.getElementById("assignTeacher_txt").disabled = true;
-
-// //             }
-
-// //             if (!snapshot) {
-// //                 document.getElementById("addteacher_parseclass").style.border = "0.5px solid red";
-
-// //             }
-// //         })
-
-// //     }
-
-// // });
-// document.getElementById("assignTeacher_txt").addEventListener("click", function () {
-//     const targetId = document.getElementById("assignTeacher_txt").value;
-//     if (subjectparseclass_id === "") {
-//         document.getElementById("parseclass_list").style.border = "0.5px solid red";
-//     }
-//     else if (targetId === "") {
-//         document.getElementById("addteacher_parseclass").style.border = "0.5px solid red";
-//     }
-//     else {
-//         getTeacher(targetId).then((snapshot) => {
-//             if (snapshot) {
-//                 //console.log(snapshot);
-//                 check_teacher = true;
-//                 selectedTeacher = document.getElementById("assignTeacher_txt").value;
-//                 //console.log(selectedTeacher);
-
-//                 document.getElementById("assignTeacher_txt").value = snapshot.firstname + " " + snapshot.lastname;
-//                 document.getElementById("addteacher_parseclass").style.border = "0.5px solid #dcdcdc";
-//                 document.getElementById("assignTeacher_btn").style.visibility = "hidden";
-//                 document.getElementById("assignTeacher_txt").disabled = true;
-
-//             }
-
-//             if (!snapshot) {
-//                 document.getElementById("addteacher_parseclass").style.border = "0.5px solid red";
-
-//             }
-//         })
-
-//     }
-
-// });
-
-
-// document.getElementById("addStudent_txt").addEventListener("blur", function () {
-//     const targetId = document.getElementById("addStudent_txt").value;
-//     if (subjectparseclass_id === "") {
-//         document.getElementById("parseclass_list").style.border = "0.5px solid red";
-//     }
-//     else if (targetId === "") {
-//         document.getElementById("addstudent_parseclass").style.border = "0.5px solid red";
-//     }
-//     else {
-//         getStudent(targetId).then((snapshot) => {
-//             if (snapshot) {
-//                 check_student = true;
-//                 showEnrollButton();
-//                 document.getElementById("addstudent_parseclass").style.border = "0.5px solid #dcdcdc";
-//                 document.getElementById("addStudent_btn").style.display = "none";
-//                 document.getElementById("addStudent_txt").disabled = true;
-//                 document.getElementById("viewStudent_btn").style.display = "block";
-
-//             }
-
-//             if (!snapshot) {
-//                 document.getElementById("addstudent_parseclass").style.border = "0.5px solid red";
-
-//             }
-//         })
-
-//     }
-
-// });
-// document.getElementById("viewStudent_btn").addEventListener("touchstart", async function () {
-//     const parser_username = await getUsernameById(document.getElementById("addStudent_txt").value);
-//     await getDetails(document.getElementById("addStudent_txt").value);
-//     document.getElementById("iddetails-username").innerHTML = "Username: " + parser_username;
-//     document.getElementById("viewid_div").style.display = "flex";
-//     document.getElementById("iddetails").style.animation = "fadeInFromTop 0.3s ease-out forwards";
-// });
-// document.getElementById("viewStudent_btn").addEventListener("touchend", function () {
-//     document.getElementById("viewid_div").style.display = "none";
-//     document.getElementById("iddetails").style.animation = "fadeOutFromBottom 0.3s ease-out forwards";
-// });
-// let check_student = false;
-// let check_teacher = false;
-
-// document.getElementById("myCluster_btn").addEventListener("click", function () {
-//     document.getElementById("cluster_div").style.display = "flex";
-//     getMyClusters(admin_id);
-
-// });
-
-
-
-// document.getElementById("pushCluster").addEventListener("click", async function () {
-//     await deleteCluster();
-//     window.location.href = "addcluster.html";
-// });
-
-
-// //functions
-
-// }
-// function showSection(year) {
-//     let section_a = "";
-//     let section_b = "";
-//     let value_a = "";
-//     let value_b = "";
-//     if (year === 1) {
-//         section_a = "1A - Microsoft";
-//         value_a = "1A-Microsoft"
-//         section_b = "1B - Google";
-//         value_b = "1B-Google"
-//     }
-
-//     if (year === 2) {
-//         section_a = "2A - Section B";
-//         value_a = "2A-SectionA"
-//         section_b = "2B - Section A";
-//         value_b = "2B-SectionB"
-
-//     }
-
-//     if (year === 3) {
-//         section_a = "3A - Section A";
-//         value_a = "3A-SectionA"
-//         section_b = "3B - Section B";
-//         value_b = "3B-SectionB"
-//     }
-
-//     if (year === 4) {
-//         section_a = "4A - Xamarin";
-//         value_a = "4A-Xamarin"
-//         section_b = "4B - Laravel";
-//         value_b = "4B-Laravel"
-
-//     }
-//     document.getElementById('section-radio-1').checked = false;
-//     document.getElementById('section-radio-2').checked = false;
-//     document.getElementById("section-1").innerText = section_a;
-//     document.getElementById("section-1").setAttribute('data-value', value_a);
-//     document.getElementById("section-2").innerText = section_b;
-//     document.getElementById("section-2").setAttribute('data-value', value_b);
-//
-
-//     //console.log(value_a, value_b, year);
-
-// }
-// function getRegularity() {
-//     const regular = document.getElementById('regular-radio-1');
-//     const irregular = document.getElementById('regular-radio-2');
-//     if (regular.checked) {
-//         return "yes"
-//     }
-
-//     if (irregular.checked) {
-//         return "no"
-//     }
-// }
-// function createTemporaryPass(firstname, lastname, suffix) {
-
-//     let temporarypass = "";
-//     if (suffix === "none") {
-//         temporarypass = firstname + lastname + ".parser"
-//     }
-//     else {
-//         temporarypass = firstname + lastname + suffix + ".parser"
-//     }
-//     temporarypass = temporarypass.toLowerCase();
-//     return temporarypass.replace(/\s+/g, "");
-
-// }
-
-
-// function clearAddStudentForm() {
-//     setTimeout(() => {
-//         document.getElementById("check_animation_div").style.display = "none";
-//     }, 2000);
-//     document.getElementById("id_txt").value = "";
-//     document.getElementById("firstname_txt").value = "";
-//     document.getElementById("middlename_txt").value = "";
-//     document.getElementById("lastname_txt").value = "";
-//     document.getElementById("suffix_txt").value = "";
-//     document.getElementById("birthday_txt").value = "";
-//     document.getElementById("email_txt").value = "";
-//     document.getElementById('regular-radio-1').checked = false;
-//     document.getElementById('regular-radio-2').checked = false;
-//     document.getElementById("first_radio").checked = false;
-//     document.getElementById("second_radio").checked = false;
-//     document.getElementById("third_radio").checked = false;
-//     document.getElementById("fourth_radio").checked = false;
-//     document.getElementById("input-section").style.display = "none";
-//     document.getElementById('section-radio-1').checked = false;
-//     document.getElementById('section-radio-2').checked = false;
-// }
-
-
-
-// function updateAcademicYear(id) {
-//     update(ref(database, "PARSEIT/administration/academicyear/status"), {
-//         academic_ref: id,
-//     });
-// }
-
-
-
-// function getUsernameById(targetId) {
-//     try {
-//         return get(child(dbRef, "PARSEIT/username/")).then((snapshot) => {
-//             if (snapshot.exists()) {
-//                 const data = snapshot.val();
-//                 const username = Object.keys(data).find(key => data[key] === targetId);
-//                 if (username) {
-//                     return username;
-//                 } else {
-//                     console.log("ID not found");
-//                     return null;
-//                 }
-//             } else {
-//                 console.log("No data available");
-//                 return null;
-//             }
-//         });
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//     }
-// };
-
-
-// // async function populateSubjects(yearlvl, sem, acad_ref) {
-// //     get(child(dbRef, "PARSEIT/administration/parseclass/" + acad_ref + "/" + yearlvl + "/" + sem))
-// //         .then((snapshot) => {
-// //             const academicyear_cont = document.getElementById('parseclass_list');
-// //             academicyear_cont.innerHTML = "";
-// //             const data = snapshot.val();
-// //             if (data) {
-// //                 Object.keys(data).forEach((key) => {
-// //                     const title = key;
-// //                     const container = document.createElement("div");
-// //                     container.className = "radio-subject";
-
-// //                     const radioButton = document.createElement("input");
-// //                     radioButton.type = "radio";
-// //                     radioButton.id = `parseclass-${key.replace(/\s+/g, "")}`;
-// //                     radioButton.name = "subject-list";
-// //                     radioButton.className = "radio-subjectlist";
-// //                     radioButton.value = title.replace(/\s+/g, "");
-
-// //                     radioButton.addEventListener("click", () => {
-// //                         if (!noSection) {
-// //                             document.getElementById("parseclass_list").style.border = "0.5px solid #dcdcdc";
-// //                             document.getElementById("sectioncreate").style.border = "0.5px solid #dcdcdc";
-// //                             subjectparseclass_id = `${key.replace(/\s+/g, "")}`;
-// //                             selectedSubject = title;
-// //                             const sem = document.getElementById("createparseclass_sem").getAttribute('data-value');
-// //                             const yr = document.getElementById("createparseclass_yr").getAttribute('data-value');
-// //                             populateSchedules(currentacad_ref, yr, sem, selectedSubject, selected_section);
-// //                             get(child(dbRef, "PARSEIT/administration/parseclass/" + acad_ref + "/" + yearlvl + "/" + sem + "/" + key + "/" + selected_section)).
-// //                                 then((teacher) => {
-// //                                     if (teacher.exists()) {
-// //                                         document.getElementById('assignTeacher_txt').value = teacher.val().teacher_id;
-// //                                         document.getElementById('assignTeacher_txt').focus();
-// //                                         check_teacher = true;
-// //                                         selectedTeacher = teacher.val().teacher_id;
-// //                                     }
-// //                                     else {
-// //                                         check_teacher = false;
-// //                                         document.getElementById('assignTeacher_txt').value = '';
-// //                                         document.getElementById('assignTeacher_txt').disabled = false;
-// //                                         document.getElementById('assignTeacher_txt').focus();
-
-// //                                     }
-
-// //                                 });
-
-// //                         }
-// //                         else {
-// //                             radioButton.checked = false;
-// //                             document.getElementById("sectioncreate").style.border = "0.5px solid red";
-// //                         }
-
-// //                     });
-// //                     const label = document.createElement("label");
-// //                     label.htmlFor = `parseclass-${key.replace(/\s+/g, "")}`;
-// //                     label.textContent = title;
-// //                     label.className = "lbl-subjectlist";
-
-// //                     container.appendChild(radioButton);
-// //                     container.appendChild(label);
-// //                     academicyear_cont.appendChild(container);
-
-// //                 });
-// //             } else {
-// //                 academicyear_cont.innerHTML = "<div class='nodatafound'>No data found.</div>";
-// //             }
-// //         })
-// //         .catch((error) => {
-// //             alert(error);
-// //         });
-// // }
-
-
-
-
-
-// function getTeacher(targetId) {
-//     return get(child(dbRef, `PARSEIT/administration/teachers/${targetId}`))
-//         .then((snapshot) => {
-//             if (snapshot.exists()) {
-//                 if (snapshot.val().activated === "yes") {
-//                     return snapshot.val();
-//                 }
-//                 else {
-//                     return false;
-//                 }
-//             }
-
-//         })
-// }
-// function getStudent(targetId) {
-//     return get(child(dbRef, `PARSEIT/administration/students/${targetId}`))
-//         .then((snapshot) => {
-//             if (snapshot.exists()) {
-//                 return true;
-//             }
-//             else {
-//                 return false;
-//             }
-//         })
-// }
-// function getDetails(targetId) {
-//     return get(child(dbRef, `PARSEIT/administration/students/${targetId}`))
-//         .then((snapshot) => {
-//             if (snapshot.exists()) {
-//                 let suffix = snapshot.val().suffix;
-//                 if (snapshot.val().suffix === "none") {
-//                     suffix = snapshot.val().suffix = "";
-//                 }
-//                 document.getElementById("iddetails-fullname").innerHTML = "Fullname: " + snapshot.val().firstname + " " + snapshot.val().middlename + " " + snapshot.val().lastname + " " + suffix;
-//                 document.getElementById("iddetails-email").innerHTML = "Email: " + snapshot.val().email;
-//                 document.getElementById("iddetails-birthday").innerHTML = "Birthday: " + snapshot.val().birthday;
-
-//             }
-//         })
-// }
-// async function assignTeacher(academicref, yr, sem, subject, section, teacherid) {
-//     await update(ref(database, `PARSEIT/administration/parseclass/${academicref}/${yr}/${sem}/${subject}/${section}/`), {
-//         teacher_id: teacherid,
-//         parseclass_id: academicref + "_" + section + "_" + subject.replace(/\s+/g, ""),
-//     }).then(() => {
-
-//     }).catch((error) => {
-//         console.error("Error updating data:", error);
-//     });
-// }
-// async function enrollCluster(sourcePath, destinationPath, yr, section) {
-//     if (yr === "year-lvl-1") {
-//         yr = "1";
-//     }
-//     if (yr === "year-lvl-2") {
-//         yr = "2";
-//     }
-//     if (yr === "year-lvl-3") {
-//         yr = "3";
-//     }
-//     if (yr === "year-lvl-4") {
-//         yr = "4";
-//     }
-//     try {
-//         const sourceRef = ref(databaseAdmin, sourcePath);
-//         const snapshot = await get(sourceRef);
-//         if (snapshot.exists()) {
-//             const data = snapshot.val();
-//             const destinationRef = ref(database, destinationPath);
-//             await update(destinationRef, data);
-//             snapshot.forEach(childSnapshot => {
-//                 const key = childSnapshot.key;
-//                 // updateStudentYrSection(key, yr, section);
-
-//             });
-//             console.log(`Data successfully copied from ${sourcePath} to ${destinationPath}`);
-//         } else {
-//             console.log(`No data found at ${sourcePath}`);
-//         }
-//     } catch (error) {
-//         console.error("Error copying data:", error);
-//     }
-// }
-// // async function updateStudentYrSection(parser_id, yr, section) {
-// //     await update(ref(database, `PARSEIT/administration/students/${parser_id}/`), {
-// //         yearlvl: yr,
-// //         section: section
-// //     });
-// // }
-// function translateYr(yr) {
-//     switch (yr) {
-//         case "year-lvl-1":
-//             return "1";
-//         case "year-lvl-2":
-//             return "2";
-//         case "year-lvl-3":
-//             return "3";
-//         case "year-lvl-4":
-//             return "4";
-//         default:
-//             console.log("error");
-//     }
-// }
-
-
-// function showEnrollButton() {
-//     document.getElementById('enrollParseclass').style.visibility = "visible";
-// }
-
-// // async function populateEnrollDetails(acadRef, yrlvl, sem, subject) {
-// //     const section = document.getElementById('sectionsched_txt').value;
-// //     try {
-// //         const snapshot = await get(child(dbRef, `PARSEIT/administration/parseclass/${acadRef}/${yrlvl}/${sem}/${subject}/${section}`));
-// //         if (snapshot.exists()) {
-// //             const data = snapshot.val();
-// //             document.getElementById('assignTeacher_txt').value = data.teacher_id;
-// //             if (data.schedule) {
-// //                 document.getElementById('day_txt').value = data.schedule.sched_day || '';
-// //                 document.getElementById('start_txt').value = data.schedule.sched_start || '';
-// //                 document.getElementById('end_txt').value = data.schedule.sched_end || '';
-// //             } else {
-// //                 document.getElementById('assignTeacher_txt').value = '';
-// //                 document.getElementById('day_txt').value = '';
-// //                 document.getElementById('start_txt').value = '';
-// //                 document.getElementById('end_txt').value = '';
-// //                 console.log('No schedule found');
-// //             }
-// //             document.getElementById('assignTeacher_btn').style.visibility = "hidden";
-// //             document.getElementById('assignTeacher_txt').disabled = true;
-
-// //         } else {
-// //             console.log('No data exists for the provided details');
-// //             document.getElementById('assignTeacher_txt').value = '';
-// //             noSection = true;
-// //             check_teacher = false;
-// //             document.getElementById('assignTeacher_btn').style.visibility = "visible";
-// //             document.getElementById('assignTeacher_txt').disabled = false;
-
-// //         }
-// //     } catch (error) {
-// //         console.error('Error fetching data:', error);
-// //     }
-// // }
