@@ -89,7 +89,8 @@ body {
   width: 100%;
   background-color: transparent;
   height: 100%;
-  overflow: hidden;
+  overflow: scroll;
+  scrollbar-width: none;
 }
 
 #menubar {
@@ -118,19 +119,24 @@ body {
 #addstudent_div,
 #addteacher_div,
 #addadmin_div {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   background-color: transparent;
   overflow-x: scroll;
+  scrollbar-width: none;
 }
-
+.fillers_admin {
+  height: 200px;
+  width: 100%;
+}
 #managestudent_btn,
 #manageteacher_btn,
 #manageadmin_btn,
 #createParseclass_btn,
-#manageacad_btn {
+#manageacad_btn,
+#managechatbot_btn {
   width: 100%;
   border: none;
   height: 60px;
@@ -774,6 +780,10 @@ body {
   opacity: 50%;
 }
 
+.checkbox-schedulelist {
+  accent-color: #ff3334;
+}
+
 .lbl-sectionlist {
   opacity: 60%;
 }
@@ -1037,6 +1047,10 @@ body {
   color: #fefefe;
   font-family: Inter-Medium;
   box-sizing: border-box;
+}
+#clear_section:active {
+  transition: ease-in-out 0.2s;
+  transform: scale(0.9);
 }
 
 #section_list {
@@ -1318,7 +1332,9 @@ body {
   background-color: transparent;
   margin-right: 10px;
 }
-
+#pushCluster:active {
+  transform: scale(0.9);
+}
 .remove-cluster-btn {
   font-size: 10px;
   width: 10px;

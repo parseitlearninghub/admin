@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Train chatbot</title>
+    <link rel="stylesheet" href="trainchatbot.css" />
+  </head>
+  <body>
+    <div id="loading_animation_div">
+      <img id="loading_animation_gif" src="assets/loading_animation.gif" />
+      <h1 id="parsing_lbl">Parsing...</h1>
+    </div>
+    <id id="home_trainchatbot">
+      <section class="trainchatbot-wrapper">
+        <button id="canceladdchatbot-btn">
+          <img
+            class="canceladdcluster-btn"
+            src="assets/icons/arrow-left-solid.svg"
+          />
+        </button>
+        <section class="header-title-wrapper">
+          <label class="header-title">Train Chatbot</label>
+        </section>
+        <section class="chatbot-data-wrapper">
+          <section class="chatbot-data">
+            <textarea
+              name=""
+              id="chatbot-response-txt"
+              cols="30"
+              placeholder="Enter Chatbot Response"
+              oninput="this.style.height = '60px'; this.style.height = this.scrollHeight +'px';"
+            ></textarea>
+            <section class="chatbot-trigger-wrapper">
+              <input
+                type="text"
+                id="trigger-txt"
+                placeholder="Enter Trigger Input"
+              />
+              <button id="addchattrigger_btn">Add</button>
+            </section>
+            <section
+              class="added-trigger-wrapper"
+              id="added-trigger-wrapper"
+            ></section>
+          </section>
+        </section>
+        <button id="addchatdata_btn">Add Data</button>
+        <section class="fillers"></section>
+        <section class="fillers"></section>
+      </section>
+    </id>
+    <script type="module" src="trainchatbot.js"></script>
+  </body>
+</html>

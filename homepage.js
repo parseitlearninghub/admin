@@ -79,18 +79,19 @@ document.getElementById("logout_btn").addEventListener("click", function () {
 });
 function showSidebar() {
     document.getElementById("sidebar_frame").style.animation = "showsidebar 0.3s ease-in-out forwards";
+    let startX = 0;
+    let endX = 0;
+    document.addEventListener('touchstart', (event) => {
+        startX = event.touches[0].clientX;
+    });
+    document.addEventListener('touchend', (event) => {
+        endX = event.changedTouches[0].clientX;
+        if (startX - endX > 50) {
+            hideSidebar();
+        }
+    });
 }
-let startX = 0;
-let endX = 0;
-document.addEventListener('touchstart', (event) => {
-    startX = event.touches[0].clientX;
-});
-document.addEventListener('touchend', (event) => {
-    endX = event.changedTouches[0].clientX;
-    if (startX - endX > 50) {
-        hideSidebar();
-    }
-});
+
 function hideSidebar() {
     document.getElementById("sidebar_frame").style.animation = "hidesidebar 0.3s ease-in-out forwards";
 }
@@ -141,9 +142,9 @@ document.getElementById("canceladdadmin_btn").addEventListener("click", function
     hideAddAdmin();
 });
 document.getElementById("addteacher_btn").addEventListener("click", function () {
+    hideAddAdmin();
     hideAddStudent();
     showAddTeacher();
-    showAddAdmin();
 });
 document.getElementById("canceladdteacher_btn").addEventListener("click", function () {
     hideAddStudent();
@@ -151,6 +152,8 @@ document.getElementById("canceladdteacher_btn").addEventListener("click", functi
     hideAddAdmin();
 });
 document.getElementById("addstudent_btn").addEventListener("click", function () {
+    hideAddTeacher();
+    hideAddAdmin();
     showAddStudent();
 
 });
@@ -1468,3 +1471,6 @@ function makeElementUnavailable(element) {
     document.getElementById(element).style.pointerEvents = "none";
 }
 
+document.getElementById("addchatdata_btn").addEventListener("click", function () {
+    window.location.href = "trainchatbot.html";
+});

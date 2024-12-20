@@ -183,6 +183,13 @@ body {
   font-size: 20px;
 }
 
+#add-cluster-btn:active,
+#delete-cluster-btn:active,
+#remove-clusterid-btn:active {
+  transition: ease-in-out 0.2s;
+  transform: scale(0.9);
+}
+
 .cluster-view-list {
   width: 100%;
   background-color: transparent;
