@@ -156,7 +156,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
   box-sizing: border-box;
   margin-bottom: 15px;
 }

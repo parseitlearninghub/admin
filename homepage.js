@@ -1474,3 +1474,7 @@ function makeElementUnavailable(element) {
 document.getElementById("addchatdata_btn").addEventListener("click", function () {
     window.location.href = "trainchatbot.html";
 });
+
+document.getElementById("viewchatdata_btn").addEventListener("click", function () {
+    window.location.href = "viewchatbot.html";
+});
