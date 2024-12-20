@@ -159,6 +159,5 @@ async function getTriggerInputs() {
 } getTriggerInputs();
 
 document.getElementById("canceladdchatbot-btn").addEventListener("click", async function () {
-    await remove(ref(database, `PARSEIT/siti_chatbot/${chatCode}/`));
     window.location.href = "homepage.html";
 });
