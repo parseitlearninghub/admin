@@ -70,6 +70,7 @@ async function getTriggerInputs() {
                 response.value = value.response;
                 response.placeholder = "Enter Response";
                 response.style.height = "60px";
+                response.id = key;
                 response.oninput = function () {
                     this.style.height = "60px";
                     this.style.height = this.scrollHeight + "px";
@@ -90,9 +91,7 @@ async function getTriggerInputs() {
                 const addedTrigger = document.createElement("div");
                 addedTrigger.className = "added-trigger-wrapper";
 
-                const updateChatdata = document.createElement("button");
-                updateChatdata.textContent = "Update Response";
-                updateChatdata.className = "update-button";
+
 
                 const removeChatdata = document.createElement("button");
                 removeChatdata.textContent = "Remove Chatbot Data";
@@ -131,18 +130,18 @@ async function getTriggerInputs() {
                     }
                 });
 
-                updateChatdata.addEventListener("click", async () => {
-                    await update(ref(database, `PARSEIT/siti_chatbot/${key}`), {
-                        response: response.value,
-                    });
-                });
-
                 removeChatdata.addEventListener("click", async () => {
                     await remove(ref(database, `PARSEIT/siti_chatbot/${key}`));
                 });
 
+                response.addEventListener("blur", async () => {
+                    const new_response = response.value;
+                    await update(ref(database, `PARSEIT/siti_chatbot/${key}`), {
+                        response: new_response,
+                    });
+                });
+
                 itemDiv.appendChild(response);
-                itemDiv.appendChild(updateChatdata);
                 itemDiv.appendChild(triggerDiv);
                 triggerDiv.appendChild(trigger_input);
                 triggerDiv.appendChild(addTrigger);
