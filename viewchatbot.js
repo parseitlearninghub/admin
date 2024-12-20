@@ -94,7 +94,7 @@ async function getTriggerInputs() {
 
 
                 const removeChatdata = document.createElement("button");
-                removeChatdata.textContent = "Remove Chatbot Data";
+                removeChatdata.textContent = "Delete Chatbot Data";
                 removeChatdata.className = "remove-button";
 
                 for (const trigger in value.trigger_input) {
