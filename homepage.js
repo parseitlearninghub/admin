@@ -1478,3 +1478,8 @@ document.getElementById("addchatdata_btn").addEventListener("click", function ()
 document.getElementById("viewchatdata_btn").addEventListener("click", function () {
     window.location.href = "viewchatbot.html";
 });
+
+
+document.getElementById("settings_btn").addEventListener("click", function () {
+    window.location.href = "settings.html";
+});
