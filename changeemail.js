@@ -39,7 +39,7 @@ const appAdmin = initializeApp(firebaseConfigAdmin, "ParseITAdmin");
 const databaseAdmin = getDatabase(appAdmin);
 const dbRefAdmin = ref(databaseAdmin);
 
-const auth = getAuth();
+const auth = getAuth(appAdmin);
 let user_parser = localStorage.getItem("user-parser-admin");
 
 
@@ -207,6 +207,7 @@ document.getElementById("changeemailaddress-btn").addEventListener("click", asyn
 
         };
         const email = await getOldEmail(id);
+        console.log(email);
         signInAndDeleteUser(email, password, new_email);
     }
     else {
@@ -229,7 +230,7 @@ async function updateParser(id, email) {
     update(ref(databaseAdmin, "PARSEIT/administration/admins/" + id), {
         email: email,
     }).then(() => {
-        localStorage.removeItem("user-parser");
+        localStorage.removeItem("user-parser-admin");
         window.location.href = "index.html";
     })
 }

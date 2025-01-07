@@ -25,7 +25,6 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const dbRef = ref(database);
 
-const auth = getAuth();
 
 const firebaseConfigAdmin = {
     apiKey: "AIzaSyCoIfQLbAq5gPil3COSauqfHNlv5P5tYXc",
@@ -39,6 +38,7 @@ const firebaseConfigAdmin = {
 const appAdmin = initializeApp(firebaseConfigAdmin, "ParseITAdmin");
 const databaseAdmin = getDatabase(appAdmin);
 const dbRefAdmin = ref(databaseAdmin);
+const auth = getAuth(appAdmin);
 
 let user_parser = localStorage.getItem("user-parser-admin");
 
