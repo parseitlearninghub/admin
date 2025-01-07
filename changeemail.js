@@ -12,21 +12,6 @@ import {
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCFqgbA_t3EBVO21nW70umJOHX3UdRr9MY",
-    authDomain: "parseit-8021e.firebaseapp.com",
-    databaseURL:
-        "https://parseit-8021e-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "parseit-8021e",
-    storageBucket: "parseit-8021e.appspot.com",
-    messagingSenderId: "15166597986",
-    appId: "1:15166597986:web:04b0219b1733780ae61a3b",
-};
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-const dbRef = ref(database);
-
-
-const firebaseConfigAdmin = {
     apiKey: "AIzaSyCoIfQLbAq5gPil3COSauqfHNlv5P5tYXc",
     authDomain: "parseitadmin.firebaseapp.com",
     databaseURL: "https://parseitadmin-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -35,11 +20,11 @@ const firebaseConfigAdmin = {
     messagingSenderId: "1009498274532",
     appId: "1:1009498274532:web:69083f905357ae31b74af1"
 };
-const appAdmin = initializeApp(firebaseConfigAdmin, "ParseITAdmin");
-const databaseAdmin = getDatabase(appAdmin);
-const dbRefAdmin = ref(databaseAdmin);
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+const dbRef = ref(database);
 
-const auth = getAuth(appAdmin);
+const auth = getAuth();
 let user_parser = localStorage.getItem("user-parser-admin");
 
 
@@ -67,7 +52,7 @@ function showMessage(message) {
 }
 
 function sendResetEmail(id) {
-    get(child(dbRefAdmin, "PARSEIT/administration/admins/" + id)).then((snapshot) => {
+    get(child(dbRef, "PARSEIT/administration/admins/" + id)).then((snapshot) => {
         if (snapshot.exists()) {
             const email = snapshot.val().email;
             sendPasswordResetEmail(auth, email);
@@ -131,7 +116,7 @@ function sendVerificationCode(id, email, code) {
 }
 
 function updateDBVerification(id, code) {
-    update(ref(databaseAdmin, "PARSEIT/administration/admins/" + id), {
+    update(ref(database, "PARSEIT/administration/admins/" + id), {
         verificationcode: code,
     });
 
@@ -140,8 +125,8 @@ function updateDBVerification(id, code) {
 }
 
 function submitVerificationCode(id, code) {
-    const dbRefAdmin = ref(databaseAdmin);
-    get(child(dbRefAdmin, "PARSEIT/administration/admins/" + id))
+    const dbRef = ref(database);
+    get(child(dbRef, "PARSEIT/administration/admins/" + id))
         .then((snapshot) => {
             if (snapshot.exists()) {
                 if (snapshot.val().verificationcode == code) {
@@ -160,7 +145,7 @@ function submitVerificationCode(id, code) {
 }
 
 function removeDBVerification(id) {
-    remove(ref(databaseAdmin, "PARSEIT/administration/admins/" + id + "/verificationcode"));
+    remove(ref(database, "PARSEIT/administration/admins/" + id + "/verificationcode"));
 }
 
 function errorElement(element) {
@@ -187,7 +172,7 @@ document.getElementById("changeemailaddress-btn").addEventListener("click", asyn
                     await user.delete().then(() => {
                         createUserWithEmailAndPassword(auth, new_email, password)
                             .then(async (userCredential) => {
-                                await updateParser(id, new_email, type);
+                                await updateParser(id, new_email);
 
                             })
                             .catch((error) => {
@@ -217,8 +202,8 @@ document.getElementById("changeemailaddress-btn").addEventListener("click", asyn
 });
 
 async function getOldEmail(studentid) {
-    const dbRefAdmin = ref(databaseAdmin);
-    return await get(child(dbRefAdmin, "PARSEIT/administration/admins/" + studentid)).then(async (snapshot) => {
+    const dbRef = ref(database);
+    return await get(child(dbRef, "PARSEIT/administration/admins/" + studentid)).then(async (snapshot) => {
         if (snapshot.exists()) {
             const email = snapshot.val().email;
             return email;
@@ -227,7 +212,7 @@ async function getOldEmail(studentid) {
 }
 
 async function updateParser(id, email) {
-    update(ref(databaseAdmin, "PARSEIT/administration/admins/" + id), {
+    update(ref(database, "PARSEIT/administration/admins/" + id), {
         email: email,
     }).then(() => {
         localStorage.removeItem("user-parser-admin");
