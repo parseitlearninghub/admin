@@ -25,7 +25,6 @@ const database = getDatabase(app);
 const dbRef = ref(database);
 const auth = getAuth();
 
-
 let user_parser = localStorage.getItem("user-parser-admin");
 
 

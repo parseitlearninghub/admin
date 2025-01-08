@@ -68,9 +68,9 @@ function setScreenSize(width, height) {
     document.body.style.height = height + "px";
     document.documentElement.style.height = height + "px";
 }
-document.getElementById("nav_btn").addEventListener("click", function () {
+document.getElementById("nav_btn").addEventListener("click", async function () {
     // getUsernameById(admin_id).then((username) => {// });
-    document.getElementById("parser_username").innerText = `[Fullname]`
+    document.getElementById("parser_username").innerText = await navEmail(admin_id);
     showSidebar();
 });
 document.getElementById("logout_btn").addEventListener("click", function () {
@@ -91,6 +91,24 @@ function showSidebar() {
         }
     });
 }
+
+async function navEmail(admin_id) {
+    const path = `PARSEIT/administration/admins/${admin_id}/email/`;
+    try {
+        return await get(child(dbRefAdmin, path)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                return data;
+            } else {
+                return "";
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+
+}
+
 
 function hideSidebar() {
     document.getElementById("sidebar_frame").style.animation = "hidesidebar 0.3s ease-in-out forwards";
