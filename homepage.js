@@ -1501,3 +1501,15 @@ document.getElementById("viewchatdata_btn").addEventListener("click", function (
 document.getElementById("settings_btn").addEventListener("click", function () {
     window.location.href = "settings.html";
 });
+
+document.getElementById("deactivateadmin_btn").addEventListener("click", function () {
+    window.location.href = "deleteaccount.html?deletetype=admin";
+});
+
+document.getElementById("deactivateteacher_btn").addEventListener("click", function () {
+    window.location.href = "deleteaccount.html?deletetype=teacher";
+});
+
+document.getElementById("deactivatestudent_btn").addEventListener("click", function () {
+    window.location.href = "deleteaccount.html?deletetype=student";
+});

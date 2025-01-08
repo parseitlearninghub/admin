@@ -1,0 +1,266 @@
+@font-face {
+  font-family: "Inter-Regular";
+  src: url("assets/fonts/Inter-Regular.otf");
+}
+@font-face {
+  font-family: "Inter-Medium";
+  src: url("assets/fonts/Inter-Medium.otf");
+}
+@font-face {
+  font-family: "Inter-Light";
+  src: url("assets/fonts/Inter-Light.otf");
+}
+@font-face {
+  font-family: "Inter-Bold";
+  src: url("assets/fonts/Inter-Bold.otf");
+}
+* {
+  font-family: Inter-Regular;
+  font-size: 14px;
+  color: #2e3845;
+}
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #fefefe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#loading_animation_div {
+  height: 100%;
+  width: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 1000;
+  visibility: hidden;
+  overflow: hidden;
+}
+
+#loading_animation_gif {
+  height: 50px;
+  width: 50px;
+}
+
+#parsing_lbl {
+  font-family: Inter-Regular;
+  color: #f30505;
+  margin-top: 15px;
+  font-size: 12px;
+}
+
+.home-div {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.home-header-div {
+  height: 60px;
+  width: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 15px;
+}
+
+#canceladdcluster-btn {
+  border: none;
+  background-color: transparent;
+}
+
+.canceladdcluster-btn {
+  width: 15px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+.home-body-div {
+  height: 60px;
+  width: 100%;
+  flex: 1;
+  background-color: transparent;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  padding-bottom: 15px;
+}
+
+.add-cluster-header {
+  height: 30px;
+  width: 100%;
+  background-color: transparent;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 20px;
+  font-size: 18px;
+  font-family: Inter-Bold;
+}
+
+.add-cluster-name {
+  width: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.add-cluster-name-wrapper {
+  background-color: transparent;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  gap: 10px;
+  margin-top: 10px;
+}
+#cluster-name-txt,
+#cluster-id-txt {
+  height: 100%;
+  box-sizing: border-box;
+  padding-left: 10px;
+  border: 0.5px solid #dcdcdc;
+  border-radius: 4px;
+  font-family: Inter-Regular;
+  flex: 1;
+}
+#cluster-name-txt:focus,
+#cluster-id-txt:focus {
+  outline: none;
+}
+
+.add-cluster-id {
+  height: 50px;
+  width: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  margin-top: 10px;
+}
+.add-cluster-id-wrapper {
+  width: 90%;
+  height: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+#cluster-id-txt {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+#add-cluster-btn,
+#delete-cluster-btn,
+#remove-clusterid-btn {
+  width: 60px;
+  height: 100%;
+  border-radius: 4px;
+  border: none;
+  background-color: #f30505;
+  color: #fefefe;
+  box-sizing: border-box;
+}
+
+#add-cluster-btn,
+#remove-clusterid-btn {
+  font-size: 20px;
+}
+
+#add-cluster-btn:active,
+#delete-cluster-btn:active,
+#remove-clusterid-btn:active {
+  transition: ease-in-out 0.2s;
+  transform: scale(0.9);
+}
+
+.cluster-view-list {
+  width: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.cluster-view-list-wrapper {
+  width: 90%;
+  background-color: transparent;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 0.5px solid #dcdcdc;
+  padding-bottom: 10px;
+}
+
+.cluster-view-list-header {
+  width: 100%;
+  height: 25px;
+  background-color: #ffdddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.identification {
+  width: 65%;
+  text-align: left;
+  font-family: Inter-Bold;
+  padding-left: 5%;
+}
+.idname {
+  text-align: left;
+  padding: 0;
+  width: 100%;
+}
+.cluster-view-list-body {
+  width: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#tally-cluster {
+  width: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.parser-name,
+.parser-id {
+  width: 100%;
+  text-align: left;
+  font-family: Inter-Light;
+  padding-left: 20px;
+}
+.parser-id {
+  width: 70%;
+}
+.parser-name {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 0;
+  padding-right: 20px;
+}
